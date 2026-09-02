@@ -163,8 +163,8 @@
         <h3>전환 전략</h3>
         <ul class="bullets">
           <li><b>1단계(현재)</b> — 모놀리식 유지, 신규 API 지속 추가. 기존 JSP는 vanilla JS로 신규 API와 연동</li>
+          <li><b>1.5단계</b> — CloudFront를 온프레미스 앞단에 두는 리버스 프록시로, 도메인 완전 이관 전에도 경로 단위 전환 시작</li>
           <li><b>2단계</b> — 도메인/인프라를 클라우드로 이관한 뒤 React 전환</li>
-          <li>페이지 단위 점진 전환이 어려운 이유: 도메인이 클라우드에 있지 않아 경로 기반 라우팅 구성이 현재 불가능</li>
         </ul>
       </div>
     </div>
@@ -255,6 +255,8 @@
       <div class="card"><h3>테스트 자동화</h3><p style="color:var(--text-dim); font-size:.88rem;">전환 중 회귀 방지를 위한 자동화 테스트, 신구 API 병행 비교(shadow traffic).</p></div>
       <div class="card"><h3>API 문서화</h3><p style="color:var(--text-dim); font-size:.88rem;">JSP를 API로 전환할 때 OpenAPI 명세로 계약을 명확히 해 결합도를 낮춤.</p></div>
       <div class="card"><h3>배치 워크로드 컨테이너화</h3><p style="color:var(--text-dim); font-size:.88rem;">스크래핑/잡서비스를 상시 프로세스 대신 이벤트 기반 스케줄링(EventBridge, Step Functions)으로.</p></div>
+      <div class="card"><h3>Java 버전 업그레이드</h3><p style="color:var(--text-dim); font-size:.88rem;">JSP를 API로 전환하며 런타임도 Java 1.8 → 11 → 17(LTS)로 단계적 상향. 신규 API는 최신 LTS 위에서 개발.</p></div>
+      <div class="card"><h3>CDN 리버스 프록시로 조기 전환</h3><p style="color:var(--text-dim); font-size:.88rem;">CloudFront가 온프레미스를 커스텀 오리진으로 두고 경로별 분기 — 도메인 완전 이관 전에도 페이지 단위 전환 가능.</p></div>
     </div>
     <p class="lede" style="margin-top:24px; font-size:.85rem;">서비스 경계는 무조건 잘게 나누는 것이 능사가 아니다 — 아래 참고.</p>
     <div class="slide-num">10 / 15</div>
@@ -281,6 +283,11 @@
           <td>Amazon Prime Video</td>
           <td class="current">과도하게 분산된 마이크로서비스를 단일 프로세스로 되돌림</td>
           <td class="target">인프라 비용 90% 절감 — 분리는 실제 배포 주기·트래픽 패턴 차이가 있는 경계에서만 의미가 있음</td>
+        </tr>
+        <tr>
+          <td>Capital One</td>
+          <td class="current">자체 데이터센터를 모두 폐쇄하고 AWS로 전면 이관한 금융회사 사례 (확인 필요)</td>
+          <td class="target">망분리·규제 제약에서 출발한 금융회사도 단계적으로는 완전한 클라우드 전환이 가능함을 보여주는 선례</td>
         </tr>
       </tbody>
     </table>
