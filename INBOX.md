@@ -18,6 +18,18 @@ CloudFront 커스텀 오리진을 온프레미스 레거시 JSP 서버의 **IP�
   즉 `CloudFront → DMZ VPC ALB(도메인) → PrivateLink/Direct Connect → 사내망 레거시 JSP 서버`.
 - 반영 위치: `roadmap/target-architecture.md`(해당 섹션 본문 보강), 필요하면
   `roadmap/presentations/2026-09-cloud-modernization-roadmap.html`의 관련 슬라이드에도 한 줄 보강.
+- **그림(다이어그램) 추가 요청**: 위 흐름(`사용자 → CloudFront → 경로별 분기 →
+  [신규 경로] S3/API Gateway` / `[레거시 경로] DMZ VPC 게이트웨이(도메인) → PrivateLink/
+  Direct Connect → 사내망 레거시 JSP 서버`)이 실제로 어떻게 처리되는지 한눈에 보이는
+  플로우 차트를 추가한다. 실제 이미지 파일을 넣을 필요는 없고, 이미 문서/발표자료에서
+  쓰고 있는 방식대로 텍스트/코드로 그린다.
+  - `target-architecture.md`: 문서 상단 "현재 아키텍처 요약"·"목표 아키텍처"에 쓰인 것과
+    같은 ASCII 박스-화살표 다이어그램 스타일로, 이 CDN 리버스 프록시 섹션 전용 다이어그램을
+    코드 블록으로 추가.
+  - 발표자료(`2026-09-cloud-modernization-roadmap.html`): 5번 슬라이드(목표 아키텍처
+    다이어그램)에 이미 있는 `.diagram`/`.zone`/`.box`/`.arrow-row` CSS 클래스를 재사용해서,
+    "CDN 리버스 프록시로 조기 전환" 내용을 설명하는 별도 다이어그램(또는 기존 5번 슬라이드
+    다이어그램에 경로 분기 표시를 보강)을 추가.
 
 ### 프론트엔드 현대화 방향에 SEO/GEO 중점 추가
 
