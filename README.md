@@ -12,3 +12,8 @@
 
 1. `services/_template/`을 `services/<서비스명>/`으로 복사
 2. 각 파일의 내용을 채운다
+
+## 메모 남기기 (INBOX)
+
+지금 바로 문서화하기 애매하거나 다음 세션(예약된 루틴 포함)이 처리했으면 하는 메모는
+[`INBOX.md`](INBOX.md)에 적어둔다. 세션 시작 시 처리 방식은 [`CLAUDE.md`](CLAUDE.md) 참고.
