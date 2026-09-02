@@ -6,8 +6,14 @@
 
 - [`roadmap/`](roadmap/) — 서비스 발전 방향, 목표 아키텍처, 발표 자료
 - [`services/`](services/) — 서비스별 상세 문서 (API, 실행법, 장애 대응)
+- [`standards/`](standards/) — 팀 공통 개발 원칙 (프론트엔드/백엔드 책임 분리 등)
 
 ## 새 서비스 문서 추가하기
 
 1. `services/_template/`을 `services/<서비스명>/`으로 복사
 2. 각 파일의 내용을 채운다
+
+## 메모 남기기 (INBOX)
+
+지금 바로 문서화하기 애매하거나 다음 세션(예약된 루틴 포함)이 처리했으면 하는 메모는
+[`INBOX.md`](INBOX.md)에 적어둔다. 세션 시작 시 처리 방식은 [`CLAUDE.md`](CLAUDE.md) 참고.
