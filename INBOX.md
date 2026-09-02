@@ -31,6 +31,13 @@ CloudFront 커스텀 오리진을 온프레미스 레거시 JSP 서버의 **IP�
 - 검토할 것: React SPA 전환 시 CSR만으로는 SEO/GEO에 불리하므로 SSR(Next.js 등) 또는
   프리렌더링(SSG/ISR) 전략을 프론트엔드 기술 선택에 포함할지 검토. 구조화 데이터
   (JSON-LD 등), 시맨틱 마크업, AI 크롤러 대응(예: llms.txt류 관행) 같은 GEO 실무도 조사 필요.
+- URL 설계도 SEO 항목으로 반드시 포함: 의미 없는 ID 기반 URL 대신, 콘텐츠를 설명하는
+  의미 있는 슬러그(slug)를 쓴다.
+  - 예) `test.com/blog/1` (X) → `test.com/blog/kg-financial-vs-allra` (O)
+  - 신규 API/React 라우팅 설계 시부터 라우트 경로를 사람이 읽어도 내용을 짐작할 수 있는
+    슬러그 기반으로 정한다 (검색엔진·생성형 엔진 모두 URL 자체를 콘텐츠 신호로 사용).
+  - 기존 JSP 화면에 숫자 ID 기반 URL이 있다면 React 전환 시 슬러그 기반 URL로 정리하고,
+    기존 ID URL은 301 리다이렉트로 연결해 기존 색인/링크의 SEO 가치를 보존한다.
 - 반영 위치: `roadmap/vision.md`(목표 1. 프론트엔드 현대화 항목), `roadmap/target-architecture.md`
   (프론트엔드 렌더링/기술 선택 관련 섹션 — CSR vs SSR/SSG 트레이드오프 추가), `roadmap/outline.md`
   (프론트엔드 현대화 목표 항목), 발표자료의 관련 슬라이드.
