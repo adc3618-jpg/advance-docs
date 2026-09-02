@@ -16,6 +16,9 @@ CloudFront 커스텀 오리진을 온프레미스 레거시 JSP 서버의 **IP�
 - 권장 방향: CloudFront는 레거시 서버 IP가 아니라 **DMZ VPC 쪽 게이트웨이(ALB/NLB 등)의 도메인**을
   오리진으로 잡고, 그 게이트웨이가 PrivateLink/Direct Connect로 사내망 레거시 서버에 연결하는 구조.
   즉 `CloudFront → DMZ VPC ALB(도메인) → PrivateLink/Direct Connect → 사내망 레거시 JSP 서버`.
+  단, 아래 "PrivateLink/Direct Connect 사용 가능 여부 재검토" 메모 참고 — 국내 법규상
+  PrivateLink/Direct Connect 자체가 어려울 가능성이 있어, 이 구간은 대안(퍼블릭 엔드포인트
+  + mTLS/IP 화이트리스트 등)으로 대체될 수 있다는 점을 함께 서술할 것.
 - 반영 위치: `roadmap/target-architecture.md`(해당 섹션 본문 보강), 필요하면
   `roadmap/presentations/2026-09-cloud-modernization-roadmap.html`의 관련 슬라이드에도 한 줄 보강.
 - **그림(다이어그램) 추가 요청**: 위 흐름(`사용자 → CloudFront → 경로별 분기 →
@@ -30,6 +33,30 @@ CloudFront 커스텀 오리진을 온프레미스 레거시 JSP 서버의 **IP�
     다이어그램)에 이미 있는 `.diagram`/`.zone`/`.box`/`.arrow-row` CSS 클래스를 재사용해서,
     "CDN 리버스 프록시로 조기 전환" 내용을 설명하는 별도 다이어그램(또는 기존 5번 슬라이드
     다이어그램에 경로 분기 표시를 보강)을 추가.
+
+### PrivateLink/Direct Connect 사용 가능 여부 재검토 (국내 법규 리스크)
+
+사용자 확인: AWS PrivateLink/Direct Connect로 클라우드-폐쇄망을 직접 연결하는 방안이
+**국내 법규상 어려울 가능성이 높음**. 지금 로드맵 문서들은 이 연결을 사실상 확정 전제로
+쓰고 있어서 톤을 낮추고 리스크로 명시해야 함.
+
+- 현재 문제되는 서술: `target-architecture.md`의 "AWS Private Network: … 이는 '가능하다면'이
+  아니라 금융 데이터 보안 요건상 사실상 필수에 가깝다" — 이 부분을 "법규 검토 결과에 따라
+  달라질 수 있는 옵션"으로 완화해야 함. `vision.md` 목표 4번은 이미 "가능하다면"이라는
+  단서가 있어 톤은 맞지만, 근거 문단(금융보안원 Multi-VPC 패턴 언급)도 법규 확인 전제를
+  같이 달아줄 것.
+- 반영할 내용:
+  - PrivateLink/Direct Connect는 "확정 계획"이 아니라 "법무/컴플라이언스팀 검토가 선행되어야
+    하는 옵션 A"로 재포지셔닝.
+  - 대안(옵션 B)을 명시적으로 추가: 예) 퍼블릭 인터넷 구간을 쓰되 mTLS(상호 인증서)·IP
+    화이트리스트·WAF로 방어하는 DMZ API 노출 방식, VPN 기반 연결 등. 어느 쪽이든 "인터넷
+    구간을 아예 안 거치는 것"이 목표가 아니라 "안전하게 거치는 것"으로 목표를 재정의해야
+    할 수도 있음.
+  - 이 리스크는 로드맵 전체의 전제(폐쇄망 극복 파트, 1.5단계, DMZ API 설계)에 영향을 주므로
+    `vision.md`/`target-architecture.md`/`outline.md`/발표자료(슬라이드 9 "폐쇄망 극복",
+    슬라이드 13 "보안·컴플라이언스" 리스크 카드) 전반에서 일관되게 "법규 확인 필요" 톤으로
+    맞출 것. 실제 법규 근거(구체적 조항)는 이번 세션에서 확인하지 못했으므로 "(확인 필요 —
+    법무팀 검토 필요)"로 표시하고 링크를 임의로 만들지 말 것.
 
 ### 프론트엔드 현대화 방향에 SEO/GEO 중점 추가
 
