@@ -6,6 +6,7 @@
 
 - [`roadmap/`](roadmap/) — 서비스 발전 방향, 목표 아키텍처, 발표 자료
 - [`services/`](services/) — 서비스별 상세 문서 (API, 실행법, 장애 대응)
+- [`standards/`](standards/) — 팀 공통 개발 원칙 (프론트엔드/백엔드 책임 분리 등)
 
 ## 새 서비스 문서 추가하기
 
