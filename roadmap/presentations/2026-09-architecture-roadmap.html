@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>레거시 아키텍처 현대화 로드맵</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0b0d12;
+    --bg-soft: #10131a;
+    --surface: #161a23;
+    --surface-2: #1c212c;
+    --border: #262c39;
+    --text: #eef1f6;
+    --text-dim: #a7b0c0;
+    --text-faint: #6b7484;
+    --accent: #5b9dff;
+    --accent-soft: rgba(91,157,255,0.12);
+    --accent-2: #52e0c4;
+    --warn: #f5a524;
+    --warn-soft: rgba(245,165,36,0.12);
+    --danger: #ff6b6b;
+    --danger-soft: rgba(255,107,107,0.12);
+    --good: #4ade80;
+    --good-soft: rgba(74,222,128,0.12);
+    --radius: 14px;
+    --serif-num: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Noto Sans KR','Segoe UI','Malgun Gothic',Helvetica,Arial,sans-serif;
+    line-height:1.55;
+  }
+  ::selection{background:var(--accent-soft); color:var(--text);}
+
+  .progress{
+    position:fixed; top:0; left:0; height:3px; background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    width:0%; z-index:50; transition:width .1s linear;
+  }
+
+  nav.dots{
+    position:fixed; right:18px; top:50%; transform:translateY(-50%);
+    display:flex; flex-direction:column; gap:10px; z-index:40;
+  }
+  nav.dots a{
+    width:9px; height:9px; border-radius:50%; background:var(--border);
+    border:1px solid var(--border); display:block; transition:background .2s, transform .2s;
+  }
+  nav.dots a.active{ background:var(--accent); transform:scale(1.3); }
+  nav.dots a:hover{ background:var(--accent-2); }
+
+  section.slide{
+    min-height:100vh;
+    width:100%;
+    padding:64px 8vw 56px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    position:relative;
+    border-bottom:1px solid var(--border);
+    scroll-snap-align:start;
+  }
+  main{ scroll-snap-type:y proximity; }
+
+  .kicker{
+    color:var(--accent-2); font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    font-size:.78rem; margin:0 0 14px;
+  }
+  h1{ font-size:clamp(2rem,4.4vw,3.4rem); font-weight:900; margin:0 0 18px; letter-spacing:-0.02em; }
+  h2{ font-size:clamp(1.5rem,2.8vw,2.2rem); font-weight:900; margin:0 0 10px; letter-spacing:-0.01em; }
+  h3{ font-size:1.05rem; font-weight:700; margin:0 0 8px; }
+  p{ color:var(--text-dim); margin:0 0 12px; }
+  .lead{ font-size:clamp(1.05rem,1.6vw,1.3rem); color:var(--text-dim); max-width:56ch; }
+  .slide-index{
+    position:absolute; top:28px; left:8vw; font-family:var(--serif-num); font-size:.78rem; color:var(--text-faint);
+  }
+  .tag{
+    display:inline-flex; align-items:center; gap:6px; font-size:.75rem; font-weight:700;
+    padding:4px 10px; border-radius:999px; border:1px solid var(--border); color:var(--text-dim);
+  }
+  .tag.scope-in{ color:var(--good); border-color:rgba(74,222,128,.35); background:var(--good-soft); }
+  .tag.scope-out{ color:var(--text-faint); border-color:var(--border); text-decoration:line-through; }
+
+  .grid{ display:grid; gap:16px; }
+  .grid.cols-2{ grid-template-columns:repeat(2,1fr); }
+  .grid.cols-3{ grid-template-columns:repeat(3,1fr); }
+  .grid.cols-4{ grid-template-columns:repeat(4,1fr); }
+  @media (max-width:920px){
+    .grid.cols-2,.grid.cols-3,.grid.cols-4{ grid-template-columns:1fr; }
+    nav.dots{ display:none; }
+    section.slide{ padding:56px 6vw 40px; }
+  }
+
+  .card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 22px;
+  }
+  .card h3{ color:var(--text); }
+  .card p{ margin:0; font-size:.92rem; }
+  .card .num{ font-family:var(--serif-num); color:var(--accent); font-size:.85rem; font-weight:600; margin-bottom:8px; display:block; }
+
+  .stack{ display:flex; flex-direction:column; gap:14px; }
+
+  .pill-row{ display:flex; flex-wrap:wrap; gap:10px; margin:18px 0; }
+
+  .arch-row{ display:flex; align-items:stretch; gap:10px; flex-wrap:wrap; }
+  .arch-box{
+    flex:1 1 150px; border:1px solid var(--border); border-radius:12px; background:var(--surface);
+    padding:16px; text-align:center; font-weight:700; font-size:.92rem; position:relative;
+  }
+  .arch-box small{ display:block; font-weight:400; color:var(--text-faint); margin-top:6px; font-size:.76rem; }
+  .arch-box.muted{ opacity:.45; }
+  .arch-box.accent{ border-color:rgba(91,157,255,.5); box-shadow:0 0 0 1px rgba(91,157,255,.15) inset; }
+  .arch-box.warn{ border-color:rgba(245,165,36,.5); }
+  .arrow{ align-self:center; color:var(--text-faint); font-size:1.3rem; padding:0 4px; }
+
+  table{ width:100%; border-collapse:collapse; font-size:.9rem; }
+  th,td{ text-align:left; padding:10px 12px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th{ color:var(--text-faint); font-weight:700; font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; }
+  td{ color:var(--text-dim); }
+  td.strong{ color:var(--text); font-weight:700; }
+
+  .callout{ border-radius:var(--radius); padding:18px 20px; border:1px solid; font-size:.92rem; }
+  .callout.danger{ border-color:rgba(255,107,107,.4); background:var(--danger-soft); }
+  .callout.warn{ border-color:rgba(245,165,36,.4); background:var(--warn-soft); }
+  .callout.good{ border-color:rgba(74,222,128,.4); background:var(--good-soft); }
+  .callout .label{ font-weight:900; font-size:.78rem; text-transform:uppercase; letter-spacing:.08em; margin-bottom:6px; display:block; }
+  .callout.danger .label{ color:var(--danger); }
+  .callout.warn .label{ color:var(--warn); }
+  .callout.good .label{ color:var(--good); }
+  .callout p{ color:var(--text); margin:0; }
+  .callout .src{ display:block; margin-top:8px; color:var(--text-faint); font-size:.78rem; }
+
+  .timeline{ display:flex; flex-direction:column; gap:0; }
+  .t-row{ display:grid; grid-template-columns:110px 1fr; gap:20px; padding:16px 0; border-top:1px solid var(--border); }
+  .t-row:first-child{ border-top:none; }
+  .t-phase{ font-family:var(--serif-num); color:var(--accent); font-weight:600; font-size:.95rem; }
+  .t-phase small{ display:block; color:var(--text-faint); font-family:'Noto Sans KR',sans-serif; margin-top:4px; font-size:.72rem;}
+  .t-body h3{ margin-bottom:6px; }
+  .t-body p{ margin:0; font-size:.9rem; }
+
+  .footer-note{ margin-top:auto; padding-top:26px; color:var(--text-faint); font-size:.78rem; }
+
+  a{ color:var(--accent-2); }
+  a:hover{ color:var(--accent); }
+
+  ul.plain{ list-style:none; margin:0; padding:0; }
+  ul.plain li{ padding:9px 0; border-top:1px solid var(--border); color:var(--text-dim); font-size:.88rem; }
+  ul.plain li:first-child{ border-top:none; }
+  ul.plain a{ text-decoration:none; }
+  ul.plain a:hover{ text-decoration:underline; }
+
+  .cover{ justify-content:center; }
+  .cover .meta{ margin-top:34px; display:flex; gap:28px; flex-wrap:wrap; color:var(--text-faint); font-size:.85rem; font-family:var(--serif-num); }
+  .cover .meta b{ color:var(--text-dim); font-weight:600; }
+
+  .diagram-caption{ margin-top:10px; color:var(--text-faint); font-size:.78rem; }
+
+  .end-title{ font-size:clamp(1.8rem,3.6vw,2.6rem); }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<nav class="dots" id="dots"></nav>
+
+<main id="main">
+
+  <!-- 0. Cover -->
+  <section class="slide cover" id="s0">
+    <div class="kicker">Architecture Modernization Roadmap</div>
+    <h1>레거시 모놀리식 아키텍처<br>현대화 로드맵</h1>
+    <p class="lead">JSP · Java 1.8 기반 프론트 / 스크래핑 서비스 / 잡서비스(API)를 API 우선 구조와 React, AWS 클라우드로 전환한다.
+    폐쇄망 제약은 DMZ API와 AWS Private Network로 극복한다.</p>
+    <div class="pill-row">
+      <span class="tag scope-in">개선 대상 — 프론트</span>
+      <span class="tag scope-in">개선 대상 — 스크래핑 서비스</span>
+      <span class="tag scope-in">개선 대상 — 잡서비스(API)</span>
+      <span class="tag scope-out">백오피스 (대상 아님)</span>
+    </div>
+    <div class="meta">
+      <span><b>Service</b> flow.kgfinancial.co.kr</span>
+      <span><b>Scope</b> Frontend · Scraping · Job API</span>
+      <span><b>Target</b> AWS Cloud</span>
+    </div>
+  </section>
+
+  <!-- 1. 배경 -->
+  <section class="slide" id="s1">
+    <div class="slide-index">01 / 12 — 배경</div>
+    <div class="kicker">Why Now</div>
+    <h2>지금 바꿔야 하는 이유</h2>
+    <div class="grid cols-2" style="margin-top:22px;">
+      <div class="stack">
+        <div class="card">
+          <span class="num">배포</span>
+          <h3>느리고 불편한 배포</h3>
+          <p>화면과 서버 로직이 하나의 모놀리식(JSP + Java 1.8)에 결합되어 있어, 신규 개발 후 빠르게 배포해야 하는 상황에서도 배포 속도가 느림. CI/CD 부재가 직접적인 배경.</p>
+        </div>
+        <div class="card">
+          <span class="num">런타임</span>
+          <h3>Java 8 지원 종료 임박</h3>
+          <p>OpenJDK 8은 2026년 11월 커뮤니티 무상 업데이트가 종료됨. 그 이후에는 공개 보안 패치 없이 운영해야 하는 공백이 생길 수 있음.</p>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <span class="num">인프라</span>
+          <h3>폐쇄망 제약</h3>
+          <p>핵심 데이터베이스 등 자원이 폐쇄망 내부에 있어 클라우드 서비스에서 직접 접근할 수 없음. 클라우드 전환 전에 반드시 해결해야 하는 구조적 제약.</p>
+        </div>
+        <div class="card">
+          <span class="num">확장성</span>
+          <h3>재사용 불가능한 로직</h3>
+          <p>JSP 안에 묻혀 있는 서버 로직이 API로 노출되어 있지 않아, 다른 서비스나 신규 화면에서 재사용할 수 없음.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. 범위 -->
+  <section class="slide" id="s2">
+    <div class="slide-index">02 / 12 — 범위</div>
+    <div class="kicker">Scope</div>
+    <h2>현재 서비스 구성과 개선 범위</h2>
+    <p class="lead">서비스는 4개 축으로 구성되어 있으며, 이번 현대화는 그중 3개를 대상으로 한다.</p>
+    <div class="arch-row" style="margin-top:26px;">
+      <div class="arch-box accent">프론트<small>JSP + Java 1.8</small></div>
+      <div class="arch-box muted">백오피스<small>대상 아님</small></div>
+      <div class="arch-box accent">스크래핑 서비스<small>Java 1.8</small></div>
+      <div class="arch-box accent">잡서비스(API)<small>Java 1.8</small></div>
+    </div>
+    <div class="callout warn" style="margin-top:26px; max-width:70ch;">
+      <span class="label">Note</span>
+      <p>백오피스가 참조하는 공통 모듈/DB 스키마를 변경할 때는 영향도를 별도로 검토한다. 백오피스 화면·기능 자체는 이번 로드맵의 개선 목표에 포함하지 않는다.</p>
+    </div>
+  </section>
+
+  <!-- 3. 목표 아키텍처 -->
+  <section class="slide" id="s3">
+    <div class="slide-index">03 / 12 — 목표 아키텍처</div>
+    <div class="kicker">Target Architecture</div>
+    <h2>AS-IS → TO-BE</h2>
+    <div class="grid cols-2" style="margin-top:20px; gap:28px;">
+      <div>
+        <h3 style="color:var(--text-faint);">AS-IS</h3>
+        <div class="stack" style="margin-top:10px;">
+          <div class="arch-box warn">JSP + Java 1.8 모놀리식<small>화면과 서버 로직 결합</small></div>
+          <div class="arrow" style="align-self:center;">↓ 직접 접근</div>
+          <div class="arch-box warn">폐쇄망 DB<small>클라우드에서 접근 불가</small></div>
+        </div>
+      </div>
+      <div>
+        <h3 style="color:var(--accent-2);">TO-BE</h3>
+        <div class="stack" style="margin-top:10px;">
+          <div class="arch-box accent">React (SPA) — AWS 클라우드<small>BFF를 통해 API 조합</small></div>
+          <div class="arrow" style="align-self:center;">↓ API</div>
+          <div class="arch-box accent">API 계층<small>JSP 로직 → API로 추출/재사용</small></div>
+          <div class="arrow" style="align-self:center;">↓ AWS Private Network</div>
+          <div class="arch-box accent">DMZ API<small>폐쇄망 DB 접근 전용 게이트웨이</small></div>
+          <div class="arrow" style="align-self:center;">↓</div>
+          <div class="arch-box warn">폐쇄망 DB<small>내부망 유지</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 핵심 개선 과제 -->
+  <section class="slide" id="s4">
+    <div class="slide-index">04 / 12 — 핵심 과제</div>
+    <div class="kicker">Key Initiatives</div>
+    <h2>6가지 핵심 개선 과제</h2>
+    <div class="grid cols-3" style="margin-top:22px;">
+      <div class="card"><span class="num">01</span><h3>JSP → API 전환</h3><p>기존 JSP 로직을 버리지 않고 API로 추출해 프론트·타 서비스에서 재사용.</p></div>
+      <div class="card"><span class="num">02</span><h3>React 전환</h3><p>화면 렌더링을 서버 로직에서 분리, 프론트엔드를 React 기반 SPA로 재구성.</p></div>
+      <div class="card"><span class="num">03</span><h3>프론트 클라우드 전환</h3><p>프론트엔드를 AWS 클라우드 서비스로 이전, 배포·확장 자동화.</p></div>
+      <div class="card"><span class="num">04</span><h3>CI/CD 구축</h3><p>신규 API 서비스부터 빌드-테스트-배포 파이프라인 구축.</p></div>
+      <div class="card"><span class="num">05</span><h3>DMZ API 개발</h3><p>폐쇄망 DB 접근 전용 API를 두어 클라우드-내부망 간 단일 통로 확보.</p></div>
+      <div class="card"><span class="num">06</span><h3>AWS Private Network</h3><p>가능한 경우 PrivateLink/Direct Connect로 인터넷 노출 없이 폐쇄망 극복.</p></div>
+    </div>
+  </section>
+
+  <!-- 5. 전환 전략 -->
+  <section class="slide" id="s5">
+    <div class="slide-index">05 / 12 — 전환 전략</div>
+    <div class="kicker">Migration Strategy</div>
+    <h2>Strangler Fig 패턴 + BFF</h2>
+    <p class="lead">빅뱅 전환 대신, 파사드를 통해 트래픽을 점진적으로 신규 구조로 옮긴다.</p>
+    <div class="grid cols-2" style="margin-top:22px;">
+      <div class="card">
+        <h3>1단계 — 현재</h3>
+        <p>모놀리식 구조 유지, 신규 기능은 API로 추가. 기존 JSP 화면은 vanilla JS로 신규 API와 연동. 도메인이 아직 클라우드에 없어 경로 기반 라우팅 전환은 불가능하므로, 페이지 단위 점진 전환 대신 API 우선 확장 전략을 취함.</p>
+      </div>
+      <div class="card">
+        <h3>2단계 — 클라우드 이관 이후</h3>
+        <p>도메인/인프라를 AWS로 이관한 뒤 React 전환. BFF(Backend for Frontend) 계층을 두어 화면 전용 API 조합과, 레거시(세션 기반)·신규(API) 인증 방식 차이를 흡수.</p>
+      </div>
+    </div>
+    <div class="callout good" style="margin-top:20px;">
+      <span class="label">Principle</span>
+      <p>파사드(API Gateway)가 처음에는 요청을 레거시로 그대로 전달하다가, 신규 서비스가 준비된 기능부터 하나씩 라우팅을 옮겨간다 — 레거시를 한 번에 걷어내지 않고 "천천히 교체"한다.</p>
+    </div>
+  </section>
+
+  <!-- 6. 사례와 교훈 -->
+  <section class="slide" id="s6">
+    <div class="slide-index">06 / 12 — 사례 연구</div>
+    <div class="kicker">Lessons from the Field</div>
+    <h2>실제 사례에서 배우는 교훈</h2>
+    <div class="stack" style="margin-top:20px;">
+      <div class="callout danger">
+        <span class="label">실패 사례 — UI부터 바꾼 결과</span>
+        <p>레거시 JSP 화면을 신규 React 관리자 화면으로 옮기면서 화면 로직만 유지한 프로젝트가, 페이지 1회 호출에 레거시 모놀리식 API를 47회 호출하는 구조를 그대로 이어받아 성능·안정성 문제로 4개월 만에 중단(약 $680K 손실). <b style="color:var(--text)">→ 시사점: 화면 전환보다 API 계약(BFF/집계 API) 정리가 먼저.</b></p>
+      </div>
+      <div class="callout warn">
+        <span class="label">통계 — 초기 속도의 중요성</span>
+        <p>Strangler 패턴을 적용한 41개 기업 프로젝트 중 68%가 첫 90일 안에 첫 컴포넌트 전환도 마치지 못하고 정체됨. <b style="color:var(--text)">→ 시사점: 작은 단위로 쪼개 90일 내 가시적 성과를 만드는 것이 프로젝트 존속에 직결.</b></p>
+      </div>
+      <div class="callout good">
+        <span class="label">성공 사례 — 점진적 전환의 효과</span>
+        <p>파사드 기반으로 기능 단위 점진 전환을 수행한 사례에서 재작업 비용 대비 큰 폭의 절감 효과가 보고됨(사례별 최대 수백만 달러 규모). 공통점은 "측정 가능한 작은 단위"와 "롤백 가능한 배포".</p>
+      </div>
+    </div>
+    <p class="diagram-caption">출처: vFunction, Modernization Intel, WunderGraph (상세 링크는 마지막 장 참고 자료 참조)</p>
+  </section>
+
+  <!-- 7. 백엔드 현대화 -->
+  <section class="slide" id="s7">
+    <div class="slide-index">07 / 12 — 백엔드</div>
+    <div class="kicker">Backend Modernization</div>
+    <h2>스크래핑 서비스 · 잡서비스(API) 현대화</h2>
+    <div class="grid cols-3" style="margin-top:22px;">
+      <div class="card">
+        <span class="num">Runtime</span>
+        <h3>Java 버전 업그레이드</h3>
+        <p>Java 8 → 17(LTS) → 21(LTS) 단계적 업그레이드. Spring Boot 사용 시 2.7 → 3.x 브릿지(javax → jakarta 네임스페이스 전환 포함). OpenRewrite 등으로 기계적 변경 비용 절감.</p>
+      </div>
+      <div class="card">
+        <span class="num">Scraping</span>
+        <h3>Job 기반 실행으로 전환</h3>
+        <p>컨테이너화 후 Kubernetes Job/CronJob 기반 실행. 상시 기동 대신 실행한 만큼만 자원을 사용해 비용 효율화. 헤드리스 브라우저 워커는 오토스케일링 풀로 분리.</p>
+      </div>
+      <div class="card">
+        <span class="num">Job API</span>
+        <h3>스케줄/실행 역할 분리</h3>
+        <p>배치 스케줄·실행이력·선후행 제어와 실제 실행 자원(K8s)의 역할을 분리. 기존 JSP가 참조하던 로직은 API로 노출해 재사용 가능하게 전환.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. 안전망 -->
+  <section class="slide" id="s8">
+    <div class="slide-index">08 / 12 — 안전망</div>
+    <div class="kicker">Safety Net Before Refactor</div>
+    <h2>바꾸기 전에 먼저 갖출 것</h2>
+    <p class="lead">테스트와 관측성 없이 구조를 바꾸는 것은 개선이 아니라 도박이다.</p>
+    <div class="grid cols-2" style="margin-top:22px;">
+      <div class="card">
+        <h3>특성화 테스트 / 골든 마스터 테스트</h3>
+        <p>현재 시스템의 실제 동작(quirk 포함)을 고정해 회귀를 즉시 감지. 변경할 영역을 정하고, 실데이터에 가까운 입력으로 현재 출력을 캡처해 골든 파일 테스트로 전환한 뒤 리팩터링을 시작한다.</p>
+      </div>
+      <div class="card">
+        <h3>관측성 선(先) 구축</h3>
+        <p>분산 트레이싱, 구조화된 로깅, 서비스 간 호출 지연 지표를 리팩터링 착수 전에 갖춘다. 지금 시스템이 어떻게 동작하는지 파악하지 못한 채 분해를 시작하지 않는다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. 폐쇄망 극복 -->
+  <section class="slide" id="s9">
+    <div class="slide-index">09 / 12 — 폐쇄망</div>
+    <div class="kicker">Closed Network</div>
+    <h2>폐쇄망 환경 극복</h2>
+    <div class="grid cols-2" style="margin-top:20px;">
+      <div class="stack">
+        <div class="card">
+          <h3>DMZ API</h3>
+          <p>폐쇄망 내부 DB 접근이 필요한 요청은 DMZ에 위치한 전용 API로만 처리. 클라우드에서 폐쇄망 DB로의 직접 연결을 만들지 않고, DMZ가 유일한 통로 역할을 한다.</p>
+        </div>
+        <div class="card">
+          <h3>AWS Private Network</h3>
+          <p>가능한 구간은 AWS PrivateLink / Direct Connect / Transit Gateway로 구성해 인터넷 구간 노출 없이 VPC 간 통신을 확보한다.</p>
+        </div>
+      </div>
+      <div class="card" style="display:flex; flex-direction:column; justify-content:center;">
+        <h3 style="margin-bottom:14px;">규제 동향</h3>
+        <p>2024년 8월 금융위원회 "금융분야 망분리 개선 로드맵" 발표로 연구·개발망에 한해 논리적 망분리가 허용되는 등 완화 흐름이 있음. 국내 금융권 클라우드 실제 활용률은 아직 낮은 수준(글로벌 80%+ 대비)으로, 망분리 규제 대응이 도입 속도의 핵심 변수.</p>
+        <p class="diagram-caption" style="margin-top:auto;">출처: AWS 금융 클라우드 길라잡이 A to Z, 금융위원회</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. 로드맵 타임라인 -->
+  <section class="slide" id="s10">
+    <div class="slide-index">10 / 12 — 로드맵</div>
+    <div class="kicker">Roadmap</div>
+    <h2>단계별 로드맵</h2>
+    <div class="timeline" style="margin-top:10px;">
+      <div class="t-row">
+        <div class="t-phase">0<small>준비</small></div>
+        <div class="t-body"><h3>안전망 확보</h3><p>특성화/골든 마스터 테스트로 현재 동작 고정, 관측성 구축, Java 업그레이드 로드맵 확정.</p></div>
+      </div>
+      <div class="t-row">
+        <div class="t-phase">1<small>현재~</small></div>
+        <div class="t-body"><h3>API 우선 확장</h3><p>모놀리식 유지 + 신규 API 추가, JSP는 vanilla JS로 연동. 신규 API부터 CI/CD 구축. DMZ API 개발 착수.</p></div>
+      </div>
+      <div class="t-row">
+        <div class="t-phase">2<small>이관</small></div>
+        <div class="t-body"><h3>클라우드 전환</h3><p>도메인/인프라 AWS 이관, AWS Private Network 연결. 프론트 React 전환·클라우드 배포·CI/CD 구축. 스크래핑·잡서비스 컨테이너화.</p></div>
+      </div>
+      <div class="t-row">
+        <div class="t-phase">3<small>마무리</small></div>
+        <div class="t-body"><h3>백엔드 현대화 완료</h3><p>전 서비스 Java 17/21 업그레이드 완료.</p></div>
+      </div>
+      <div class="t-row">
+        <div class="t-phase">4<small>확장</small></div>
+        <div class="t-body"><h3>마이크로프론트엔드</h3><p>프론트엔드가 단일 서비스를 넘어 여러 마이크로서비스 화면이 모이는 슈퍼앱 구조로 확장.</p></div>
+      </div>
+      <div class="t-row">
+        <div class="t-phase">5<small>다음 단계</small></div>
+        <div class="t-body"><h3>AI 결합</h3><p>클라우드·CI/CD 기반 위에서 AI를 코딩·테스트·문서화 자동화에 접목 ("AI와 친해지기").</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. 참고자료 -->
+  <section class="slide" id="s11">
+    <div class="slide-index">11 / 12 — 참고 자료</div>
+    <div class="kicker">References</div>
+    <h2>참고 자료</h2>
+    <div class="grid cols-2" style="margin-top:16px;">
+      <ul class="plain">
+        <li><a href="https://martinfowler.com/bliki/StranglerFigApplication.html" target="_blank" rel="noopener">Martin Fowler — Strangler Fig Application</a></li>
+        <li><a href="https://vfunction.com/resources/guide-how-to-use-the-strangler-fig-pattern-for-application-modernization/" target="_blank" rel="noopener">vFunction — Strangler Fig Pattern Guide</a></li>
+        <li><a href="https://wundergraph.com/blog/wg-strangler-bff" target="_blank" rel="noopener">WunderGraph — BFF + Strangler Patterns</a></li>
+        <li><a href="https://softwaremodernizationservices.com/insights/strangler-fig-pattern-example/" target="_blank" rel="noopener">Modernization Intel — Strangler Fig Case Study</a></li>
+        <li><a href="https://sourcegraph.com/blog/legacy-code-modernization" target="_blank" rel="noopener">Sourcegraph — Legacy Code Modernization Guide</a></li>
+        <li><a href="https://blog.thecodewhisperer.com/permalink/surviving-legacy-code-with-golden-master-and-sampling" target="_blank" rel="noopener">The Code Whisperer — Golden Master Testing</a></li>
+      </ul>
+      <ul class="plain">
+        <li><a href="https://bell-sw.com/blog/migration-from-java-8-to-java-17/" target="_blank" rel="noopener">BellSoft — Java 8 → 17 Migration Guide</a></li>
+        <li><a href="https://katyella.com/blog/java-8-to-21-migration-guide/" target="_blank" rel="noopener">Katyella — Java 8 → 21 Enterprise Guide</a></li>
+        <li><a href="https://isriramkumarm.medium.com/let-me-introduce-you-to-a-dmz-based-architecture-d54675f83dbf" target="_blank" rel="noopener">DMZ Based Architecture</a></li>
+        <li><a href="https://aws.amazon.com/blogs/networking-and-content-delivery/enhanced-security-with-dmz-architecture-using-amazon-vpc-block-public-access/" target="_blank" rel="noopener">AWS — DMZ Architecture with VPC Block Public Access</a></li>
+        <li><a href="https://aws.amazon.com/ko/blogs/tech/financial-cloud-guide-a-to-z-part2/" target="_blank" rel="noopener">AWS — 금융 클라우드 길라잡이 A to Z Part 2 (망분리)</a></li>
+        <li><a href="https://www.samsungsds.com/kr/insights/it_modernization.html" target="_blank" rel="noopener">삼성SDS — IT 현대화 방안과 사례</a></li>
+        <li><a href="https://solution.lgcns.com/kr/solution/jjobs/tech/container-jjobs-patterns/" target="_blank" rel="noopener">LG CNS — Kubernetes J-Jobs 업무 패턴</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 12. Closing -->
+  <section class="slide cover" id="s12">
+    <div class="slide-index">12 / 12</div>
+    <div class="kicker">Next Step</div>
+    <h1 class="end-title">모놀리식에서 벗어나,<br>천천히 그러나 되돌아가지 않게.</h1>
+    <p class="lead">Strangler Fig 방식으로 점진적으로, 안전망을 먼저 갖추고, 90일 단위의 가시적 성과로 전환을 이어간다.</p>
+    <div class="footer-note">advance-docs / roadmap · flow.kgfinancial.co.kr</div>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main > section'));
+  var dotsNav = document.getElementById('dots');
+  var progress = document.getElementById('progress');
+
+  sections.forEach(function(sec){
+    var a = document.createElement('a');
+    a.href = '#' + sec.id;
+    a.title = sec.id;
+    dotsNav.appendChild(a);
+  });
+  var dotEls = Array.prototype.slice.call(dotsNav.querySelectorAll('a'));
+
+  function onScroll(){
+    var scrollTop = window.scrollY;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
+
+    var mid = scrollTop + window.innerHeight / 2;
+    var activeIdx = 0;
+    sections.forEach(function(sec, i){
+      if (sec.offsetTop <= mid) activeIdx = i;
+    });
+    dotEls.forEach(function(d, i){ d.classList.toggle('active', i === activeIdx); });
+  }
+  window.addEventListener('scroll', onScroll, { passive:true });
+  onScroll();
+
+  window.addEventListener('keydown', function(e){
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    var mid = window.scrollY + window.innerHeight / 2;
+    var idx = 0;
+    sections.forEach(function(sec, i){ if (sec.offsetTop <= mid) idx = i; });
+    var next = e.key === 'ArrowDown' ? Math.min(idx + 1, sections.length - 1) : Math.max(idx - 1, 0);
+    sections[next].scrollIntoView({ behavior:'smooth' });
+    e.preventDefault();
+  });
+})();
+</script>
+
+</body>
+</html>
