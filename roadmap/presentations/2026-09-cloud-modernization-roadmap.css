@@ -97,11 +97,6 @@ p.lede{
   background:var(--bg-raise);
   margin-right:8px;
 }
-.tag.out-of-scope{
-  color:var(--danger);
-  border-color:rgba(232,131,111,.35);
-  background:rgba(232,131,111,.08);
-}
 .tag.accent{
   color:var(--accent-strong);
   border-color:rgba(95,212,196,.35);

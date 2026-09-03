@@ -1,7 +1,7 @@
 # 비전
 
 > 대상 서비스: KFESS (https://flow.kgfinancial.co.kr/kfess/main/index.do)
-> 범위: 프론트 / 스크래핑 서비스 / 잡서비스(API). **백오피스는 개선 대상 아님.**
+> 범위: 프론트 / 스크래핑 서비스 / 잡서비스(API).
 
 ## 현재 상황
 
