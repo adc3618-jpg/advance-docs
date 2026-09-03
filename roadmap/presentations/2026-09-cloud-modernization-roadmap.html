@@ -19,11 +19,11 @@
     <div class="kicker">Architecture Modernization Roadmap</div>
     <h1>레거시 모놀리식 아키텍처<br/>현대화 로드맵</h1>
     <p class="service">KFESS · flow.kgfinancial.co.kr/kfess &nbsp;—&nbsp; 프론트 · 스크래핑 서비스 · 잡서비스(API)</p>
-    <p class="lede">JSP + Java 1.8 레거시 모놀리스를 React·클라우드·CI/CD 기반으로 단계적으로 전환하고, 폐쇄망 환경을 극복하는 아키텍처 전환 계획.</p>
+    <p class="lede">JSP + Java 1.8 레거시 모놀리스를 Next.js·컨테이너(ECS)·CI/CD 기반으로 단계적으로 전환하고, 폐쇄망 환경을 극복하는 아키텍처 전환 계획.</p>
     <div class="meta">
       <span class="tag accent">2026-09</span>
     </div>
-    <div class="slide-num">01 / 15</div>
+    <div class="slide-num">01 / 16</div>
   </section>
 
   <!-- 2. Agenda -->
@@ -35,12 +35,13 @@
       <li>왜 지금인가<span class="sub">규제 완화 흐름과 업계 사례</span></li>
       <li>목표 아키텍처<span class="sub">클라우드 · DMZ · 폐쇄망 연결 한눈에 보기</span></li>
       <li>개선 영역 4가지<span class="sub">프론트 현대화 · 클라우드 전환 · CI/CD · 폐쇄망 극복</span></li>
+      <li>왜 컨테이너(ECS)인가<span class="sub">배포 방식을 하나로 통일하는 이유와 대가</span></li>
       <li>추가로 발견한 개선 기회<span class="sub">사례 조사 기반 보완 항목</span></li>
       <li>점진적 전환 전략<span class="sub">스트랭글러 무화과 패턴과 우리 전략</span></li>
       <li>단계별 로드맵 &amp; 리스크<span class="sub">타임라인, 리스크와 대응</span></li>
       <li>참고 자료</li>
     </ol>
-    <div class="slide-num">02 / 15</div>
+    <div class="slide-num">02 / 16</div>
   </section>
 
   <!-- 3. Current state -->
@@ -67,7 +68,7 @@
         </ul>
       </div>
     </div>
-    <div class="slide-num">03 / 15</div>
+    <div class="slide-num">03 / 16</div>
   </section>
 
   <!-- 4. Why now -->
@@ -96,7 +97,7 @@
         <p style="color:var(--text-dim); font-size:.95rem; line-height:1.7;">Java 1.8/JSP는 최신 보안 패치, 라이브러리 생태계, 채용 시장 모든 면에서 유지비용이 계속 상승 중. 늦출수록 전환 난이도와 리스크가 커짐.</p>
       </div>
     </div>
-    <div class="slide-num">04 / 15</div>
+    <div class="slide-num">04 / 16</div>
   </section>
 
   <!-- 5. Target architecture diagram -->
@@ -108,8 +109,8 @@
         <div class="box accent" style="flex:0 0 160px;"><div class="label">사용자</div>HTTPS</div>
         <div class="arrow-row" style="flex:0 0 40px;">→</div>
         <div class="zone" style="flex:2;">
-          <div class="zone-title">AWS · CloudFront / S3 (Amplify)</div>
-          <div class="box dim">React SPA (정적 호스팅) → 장기적으로 마이크로프론트엔드(슈퍼앱)</div>
+          <div class="zone-title">AWS · CloudFront → ALB → ECS(Fargate)</div>
+          <div class="box dim">Next.js 컨테이너 (SSR/SSG) · 정적 자산은 CloudFront 캐싱 → 장기적으로 마이크로프론트엔드(슈퍼앱)</div>
         </div>
       </div>
       <div class="arrow-row">↓</div>
@@ -141,19 +142,20 @@
       </div>
     </div>
     <p class="lede" style="margin-top:18px; font-size:.85rem;">CI/CD(GitHub Actions/CodePipeline)와 IaC(Terraform)가 위 인프라 전체를 코드로 관리하고, CloudWatch 기반 관측성이 전 구간을 추적한다.</p>
-    <div class="slide-num">05 / 15</div>
+    <div class="slide-num">05 / 16</div>
   </section>
 
   <!-- 6. Improvement 1: Frontend -->
   <section class="slide">
     <div class="kicker">개선 영역 1 / 4</div>
-    <h2>프론트엔드 현대화 — JSP·Java 1.8 → React</h2>
+    <h2>프론트엔드 현대화 — JSP·Java 1.8 → Next.js</h2>
     <div class="grid2">
       <div>
         <h3>목표</h3>
         <ul class="bullets">
           <li>기존 JSP를 <b>API로 전환</b>해 로직을 재활용 (다시 만들지 않는다)</li>
-          <li>화면은 <b>React</b>로 새로 구성</li>
+          <li>화면은 <b>Next.js</b>로 새로 구성 — JSP가 하던 서버사이드 렌더링을 SSR이 이어받아 SEO·초기 렌더링 성능을 잃지 않음</li>
+          <li>인증 토큰·내부 API 주소를 브라우저에 노출하지 않고 서버 측에서 처리 → DMZ API 구조와 잘 맞음</li>
           <li>세션 기반 인증 → 토큰 기반 인증으로 점진 전환</li>
         </ul>
       </div>
@@ -162,11 +164,11 @@
         <ul class="bullets">
           <li><b>1단계(현재)</b> — 모놀리식 유지, 신규 API 지속 추가. 기존 JSP는 vanilla JS로 신규 API와 연동</li>
           <li><b>1.5단계</b> — CloudFront를 온프레미스 앞단에 두는 리버스 프록시로, 도메인 완전 이관 전에도 경로 단위 전환 시작</li>
-          <li><b>2단계</b> — 도메인/인프라를 클라우드로 이관한 뒤 React 전환</li>
+          <li><b>2단계</b> — 도메인/인프라를 클라우드로 이관한 뒤 Next.js 전환, ECS(Fargate)로 배포</li>
         </ul>
       </div>
     </div>
-    <div class="slide-num">06 / 15</div>
+    <div class="slide-num">06 / 16</div>
   </section>
 
   <!-- 7. Improvement 2: Cloud -->
@@ -177,8 +179,8 @@
       <div>
         <h3>목표</h3>
         <ul class="bullets">
-          <li>프론트엔드를 <b>가장 먼저</b> 클라우드 서비스로 전환 (S3+CloudFront 또는 Amplify)</li>
-          <li>이후 API/스크래핑 서비스도 단계적으로 이관</li>
+          <li>프론트엔드를 <b>가장 먼저</b> 클라우드로 전환 — Next.js 컨테이너를 <b>ECS(Fargate)</b>에 배포, 앞단에 CloudFront</li>
+          <li>이후 API/스크래핑 서비스도 단계적으로 이관 (같은 컨테이너 배포 방식)</li>
           <li>클라우드는 <b>AWS</b> 사용</li>
         </ul>
       </div>
@@ -190,10 +192,29 @@
         </ul>
       </div>
     </div>
-    <div class="slide-num">07 / 15</div>
+    <div class="slide-num">07 / 16</div>
   </section>
 
-  <!-- 8. Improvement 3: CI/CD -->
+  <!-- 8. Why containers -->
+  <section class="slide">
+    <div class="kicker">Why Containers</div>
+    <h2>왜 컨테이너(ECS)인가</h2>
+    <p class="lede" style="font-size:.95rem;">프론트(Next.js) · 신규 API · 스크래핑/잡서비스를 <b>모두 같은 방식</b>으로 배포한다 — 이미지 빌드 → ECR → ECS.</p>
+    <div class="grid3" style="margin-top:20px;">
+      <div class="card"><h3>환경 동일성</h3><p style="color:var(--text-dim); font-size:.88rem;">런타임·라이브러리·설정이 이미지에 함께 담긴다. 지금처럼 "그 서버에서만 되는" 상태가 사라지고 로컬·스테이징·운영이 같은 것을 실행.</p></div>
+      <div class="card"><h3>배포 = 이미지 교체</h3><p style="color:var(--text-dim); font-size:.88rem;">롤백은 이전 이미지 태그로 되돌리면 끝. 배포가 무겁고 되돌리기 어려운 지금 문제의 직접적인 해법.</p></div>
+      <div class="card"><h3>CI/CD와 직결</h3><p style="color:var(--text-dim); font-size:.88rem;">빌드 → ECR 푸시 → ECS 업데이트가 그대로 파이프라인. 롤링/블루-그린 무중단 배포와 자동 롤백이 기본값.</p></div>
+      <div class="card"><h3>오토스케일링</h3><p style="color:var(--text-dim); font-size:.88rem;">트래픽에 따라 태스크 수를 조절. 피크에 맞춘 서버를 상시 띄워둘 필요가 없다.</p></div>
+      <div class="card"><h3>서버 관리 부담 감소</h3><p style="color:var(--text-dim); font-size:.88rem;">Fargate를 쓰면 EC2 인스턴스·OS 패치·AMI 관리가 사라진다. 인프라 인력이 얇을수록 효과가 크다.</p></div>
+      <div class="card"><h3>리소스 격리</h3><p style="color:var(--text-dim); font-size:.88rem;">스크래핑 배치가 튀어도 프론트/API 자원을 잠식하지 않는다. 지금은 같은 서버 자원을 나눠 쓰는 구조.</p></div>
+      <div class="card"><h3>런타임 업그레이드 실험</h3><p style="color:var(--text-dim); font-size:.88rem;">Java 11 → 17 같은 전환을 이미지 태그만 바꿔 일부 태스크에 먼저 태워보고(카나리) 즉시 되돌릴 수 있다.</p></div>
+      <div class="card"><h3>이식성</h3><p style="color:var(--text-dim); font-size:.88rem;">같은 이미지를 클라우드와 폐쇄망 양쪽에서 실행. DMZ API처럼 위치가 바뀔 수 있는 구성 요소의 재작업이 줄어든다.</p></div>
+      <div class="card risk-card"><h3>대가</h3><p style="font-size:.88rem; color:var(--text-dim);">이미지·레지스트리·오케스트레이션 학습 비용, ECS 상시 실행에 따른 운영 부담·비용 증가.</p><div class="mitigation"><b>판단</b> — 어차피 스크래핑/잡서비스는 컨테이너화가 필요하다. 프론트만 다른 방식이면 CI/CD·관측성·롤백을 두 벌로 유지해야 한다.</div></div>
+    </div>
+    <div class="slide-num">08 / 16</div>
+  </section>
+
+  <!-- 10. Improvement 3: CI/CD -->
   <section class="slide">
     <div class="kicker">개선 영역 3 / 4</div>
     <h2>CI/CD 환경 구축</h2>
@@ -215,10 +236,10 @@
         </ul>
       </div>
     </div>
-    <div class="slide-num">08 / 15</div>
+    <div class="slide-num">09 / 16</div>
   </section>
 
-  <!-- 9. Improvement 4: DMZ / Private network -->
+  <!-- 10. Improvement 4: DMZ / Private network -->
   <section class="slide">
     <div class="kicker">개선 영역 4 / 4</div>
     <h2>폐쇄망 극복 — DMZ API &amp; AWS Private Network</h2>
@@ -239,10 +260,10 @@
         </ul>
       </div>
     </div>
-    <div class="slide-num">09 / 15</div>
+    <div class="slide-num">10 / 16</div>
   </section>
 
-  <!-- 10. Additional improvements found via research -->
+  <!-- 11. Additional improvements found via research -->
   <section class="slide">
     <div class="kicker">Research Findings</div>
     <h2>추가로 발견한 개선 기회</h2>
@@ -259,10 +280,10 @@
       <div class="card"><h3>Shadow Traffic 검증</h3><p style="color:var(--text-dim); font-size:.88rem;">GitHub Scientist 방식처럼 신규 코드를 실제 트래픽에 함께 실행해 기존 로직과 결과만 비교, 응답은 기존 로직 그대로.</p></div>
     </div>
     <p class="lede" style="margin-top:24px; font-size:.85rem;">서비스 경계는 무조건 잘게 나누는 것이 능사가 아니다 — 아래 참고.</p>
-    <div class="slide-num">10 / 15</div>
+    <div class="slide-num">11 / 16</div>
   </section>
 
-  <!-- 11. Modular monolith vs microservices lesson -->
+  <!-- 12. Modular monolith vs microservices lesson -->
   <section class="slide">
     <div class="kicker">Lesson Learned</div>
     <h2>서비스 분리, 어디까지가 적정선인가</h2>
@@ -291,10 +312,10 @@
         </tr>
       </tbody>
     </table>
-    <div class="slide-num">11 / 15</div>
+    <div class="slide-num">12 / 16</div>
   </section>
 
-  <!-- 12. Roadmap timeline -->
+  <!-- 13. Roadmap timeline -->
   <section class="slide">
     <div class="kicker">Roadmap</div>
     <h2>단계별 로드맵</h2>
@@ -324,10 +345,10 @@
       <div class="phase">
         <div class="when"><span class="badge">Phase 2</span><div class="period">추후</div></div>
         <div class="what">
-          <h3>클라우드 이관 &amp; React 전환</h3>
+          <h3>클라우드 이관 &amp; Next.js 전환</h3>
           <ul class="bullets sub">
             <li>도메인/인프라를 AWS로 이관 → 경로 기반 라우팅 가능해짐</li>
-            <li>프론트엔드 React 전환, 프론트 CI/CD 구축</li>
+            <li>프론트엔드 Next.js 전환 및 ECS 배포, 프론트 CI/CD 구축(빌드 → ECR → ECS)</li>
             <li>스크래핑/잡서비스 컨테이너화 및 이벤트 기반 스케줄링 전환</li>
           </ul>
         </div>
@@ -343,10 +364,10 @@
         </div>
       </div>
     </div>
-    <div class="slide-num">12 / 15</div>
+    <div class="slide-num">13 / 16</div>
   </section>
 
-  <!-- 13. Risks -->
+  <!-- 14. Risks -->
   <section class="slide">
     <div class="kicker">Risks</div>
     <h2>리스크 및 대응</h2>
@@ -359,7 +380,7 @@
       <div class="card risk-card">
         <h3>인증/세션 불일치</h3>
         <p style="font-size:.9rem; color:var(--text-dim);">JSP 세션 기반 인증과 신규 API 토큰 기반 인증이 과도기에 공존</p>
-        <div class="mitigation"><b>대응</b> — React 전환 이전에 인증 방식을 먼저 정리해 재설계 비용을 없앤다</div>
+        <div class="mitigation"><b>대응</b> — Next.js 전환 이전에 인증 방식을 먼저 정리해 재설계 비용을 없앤다</div>
       </div>
       <div class="card risk-card">
         <h3>과도한 서비스 분리</h3>
@@ -372,10 +393,10 @@
         <div class="mitigation"><b>대응</b> — 금융보안원 가이드 준수, 제로트러스트 원칙 적용, 일정에 보안 검토 단계를 명시적으로 포함</div>
       </div>
     </div>
-    <div class="slide-num">13 / 15</div>
+    <div class="slide-num">14 / 16</div>
   </section>
 
-  <!-- 14. Next steps -->
+  <!-- 15. Next steps -->
   <section class="slide">
     <div class="kicker">Next Steps</div>
     <h2>결론 및 다음 단계</h2>
@@ -386,10 +407,10 @@
       <li><b>확인 필요</b> — 폐쇄망 DB 접근 범위와 보안 검토 주체 확정 (보안팀 협의 필요)</li>
       <li><b>확인 필요</b> — 스크래핑/잡서비스 컨테이너화 우선순위 (트래픽·배포 주기 실측 후 결정)</li>
     </ul>
-    <div class="slide-num">14 / 15</div>
+    <div class="slide-num">15 / 16</div>
   </section>
 
-  <!-- 15. Sources -->
+  <!-- 16. Sources -->
   <section class="slide">
     <div class="kicker">Appendix</div>
     <h2>참고 자료</h2>
@@ -408,7 +429,7 @@
       <li><a href="https://spring.io/blog/2022/05/24/preparing-for-spring-boot-3-0" target="_blank" rel="noopener">Preparing for Spring Boot 3.0 — Spring Blog</a><span class="src-desc">Jakarta EE 9 네임스페이스 변경 배경</span></li>
       <li><a href="https://github.com/github/scientist" target="_blank" rel="noopener">Scientist — GitHub</a><span class="src-desc">신구 로직 병행 비교(shadow traffic)로 안전하게 리팩터링하는 방식</span></li>
     </ul>
-    <div class="slide-num">15 / 15</div>
+    <div class="slide-num">16 / 16</div>
   </section>
 
 </div>
