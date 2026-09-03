@@ -1,6 +1,6 @@
 # 프론트엔드 개발 방향
 
-> 백엔드/프론트엔드 책임 분리 원칙. React 전환([`roadmap/target-architecture.md`](../roadmap/target-architecture.md))과
+> 백엔드/프론트엔드 책임 분리 원칙. Next.js 전환([`roadmap/target-architecture.md`](../roadmap/target-architecture.md))과
 > 신규 API 설계 전반에 적용한다.
 
 ## 배경
