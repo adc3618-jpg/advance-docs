@@ -45,10 +45,11 @@
     - 근거: 2022~2023년 전자금융감독규정 개정으로 망분리 규제가 단계적으로 완화되며, 국내 은행의 다수가 컨테이너화 + CI/CD 기반 클라우드 네이티브 방식을 채택하는 추세
   - 그 외 발견한 개선 기회 (레거시 현대화 사례 조사 기반)
     - Java 버전 업그레이드: JSP를 API로 전환하는 과정에서 런타임도 Java 1.8 → 11 → 17(LTS)로 단계적으로 올려, 신규 API부터 최신 LTS 위에서 개발
+      - 숨은 장벽: Tomcat 10+/Spring Boot 3+로 옮기는 시점에 `javax.*` → `jakarta.*` 네임스페이스 변경(Jakarta EE 9)을 함께 처리해야 함 — OpenRewrite의 [`rewrite-migrate-java`](https://github.com/openrewrite/rewrite-migrate-java) 레시피로 자동화 가능 (자세한 내용은 [`target-architecture.md`](target-architecture.md#java-18--17-업그레이드의-숨은-장벽-javax--jakarta-네임스페이스))
     - 인증 체계 통합: 세션 기반(JSP) → 토큰 기반(JWT/OAuth2), API Gateway 단에서 인증 통합
     - 관측성 확보: 구조화 로깅 + CloudWatch/APM — 배포 빈도가 늘어날수록 장애 원인 추적 속도가 중요해짐
     - IaC 도입: Terraform 등으로 인프라를 코드화해 DMZ/Private Network 구성을 재현 가능하게 관리
-    - 테스트 자동화: 스트랭글러 전환 중 신regression 방지를 위한 회귀 테스트, 신구 API 병행 비교(shadow traffic)
+    - 테스트 자동화: 스트랭글러 전환 중 신regression 방지를 위한 회귀 테스트, 신구 API 병행 비교(shadow traffic) — GitHub이 권한/결제 로직 리팩터링에 쓴 [Scientist](https://github.com/github/scientist) 방식처럼, 신규 코드를 실제 트래픽에 함께 실행하되 응답은 기존 로직 결과만 반환하고 차이는 비동기로 비교
     - API 문서화: 기존 JSP를 API로 전환할 때 OpenAPI 명세로 계약을 명확히 해 프론트/타 서비스와의 결합도를 낮춤
     - 스크래핑/잡서비스 컨테이너화: 상시 프로세스 대신 이벤트 기반 스케줄링(EventBridge, Step Functions 등)으로 전환해 리소스 낭비 감소
     - 모듈러 모놀리스 대안 검토: Shopify는 전면 마이크로서비스 대신 명시적 모듈 경계(Packwerk)를 둔 모듈러 모놀리스로 온보딩 시간 55% 단축, 모듈 간 회귀 68% 감소 — 잡서비스(API)처럼 도메인이 아직 명확히 안 나뉜 영역은 무리하게 서비스 분리부터 하지 않는 선택지도 고려

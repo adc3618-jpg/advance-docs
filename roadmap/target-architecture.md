@@ -102,10 +102,19 @@ Amazon Prime Video 팀은 영상 품질 분석 파이프라인을 마이크로�
 8. **스크래핑/잡서비스 컨테이너화 및 이관** — 배치성 워크로드를 이벤트 기반 스케줄링으로 전환.
 9. **(장기) 마이크로프론트엔드/슈퍼앱 확장** — 여러 마이크로서비스 화면을 하나의 프론트 셸로 통합.
 
+## Java 1.8 → 17 업그레이드의 숨은 장벽: javax → jakarta 네임스페이스
+
+Java 런타임을 1.8 → 11 → 17(LTS)로 올리는 것과 별개로, JSP/서블릿 기반 코드를 최신 프레임워크(Tomcat 10+, Spring Boot 3+) 위에서 API로 감쌀 때는 반드시 짚어야 할 장벽이 하나 더 있다. Jakarta EE 9(2020)부터 `javax.*` 패키지가 전부 `jakarta.*`로 이름이 바뀌었다(`javax.servlet` → `jakarta.servlet` 등 — Oracle의 "javax" 상표권 문제로 Eclipse 재단이 결정한 변경). 즉 Java 런타임만 올린다고 끝나는 게 아니라, 기존 JSP/서블릿 코드의 import 전체와, 의존 중인 서드파티 라이브러리(Hibernate 등)의 Jakarta EE 9+ 호환 버전 여부까지 함께 확인해야 한다.
+
+- **영향 범위**: Java 11까지는 `javax.servlet`을 그대로 쓸 수 있어 당장 문제가 되지는 않지만, 신규 프레임워크 버전(Tomcat 10+, Spring Boot 3+)으로 옮기는 시점에는 반드시 마주친다 — "JSP를 API로 감싼다"는 스트랭글러 작업이 결국 이 지점을 통과하므로 로드맵에 미리 반영해둔다.
+- **완화 방법**: 수작업 치환 대신 OpenRewrite의 Jakarta 마이그레이션 레시피 모음([`rewrite-migrate-java`](https://github.com/openrewrite/rewrite-migrate-java))으로 네임스페이스 변경을 자동화할 수 있다 — Spring Boot 팀도 [3.0 마이그레이션 가이드](https://spring.io/blog/2022/05/24/preparing-for-spring-boot-3-0)에서 OpenRewrite 기반 도구를 공식 권장한다.
+- **점검 항목**: 서드파티/사내 라이브러리가 Jakarta EE 9+ 호환 버전을 제공하는지 사전 조사 (오래된 라이브러리는 호환 버전이 없을 수 있다).
+
 ## 리스크 및 고려사항
 
 - 모놀리식과 신규 API가 공존하는 기간의 병행 운영 부담 (배포·장애 대응 이중화).
 - 기존 JSP(세션 기반 인증)와 vanilla JS로 호출하는 신규 API 간 인증/세션 처리 방식을 먼저 정리해야, 이후 React 전환 시 인증을 다시 설계하지 않아도 된다.
 - 점진적 페이지 단위 전환이 어려움 — 도메인이 클라우드 환경에 있지 않아 경로 기반 라우팅 구성이 현재는 불가능. **대응**: 위 "CDN 리버스 프록시" 방식으로 도메인 완전 이관 전에도 경로 기반 라우팅을 선제적으로 확보할 수 있다.
+- 기존 JSP 로직을 API로 감쌀 때 신구 결과가 어긋나면 사용자에게 바로 노출된다. **대응**: GitHub이 자사 권한/결제 로직을 리팩터링할 때 쓴 [Scientist](https://github.com/github/scientist) 같은 shadow-traffic 검증 방식 — 신규 코드(candidate)를 실제 프로덕션 트래픽에 함께 실행하되 응답은 기존 로직(control) 결과만 사용자에게 반환하고, 둘의 차이를 비동기로 수집·비교해 안전하게 검증한 뒤 전환한다.
 - 금융 데이터 특성상 DMZ API와 Private Network 구간의 보안 검토(제로트러스트, 접근 통제)가 일정에 선행되어야 한다.
 - (초안 — 실제 리스크는 서비스 실사 후 보완 필요)

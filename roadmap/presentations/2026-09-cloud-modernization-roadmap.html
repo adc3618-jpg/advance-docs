@@ -257,6 +257,8 @@
       <div class="card"><h3>배치 워크로드 컨테이너화</h3><p style="color:var(--text-dim); font-size:.88rem;">스크래핑/잡서비스를 상시 프로세스 대신 이벤트 기반 스케줄링(EventBridge, Step Functions)으로.</p></div>
       <div class="card"><h3>Java 버전 업그레이드</h3><p style="color:var(--text-dim); font-size:.88rem;">JSP를 API로 전환하며 런타임도 Java 1.8 → 11 → 17(LTS)로 단계적 상향. 신규 API는 최신 LTS 위에서 개발.</p></div>
       <div class="card"><h3>CDN 리버스 프록시로 조기 전환</h3><p style="color:var(--text-dim); font-size:.88rem;">CloudFront가 온프레미스를 커스텀 오리진으로 두고 경로별 분기 — 도메인 완전 이관 전에도 페이지 단위 전환 가능.</p></div>
+      <div class="card"><h3>javax → jakarta 네임스페이스</h3><p style="color:var(--text-dim); font-size:.88rem;">Tomcat 10+/Spring Boot 3+로 갈 때 필요한 패키지 전면 변경 — OpenRewrite 레시피로 자동화.</p></div>
+      <div class="card"><h3>Shadow Traffic 검증</h3><p style="color:var(--text-dim); font-size:.88rem;">GitHub Scientist 방식처럼 신규 코드를 실제 트래픽에 함께 실행해 기존 로직과 결과만 비교, 응답은 기존 로직 그대로.</p></div>
     </div>
     <p class="lede" style="margin-top:24px; font-size:.85rem;">서비스 경계는 무조건 잘게 나누는 것이 능사가 아니다 — 아래 참고.</p>
     <div class="slide-num">10 / 15</div>
@@ -404,6 +406,9 @@
       <li><a href="https://docs.aws.amazon.com/whitepapers/latest/aws-privatelink/use-case-examples.html" target="_blank" rel="noopener">Securely Access Services Over AWS PrivateLink — AWS Whitepaper</a><span class="src-desc">온프레미스-클라우드 연결 패턴</span></li>
       <li><a href="https://koreascience.kr/article/JAKO202332154450212.page" target="_blank" rel="noopener">국내 금융권 클라우드 전환 동향 및 보안 — Review of KIISC</a><span class="src-desc">국내 금융권 클라우드 네이티브 채택 동향</span></li>
       <li><a href="https://ijcesen.com/index.php/ijcesen/article/view/4965" target="_blank" rel="noopener">Legacy Core Modernization via Strangler-Fig with Micro Frontends — IJCESEN</a><span class="src-desc">JSP 레거시 + 마이크로프론트엔드 전환 사례 연구</span></li>
+      <li><a href="https://github.com/openrewrite/rewrite-migrate-java" target="_blank" rel="noopener">rewrite-migrate-java — OpenRewrite</a><span class="src-desc">javax → jakarta 네임스페이스 자동 마이그레이션 레시피</span></li>
+      <li><a href="https://spring.io/blog/2022/05/24/preparing-for-spring-boot-3-0" target="_blank" rel="noopener">Preparing for Spring Boot 3.0 — Spring Blog</a><span class="src-desc">Jakarta EE 9 네임스페이스 변경 배경</span></li>
+      <li><a href="https://github.com/github/scientist" target="_blank" rel="noopener">Scientist — GitHub</a><span class="src-desc">신구 로직 병행 비교(shadow traffic)로 안전하게 리팩터링하는 방식</span></li>
     </ul>
     <div class="slide-num">15 / 15</div>
   </section>
