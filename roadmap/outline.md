@@ -17,6 +17,7 @@
       - 기존 JSP를 API로 전환해 재활용
       - 프론트엔드를 Next.js로 전환 — JSP의 서버사이드 렌더링 이점을 SSR로 이어받으면서, SEO뿐 아니라 GEO(생성형 엔진 최적화, AI 검색/답변 엔진 노출)까지 고려해 URL(의미 있는 슬러그) 설계 단계부터 반영 (자세한 내용은 [`target-architecture.md`](target-architecture.md#프론트엔드-렌더링-전략-seogeo-고려))
         - 왜 Next.js인가: CSR(순수 SPA)보다 SSR이 SEO에 유리 — 크롤러가 빈 HTML만 보는 문제를 프레임워크 차원에서 해결. 단, 화면마다 SSR/CSR을 명확히 구분해서 개발해야 하므로 개발 복잡도는 올라간다 (자세한 내용은 [`target-architecture.md`](target-architecture.md#왜-nextjs인가))
+          - CSR vs SSR 비교: SEO/초기 렌더링뿐 아니라 서버 부하·인프라 비용(정적 호스팅 vs 상시 서버), 초기 로딩 vs 페이지 전환 체감 속도, 개발/디버깅 복잡도(하이드레이션 불일치), 캐싱 전략까지 항목별로 비교 — 결론은 SSR 기본 채택 + 변경 적은 화면은 SSG/ISR + 인터랙션 위주 화면만 의도적으로 CSR (자세한 내용은 [`target-architecture.md`](target-architecture.md#csr-vs-ssr-비교))
       - 프론트엔드를 컨테이너 이미지로 만들어 AWS ECS(Fargate)에 배포 (앞단은 CloudFront)
         - 컨테이너를 택하는 이유: 환경 동일성(로컬=운영), 배포=이미지 교체라 롤백이 쉬움, CI/CD와 자연스럽게 연결(빌드→ECR→ECS), 오토스케일링, Fargate로 서버 관리 부담 감소, 스크래핑 배치와의 리소스 격리, 런타임(Java 11→17) 업그레이드를 카나리로 안전하게 실험, 클라우드/폐쇄망 양쪽에서 같은 이미지 실행 (자세한 내용은 [`target-architecture.md`](target-architecture.md#왜-컨테이너ecs인가))
         - 프론트·API·스크래핑/잡서비스의 배포 방식을 하나로 통일해 CI/CD·관측성·롤백 절차를 두 벌로 유지하지 않는 것이 목적
@@ -55,7 +56,7 @@
     - 인증 체계 통합: 세션 기반(JSP) → 토큰 기반(JWT/OAuth2), API Gateway 단에서 인증 통합
     - 관측성 확보: 구조화 로깅 + CloudWatch/APM — 배포 빈도가 늘어날수록 장애 원인 추적 속도가 중요해짐
     - IaC 도입: Terraform 등으로 인프라를 코드화해 DMZ/Private Network 구성을 재현 가능하게 관리
-    - 테스트 자동화: 스트랭글러 전환 중 신regression 방지를 위한 회귀 테스트, 신구 API 병행 비교(shadow traffic) — GitHub이 권한/결제 로직 리팩터링에 쓴 [Scientist](https://github.com/github/scientist) 방식처럼, 신규 코드를 실제 트래픽에 함께 실행하되 응답은 기존 로직 결과만 반환하고 차이는 비동기로 비교
+    - 테스트 자동화: JSP를 API로 옮기기 **직전**에 캐릭터라이제이션 테스트(Michael Feathers, 골든 마스터 테스트)로 기존 로직의 실제 입출력을 스냅샷으로 고정해 회귀 안전망부터 확보 → 이후 신구 API 병행 비교(shadow traffic) — GitHub이 권한/결제 로직 리팩터링에 쓴 [Scientist](https://github.com/github/scientist) 방식처럼, 신규 코드를 실제 트래픽에 함께 실행하되 응답은 기존 로직 결과만 반환하고 차이는 비동기로 비교 (자세한 내용은 [`target-architecture.md`](target-architecture.md#레거시-코드-안전망-characterization-test))
     - API 문서화: 기존 JSP를 API로 전환할 때 OpenAPI 명세로 계약을 명확히 해 프론트/타 서비스와의 결합도를 낮춤
     - 스크래핑/잡서비스 컨테이너화: 상시 프로세스 대신 이벤트 기반 스케줄링(EventBridge, Step Functions 등)으로 전환해 리소스 낭비 감소
     - 모듈러 모놀리스 대안 검토: Shopify는 전면 마이크로서비스 대신 명시적 모듈 경계(Packwerk)를 둔 모듈러 모놀리스로 온보딩 시간 55% 단축, 모듈 간 회귀 68% 감소 — 잡서비스(API)처럼 도메인이 아직 명확히 안 나뉜 영역은 무리하게 서비스 분리부터 하지 않는 선택지도 고려
