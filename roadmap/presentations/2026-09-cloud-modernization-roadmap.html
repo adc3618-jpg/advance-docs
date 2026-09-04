@@ -284,6 +284,17 @@
         </ul>
       </div>
     </div>
+    <div style="margin-top:22px;">
+      <h3>파이프라인 6단계</h3>
+      <ul class="bullets">
+        <li><b>PR 게이트</b> — lint/typecheck/단위 테스트 + 캐릭터라이제이션 테스트(JSP→API 전환 구간의 회귀 확인)</li>
+        <li><b>빌드</b> — 커밋 SHA 태그로 이미지 빌드 → ECR 푸시</li>
+        <li><b>스테이징 배포</b> — IaC로 구성한 스테이징에 ECS 롤링 업데이트 + 통합/E2E 테스트</li>
+        <li><b>프로덕션 배포</b> — 카나리(일부 태스크 우선 배포) + Shadow Traffic(신구 로직 비동기 비교) 병행</li>
+        <li><b>롤백</b> — 이전 이미지 태그로 ECS 서비스만 업데이트하면 즉시 복구</li>
+        <li><b>배포 후 관측</b> — CloudWatch 알람과 배포 이벤트를 연결해 에러율/지연시간 급증 자동 감지</li>
+      </ul>
+    </div>
     <div class="slide-num">10 / 17</div>
   </section>
 

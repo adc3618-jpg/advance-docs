@@ -22,6 +22,8 @@
         - 컨테이너를 택하는 이유: 환경 동일성(로컬=운영), 배포=이미지 교체라 롤백이 쉬움, CI/CD와 자연스럽게 연결(빌드→ECR→ECS), 오토스케일링, Fargate로 서버 관리 부담 감소, 스크래핑 배치와의 리소스 격리, 런타임(Java 11→17) 업그레이드를 카나리로 안전하게 실험, 클라우드/폐쇄망 양쪽에서 같은 이미지 실행 (자세한 내용은 [`target-architecture.md`](target-architecture.md#왜-컨테이너ecs인가))
         - 프론트·API·스크래핑/잡서비스의 배포 방식을 하나로 통일해 CI/CD·관측성·롤백 절차를 두 벌로 유지하지 않는 것이 목적
       - CI/CD 환경 구축
+        - API 서비스부터 우선 구축, 파이프라인은 6단계: PR 게이트(lint/테스트/캐릭터라이제이션 테스트) → 빌드(이미지, ECR) → 스테이징 배포 → 프로덕션 배포(카나리 + Shadow Traffic) → 롤백(이전 이미지 태그) → 배포 후 관측(CloudWatch 알람 연동)
+        - API에서 검증한 파이프라인을 그대로 Next.js 프론트·스크래핑/잡서비스에도 재사용해 서비스마다 파이프라인을 새로 설계하지 않음 (자세한 내용은 [`target-architecture.md`](target-architecture.md#cicd-파이프라인-설계))
       - 폐쇄망 환경을 극복하기 위한 폐쇄망 DB 접근용 DMZ API 개발
       - AWS Private Network(PrivateLink/Direct Connect)로 폐쇄망 환경 극복 — 단, 국내 법규상 가능 여부는 법무팀 검토가 선행되어야 하는 옵션 A이며(확인 필요), 어려울 경우 mTLS·IP 화이트리스트·WAF 기반 퍼블릭 엔드포인트 등 옵션 B로 대체
       - 클라우드는 AWS 사용
