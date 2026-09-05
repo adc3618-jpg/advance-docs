@@ -185,13 +185,22 @@ Amazon Prime Video 팀은 영상 품질 분석 파이프라인을 마이크로�
                                   [사내망 레거시 JSP 서버]
 ```
 
+## CDN 라우팅을 보완하는 점진적 노출: Feature Flag
+
+위 CDN 리버스 프록시는 **경로(path) 단위**로 신구 시스템을 나눈다 — 어떤 URL 패턴은 무조건 Next.js로, 나머지는 무조건 레거시 JSP로 가는 전부-아니면-전무(all-or-nothing) 방식이다. 같은 경로 안에서 **사용자 비율/세그먼트 단위**로 더 세밀하게 신규 화면을 노출하려면(예: 내부 직원에게만 먼저 열어보기, 신규 가입자부터 5%씩 확대) CDN 라우팅만으로는 부족하다 — 이 지점에서 feature flag가 CDN 라우팅과 역할을 나눠 맡는다.
+
+- **역할 분담**: CDN(경로 라우팅)은 "이 URL 패턴 자체가 신규 시스템 소관인가"를 정하고, feature flag는 "그 안에서 지금 이 사용자에게 신규 화면을 보여줄 것인가"를 정한다. 두 단계가 함께 있어야 경로 단위로는 이미 Next.js로 넘어온 페이지 안에서도 안전하게 점진 확대·즉시 롤백이 가능하다.
+- **패턴**: interception layer(BFF 또는 Next.js 미들웨어)가 요청마다 flag 값을 확인해 신규 로직/화면과 기존 로직 중 하나로 분기한다. 라우팅 로직 자체는 코드 배포 없이 flag 설정 변경만으로 트래픽 비율을 5% → 50% → 100%로 조정하거나, 문제 발생 시 즉시 0%로 되돌릴 수 있다.
+- **AWS 선택지**: 이미 AWS를 표준으로 쓰기로 한 만큼, [AWS AppConfig](https://aws.amazon.com/about-aws/whats-new/2022/03/aws-appconfig-feature-flags)(Systems Manager의 기능)의 Feature Flags를 우선 검토한다. [2024년 추가된 타겟/변형/분할(targets, variants, splits) 기능](https://aws.amazon.com/about-aws/whats-new/2024/07/aws-appconfig-feature-flag-targets-variants-splits)으로 사용자 세그먼트별 다른 값을 배분할 수 있고, CloudWatch 알람과 연동한 자동 롤백 가드레일도 기본 제공한다. 별도 SaaS(Unleash 등) 도입 없이 기존 AWS 계정 안에서 운영 가능하다는 점이 우리 상황에 맞는다.
+- **CI/CD 파이프라인과의 관계**: 위 "CI/CD 파이프라인 설계"의 카나리(인프라 단위 — 일부 ECS 태스크에 새 이미지)와 feature flag(요청 단위 — 사용자 비율)는 서로 다른 층이다. 이미지 배포 자체는 카나리로 안전하게 확대하고, 그 안에서 어떤 사용자에게 신규 코드 경로를 노출할지는 flag로 별도 제어한다 — 배포와 노출을 분리하면 "배포했지만 아직 아무에게도 안 보여준 상태"가 가능해져 리스크가 더 줄어든다.
+
 ## 마이그레이션 단계
 
 1. **API 우선 구축 (현재 단계)** — 모놀리식은 유지한 채 신규 API를 추가하고, 기존 JSP 프론트는 vanilla JS로 이 API들과 연동. 이 단계의 API 서비스부터 CI/CD를 우선 구축한다. **기존 JSP 로직을 API로 옮기기 직전에는** 위 "레거시 코드 안전망" 절의 캐릭터라이제이션 테스트로 현재 동작을 먼저 스냅샷으로 고정한다.
 2. **인증/세션 정리** — 세션 기반 인증과 신규 API 인증 방식을 정리해, 이후 단계에서 프론트를 옮겨도 인증이 끊기지 않도록 설계한다.
 3. **DMZ API 설계·구축** — 폐쇄망 DB 접근을 API로 추상화. 금융보안원 Multi-VPC(DMZ/내부망 + Transit Gateway) 패턴을 참고해 구성.
 4. **클라우드-폐쇄망 연결 방식 확정 (옵션 A/B)** — 법무/컴플라이언스팀 검토 결과에 따라 AWS PrivateLink/Direct Connect(옵션 A) 또는 mTLS·IP 화이트리스트·WAF 기반 퍼블릭 엔드포인트/VPN(옵션 B)으로 클라우드와 폐쇄망을 연결.
-5. **관측성/IaC 기반 마련** — 이후 단계의 잦은 배포·인프라 변경을 안전하게 반복하기 위한 선행 작업.
+5. **관측성/IaC 기반 마련** — 이후 단계의 잦은 배포·인프라 변경을 안전하게 반복하기 위한 선행 작업. 관측성의 구체적인 도구·경계 문제는 아래 "관측성 구체화" 절 참고.
 6. **도메인/인프라 클라우드 이관** — 도메인을 AWS로 옮겨 경로 기반 라우팅 등 클라우드 네이티브 구성이 가능해지도록 준비.
 7. **Next.js 전환 및 ECS 배포** — 클라우드로 옮긴 도메인 위에서 프론트엔드를 Next.js로 전환하고 ECS(Fargate)에 배포. CI/CD를 프론트에도 확장(이미지 빌드 → ECR → ECS 롤링 업데이트).
 8. **스크래핑/잡서비스 컨테이너화 및 이관** — 배치성 워크로드를 이벤트 기반 스케줄링으로 전환.
@@ -230,6 +239,16 @@ JSP 로직을 API로 감싸기(스트랭글러 패턴) 전에 반드시 짚어�
 
 API 서비스를 먼저 이 6단계로 태우는 이유는 배포 단위가 작아 파이프라인 자체를 검증하는 리스크가 낮기 때문이다. 여기서 검증된 파이프라인을 그대로 Next.js 프론트(2단계)와 스크래핑/잡서비스 컨테이너화에도 재사용한다 — 컨테이너 배포 방식을 통일한 선택(위 "왜 컨테이너(ECS)인가")이 CI/CD 파이프라인을 서비스마다 새로 설계하지 않아도 되게 만드는 지점이다.
 
+## 관측성 구체화: 폐쇄망 경계를 넘는 분산 추적
+
+지금까지 관측성은 "구조화 로깅 + CloudWatch/APM"으로만 목표에 적혀 있었다. 우리 아키텍처는 요청 하나가 CloudFront → ALB → ECS(Next.js) → API Gateway/BFF → DMZ VPC → (Transit Gateway 또는 PrivateLink/mTLS) → 폐쇄망 내부의 DMZ API/레거시 API까지 여러 경계를 넘나든다. 이 경계마다 관측성이 끊기면 장애 원인 추적이 "이 요청이 어디서 느려졌는지" 수준에서 막힌다.
+
+- **분산 추적 도구 선택**: AWS X-Ray는 트레이스 백엔드(저장·시각화)이고, OpenTelemetry(OTel)는 계측·수집 프레임워크로 역할이 다르다. [AWS Distro for OpenTelemetry(ADOT)](https://aws.amazon.com/about-aws/whats-new/2021/09/aws-availability-distro-opentelemetry-tracing-support)의 X-Ray Exporter를 쓰면 OTel로 계측한 트레이스를 X-Ray로 보낼 수 있어, 프론트(Next.js)·신규 API·DMZ API·(추후) 컨테이너화된 레거시 API까지 하나의 계측 표준(OTel)으로 통일하면서 저장은 X-Ray를 그대로 쓸 수 있다.
+- **경계에서 끊기는 문제 — 트레이스 헤더 포맷**: X-Ray는 자체 헤더(`X-Amzn-Trace-Id`)를, OpenTelemetry는 W3C Trace Context(`traceparent`/`tracestate`)를 쓴다([참고: 분산 추적 — AWS 마이크로서비스 백서](https://docs.aws.amazon.com/whitepapers/latest/microservices-on-aws/distributed-tracing.html)). 두 포맷이 다르므로, 특히 DMZ API 앞단처럼 우리가 아직 통제하지 못하는 구간(레거시 JSP/서블릿 코드가 API로 안 감싸진 부분)을 지날 때 헤더 전파가 끊기면 추적이 거기서 끊긴다. ADOT Collector의 X-Ray 프로퍼게이터로 이 변환을 처리하되, 레거시 코드 쪽에는 헤더를 그대로 통과시키는 최소한의 프록시 설정이 필요하다.
+- **네트워크 설정**: DMZ VPC/내부망 VPC 보안 그룹에 OTLP 트래픽용 포트(gRPC 4317, HTTP 4318)를 열어야 하고, X-Ray/CloudWatch용 VPC 엔드포인트를 구성해 텔레메트리 데이터가 인터넷 구간을 거치지 않고 AWS 서비스로 전달되게 한다 — 위 "AWS Private Network" 절의 옵션 A/B 논의와 같은 맥락의 결정이다.
+- **프론트엔드 관측성(RUM)**: 서버 측 APM만으로는 "실제 사용자 브라우저에서 얼마나 느린지"를 못 본다. CloudWatch RUM(Real User Monitoring) 같은 도구로 Next.js 페이지의 실사용자 로딩 시간·JS 에러를 수집하는 것도 목표 1(SEO/GEO 렌더링 전략)의 실측 지표(Core Web Vitals 등)와 맞물린다.
+- **적용 순서**: 마이그레이션 단계 5(관측성/IaC 기반 마련)에서, 신규 API부터 OTel 계측을 표준으로 넣고 X-Ray로 수집 → DMZ API 구축 시점에 경계를 넘는 트레이스 전파를 검증 → Next.js 전환 시 RUM을 추가하는 순서로 확장한다.
+
 ## 리스크 및 고려사항
 
 - 모놀리식과 신규 API가 공존하는 기간의 병행 운영 부담 (배포·장애 대응 이중화).
@@ -240,4 +259,5 @@ API 서비스를 먼저 이 6단계로 태우는 이유는 배포 단위가 작�
 - SSR·CSR을 화면/컴포넌트 단위로 명확히 구분해서 개발해야 해, 순수 CSR SPA보다 개발 복잡도가 올라간다. **대응**: 위 "왜 Next.js인가"의 SSR/CSR 구분 기준을 컨벤션으로 문서화하고, 코드 리뷰에서 의도치 않게 클라이언트 컴포넌트로만 짜여 실질적 CSR이 되어버리는 화면을 걸러낸다.
 - 금융 데이터 특성상 DMZ API와 Private Network 구간의 보안 검토(제로트러스트, 접근 통제)가 일정에 선행되어야 한다.
 - PrivateLink/Direct Connect 등 AWS Private Network 연결이 국내 법규상 어려울 가능성이 있음(확인 필요 — 법무팀 검토 필요). 이 경우를 대비해 대안(옵션 B: mTLS/IP 화이트리스트/WAF 기반 퍼블릭 엔드포인트, VPN 등)으로 전환할 준비를 함께 갖춰야 한다.
+- Feature flag를 도입하면 완전 전환 후에도 플래그와 신구 분기 코드가 정리되지 않고 남는 **플래그 부채(flag debt)** 리스크가 생긴다. **대응**: 각 flag를 만들 때 "100% 전환 후 이 flag와 레거시 분기를 제거한다"를 마이그레이션 완료 조건에 포함하고, 오래된 flag를 주기적으로 점검한다.
 - (초안 — 실제 리스크는 서비스 실사 후 보완 필요. 자동화 세션은 현재 네트워크 정책상 KFESS에 직접 접속할 수 없어 실사를 대신할 수 없다 — [`vision.md`](vision.md#실사-관련-참고) 참고)

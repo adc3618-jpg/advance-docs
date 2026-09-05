@@ -44,6 +44,7 @@
       - Next.js를 정적 호스팅이 아니라 ECS에서 상시 실행하므로 정적 배포보다 운영 부담·비용이 올라간다 — 배포 방식 통일의 이점과 맞바꾸는 선택임을 명시적으로 합의하고 간다
       - SSR·CSR을 화면 단위로 명확히 구분해서 개발해야 해 순수 CSR SPA보다 개발 복잡도가 올라간다 — 코드 리뷰·컨벤션으로 구분 기준을 지속적으로 지켜야 함
       - 금융회사의 완전한 클라우드 이관도 선례가 있다 — Capital One은 8개 데이터센터를 모두 폐쇄하고 AWS로 전면 이관, 재해복구 시간 70% 단축·트랜잭션 오류 50% 감소를 달성했다 ([AWS 공식 사례](https://aws.amazon.com/solutions/case-studies/capital-one-all-in-on-aws/))
+      - feature flag를 도입하면 완전 전환 후에도 플래그·신구 분기 코드가 정리되지 않고 남는 "플래그 부채" 리스크가 생김 — flag를 만들 때부터 "100% 전환 후 제거"를 완료 조건에 포함
       - (초안 — 실제 리스크 확인 후 보완 필요)
   - 폐쇄망 극복 — DMZ API & AWS Private Network
     - 배경: 금융회사 특성상 DB 등 핵심 자원이 망분리된 폐쇄망 안에 있어, 클라우드로 옮긴 프론트/API가 직접 접근할 수 없음
@@ -57,6 +58,8 @@
       - 숨은 장벽: Tomcat 10+/Spring Boot 3+로 옮기는 시점에 `javax.*` → `jakarta.*` 네임스페이스 변경(Jakarta EE 9)을 함께 처리해야 함 — OpenRewrite의 [`rewrite-migrate-java`](https://github.com/openrewrite/rewrite-migrate-java) 레시피로 자동화 가능 (자세한 내용은 [`target-architecture.md`](target-architecture.md#java-18--17-업그레이드의-숨은-장벽-javax--jakarta-네임스페이스))
     - 인증 체계 통합: 세션 기반(JSP) → 토큰 기반(JWT/OAuth2), API Gateway 단에서 인증 통합
     - 관측성 확보: 구조화 로깅 + CloudWatch/APM — 배포 빈도가 늘어날수록 장애 원인 추적 속도가 중요해짐
+      - 구체화: 폐쇄망 경계를 넘나드는 요청(프론트→API Gateway→DMZ VPC→폐쇄망)은 OpenTelemetry(ADOT)로 계측을 통일하고 X-Ray로 수집 — 단, X-Ray 헤더(`X-Amzn-Trace-Id`)와 OTel W3C Trace Context(`traceparent`)가 달라 경계에서 추적이 끊길 수 있어 프로퍼게이터 설정이 필요. 프론트는 CloudWatch RUM으로 실사용자 지표까지 확장 (자세한 내용은 [`target-architecture.md`](target-architecture.md#관측성-구체화-폐쇄망-경계를-넘는-분산-추적))
+    - CDN 경로 라우팅을 보완하는 점진적 노출: feature flag — CDN(경로 단위 all-or-nothing)과 별도로, 같은 경로 안에서 사용자 비율/세그먼트 단위로 신규 화면을 노출·롤백. AWS AppConfig Feature Flags(타겟/변형/분할, CloudWatch 알람 연동 자동 롤백) 활용 — 배포(카나리)와 노출(flag)을 분리해 "배포했지만 아직 아무도 못 보는 상태"를 가능하게 함 (자세한 내용은 [`target-architecture.md`](target-architecture.md#cdn-라우팅을-보완하는-점진적-노출-feature-flag))
     - IaC 도입: Terraform 등으로 인프라를 코드화해 DMZ/Private Network 구성을 재현 가능하게 관리
     - 테스트 자동화: JSP를 API로 옮기기 **직전**에 캐릭터라이제이션 테스트(Michael Feathers, 골든 마스터 테스트)로 기존 로직의 실제 입출력을 스냅샷으로 고정해 회귀 안전망부터 확보 → 이후 신구 API 병행 비교(shadow traffic) — GitHub이 권한/결제 로직 리팩터링에 쓴 [Scientist](https://github.com/github/scientist) 방식처럼, 신규 코드를 실제 트래픽에 함께 실행하되 응답은 기존 로직 결과만 반환하고 차이는 비동기로 비교 (자세한 내용은 [`target-architecture.md`](target-architecture.md#레거시-코드-안전망-characterization-test))
     - API 문서화: 기존 JSP를 API로 전환할 때 OpenAPI 명세로 계약을 명확히 해 프론트/타 서비스와의 결합도를 낮춤
