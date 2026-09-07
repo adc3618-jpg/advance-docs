@@ -56,7 +56,7 @@
   - 그 외 발견한 개선 기회 (레거시 현대화 사례 조사 기반)
     - Java 버전 업그레이드: JSP를 API로 전환하는 과정에서 런타임도 Java 1.8 → 11 → 17(LTS)로 단계적으로 올려, 신규 API부터 최신 LTS 위에서 개발
       - 숨은 장벽: Tomcat 10+/Spring Boot 3+로 옮기는 시점에 `javax.*` → `jakarta.*` 네임스페이스 변경(Jakarta EE 9)을 함께 처리해야 함 — OpenRewrite의 [`rewrite-migrate-java`](https://github.com/openrewrite/rewrite-migrate-java) 레시피로 자동화 가능 (자세한 내용은 [`target-architecture.md`](target-architecture.md#java-18--17-업그레이드의-숨은-장벽-javax--jakarta-네임스페이스))
-    - 인증 체계 통합: 세션 기반(JSP) → 토큰 기반(JWT/OAuth2), API Gateway 단에서 인증 통합
+    - 인증 체계 통합: 세션 기반(JSP) → 토큰 기반(JWT/OAuth2), API Gateway 단에서 인증 통합 — 과도기에는 RFC 8693(OAuth 2.0 Token Exchange) 방식의 브릿지로 레거시 세션을 신규 JWT로 교환하고, CDN 리버스 프록시 구간에서는 쿠키 Domain/Path를 맞춰 재로그인 없이 신구 경로를 오가게 한다 (자세한 내용은 [`target-architecture.md`](target-architecture.md#인증-전환-상세-세션--토큰-과도기-브릿지))
     - 관측성 확보: 구조화 로깅 + CloudWatch/APM — 배포 빈도가 늘어날수록 장애 원인 추적 속도가 중요해짐
       - 구체화: 폐쇄망 경계를 넘나드는 요청(프론트→API Gateway→DMZ VPC→폐쇄망)은 OpenTelemetry(ADOT)로 계측을 통일하고 X-Ray로 수집 — 단, X-Ray 헤더(`X-Amzn-Trace-Id`)와 OTel W3C Trace Context(`traceparent`)가 달라 경계에서 추적이 끊길 수 있어 프로퍼게이터 설정이 필요. 프론트는 CloudWatch RUM으로 실사용자 지표까지 확장 (자세한 내용은 [`target-architecture.md`](target-architecture.md#관측성-구체화-폐쇄망-경계를-넘는-분산-추적))
     - CDN 경로 라우팅을 보완하는 점진적 노출: feature flag — CDN(경로 단위 all-or-nothing)과 별도로, 같은 경로 안에서 사용자 비율/세그먼트 단위로 신규 화면을 노출·롤백. AWS AppConfig Feature Flags(타겟/변형/분할, CloudWatch 알람 연동 자동 롤백) 활용 — 배포(카나리)와 노출(flag)을 분리해 "배포했지만 아직 아무도 못 보는 상태"를 가능하게 함 (자세한 내용은 [`target-architecture.md`](target-architecture.md#cdn-라우팅을-보완하는-점진적-노출-feature-flag))
