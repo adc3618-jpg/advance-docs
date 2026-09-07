@@ -79,7 +79,7 @@
       <div class="card">
         <div class="num">REGULATION</div>
         <h3>망분리 규제 완화 흐름</h3>
-        <p style="color:var(--text-dim); font-size:.95rem; line-height:1.7;">2022년 금융위원회 「금융분야 클라우드 및 망분리 규제 개선방안」 발표 이후 2023년 전자금융감독규정이 개정되며, 금융회사의 상용 클라우드 이용 절차가 이전보다 명확해짐. 금융보안원은 9개 CSP와 협업해 클라우드 보안 관리 참고서를 배포.</p>
+        <p style="color:var(--text-dim); font-size:.95rem; line-height:1.7;">2022년 금융위원회 「금융분야 클라우드 및 망분리 규제 개선방안」 발표 이후 전자금융감독규정이 개정되며, 금융회사의 상용 클라우드 이용 절차가 이전보다 명확해짐. 2025-02-05 시행된 개정판(제14조의2)은 중요도 평가로 업무를 구분하고, 클라우드 이용 보고를 사전보고(7영업일 전)에서 사후보고(사유 발생 후 3개월 이내)로 전환해 착수 적시성을 높임. 금융보안원은 9개 CSP와 협업해 클라우드 보안 관리 참고서를 배포.</p>
       </div>
       <div class="card">
         <div class="num">INDUSTRY</div>
@@ -450,8 +450,8 @@
       </div>
       <div class="card risk-card">
         <h3>보안·컴플라이언스</h3>
-        <p style="font-size:.9rem; color:var(--text-dim);">금융 데이터가 오가는 DMZ API·Private Network 구간은 보안 검토가 선행되어야 하며, PrivateLink/Direct Connect 자체가 국내 법규상 어려울 가능성이 있음(확인 필요)</p>
-        <div class="mitigation"><b>대응</b> — 금융보안원 가이드 준수, 제로트러스트 원칙 적용, 법무팀 사전 검토를 일정에 명시적으로 포함. 어려울 경우 mTLS/IP 화이트리스트 기반 옵션 B로 전환</div>
+        <p style="font-size:.9rem; color:var(--text-dim);">금융 데이터가 오가는 DMZ API·Private Network 구간은 보안 검토가 선행되어야 하며, PrivateLink/Direct Connect 자체가 국내 법규상 어려울 가능성이 있음(확인 필요). 이와 별개로 고객 데이터를 다루는 워크로드를 클라우드로 옮길 때마다 전자금융감독규정 제14조의2에 따른 중요도 평가·안전성 확보조치·보고 절차가 필요</p>
+        <div class="mitigation"><b>대응</b> — 금융보안원 가이드 준수, 제로트러스트 원칙 적용, 법무팀 사전 검토를 일정에 명시적으로 포함. PrivateLink 적법성이 어려울 경우 mTLS/IP 화이트리스트 기반 옵션 B로 전환. 워크로드별 중요도 평가는 실제 이관 착수 전에 보안팀·법무팀과 먼저 완료</div>
       </div>
       <div class="card risk-card">
         <h3>Feature Flag 부채</h3>
@@ -486,8 +486,8 @@
       <li><a href="https://thenewstack.io/return-of-the-monolith-amazon-dumps-microservices-for-video-monitoring/" target="_blank" rel="noopener">Return of the Monolith — Amazon Prime Video (The New Stack)</a><span class="src-desc">과도한 서비스 분리 사례</span></li>
       <li><a href="https://www.metamindz.co.uk/post/modular-monolith-renaissance-shopify-amazon-stack-overflow-2026" target="_blank" rel="noopener">The Modular Monolith Renaissance — Shopify, Amazon, Stack Overflow</a><span class="src-desc">모듈러 모놀리스 사례</span></li>
       <li><a href="https://www.fsec.or.kr/bbs/detail?menuNo=222&bbsNo=11562" target="_blank" rel="noopener">금융분야 상용 클라우드서비스 보안 관리 참고서 — 금융보안원</a><span class="src-desc">Multi-VPC(DMZ/내부망 + Transit Gateway) 표준 패턴</span></li>
-      <li><a href="https://www.fsc.go.kr/no010101/78962" target="_blank" rel="noopener">클라우드 이용절차 합리화 및 망분리 규제 완화 — 금융위원회 보도자료</a><span class="src-desc">망분리 규제 완화 근거</span></li>
-      <li><a href="https://aws.amazon.com/ko/blogs/tech/financial-cloud-guide-a-to-z-part1/" target="_blank" rel="noopener">금융 클라우드 길라잡이 A to Z Part 1 — AWS 기술 블로그</a><span class="src-desc">전자금융감독규정과 클라우드 도입 절차</span></li>
+      <li><a href="https://www.fsc.go.kr/no010101/78962" target="_blank" rel="noopener">클라우드 이용절차 합리화 및 망분리 규제 완화 — 금융위원회 보도자료</a><span class="src-desc">망분리 규제 완화 근거, 전자금융감독규정 제14조의2 사전보고→사후보고 전환</span></li>
+      <li><a href="https://aws.amazon.com/ko/blogs/tech/financial-cloud-guide-a-to-z-part1/" target="_blank" rel="noopener">금융 클라우드 길라잡이 A to Z Part 1 — AWS 기술 블로그</a><span class="src-desc">전자금융감독규정 제14조의2 중요도 평가·차등 절차 해설</span></li>
       <li><a href="https://docs.aws.amazon.com/whitepapers/latest/aws-privatelink/use-case-examples.html" target="_blank" rel="noopener">Securely Access Services Over AWS PrivateLink — AWS Whitepaper</a><span class="src-desc">온프레미스-클라우드 연결 패턴</span></li>
       <li><a href="https://aws.amazon.com/solutions/case-studies/capital-one-all-in-on-aws/" target="_blank" rel="noopener">Migrating from Data Centers to AWS — Capital One (AWS 공식 사례 연구)</a><span class="src-desc">금융회사의 완전한 클라우드 이관 사례, 정량 성과</span></li>
       <li><a href="https://en.wikipedia.org/wiki/Working_Effectively_with_Legacy_Code" target="_blank" rel="noopener">Working Effectively with Legacy Code — Michael Feathers</a><span class="src-desc">캐릭터라이제이션(골든 마스터) 테스트 개념</span></li>
