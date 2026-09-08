@@ -22,7 +22,7 @@
         - 컨테이너를 택하는 이유: 환경 동일성(로컬=운영), 배포=이미지 교체라 롤백이 쉬움, CI/CD와 자연스럽게 연결(빌드→ECR→ECS), 오토스케일링, Fargate로 서버 관리 부담 감소, 스크래핑 배치와의 리소스 격리, 런타임(Java 11→17) 업그레이드를 카나리로 안전하게 실험, 클라우드/폐쇄망 양쪽에서 같은 이미지 실행 (자세한 내용은 [`target-architecture.md`](target-architecture.md#왜-컨테이너ecs인가))
         - 프론트·API·스크래핑/잡서비스의 배포 방식을 하나로 통일해 CI/CD·관측성·롤백 절차를 두 벌로 유지하지 않는 것이 목적
       - CI/CD 환경 구축
-        - API 서비스부터 우선 구축, 파이프라인은 6단계: PR 게이트(lint/테스트/캐릭터라이제이션 테스트) → 빌드(이미지, ECR) → 스테이징 배포 → 프로덕션 배포(카나리 + Shadow Traffic) → 롤백(이전 이미지 태그) → 배포 후 관측(CloudWatch 알람 연동)
+        - API 서비스부터 우선 구축, 파이프라인은 6단계: PR 게이트(lint/테스트/캐릭터라이제이션 테스트/SCA·SAST 보안 스캔) → 빌드(이미지, ECR) → 스테이징 배포 → 프로덕션 배포(카나리 + Shadow Traffic) → 롤백(이전 이미지 태그) → 배포 후 관측(CloudWatch 알람 연동)
         - API에서 검증한 파이프라인을 그대로 Next.js 프론트·스크래핑/잡서비스에도 재사용해 서비스마다 파이프라인을 새로 설계하지 않음 (자세한 내용은 [`target-architecture.md`](target-architecture.md#cicd-파이프라인-설계))
       - 폐쇄망 환경을 극복하기 위한 폐쇄망 DB 접근용 DMZ API 개발
       - AWS Private Network(PrivateLink/Direct Connect)로 폐쇄망 환경 극복 — 단, 국내 법규상 가능 여부는 법무팀 검토가 선행되어야 하는 옵션 A이며(확인 필요), 어려울 경우 mTLS·IP 화이트리스트·WAF 기반 퍼블릭 엔드포인트 등 옵션 B로 대체
@@ -66,6 +66,8 @@
     - API 문서화: 기존 JSP를 API로 전환할 때 OpenAPI 명세로 계약을 명확히 해 프론트/타 서비스와의 결합도를 낮춤
     - 스크래핑/잡서비스 컨테이너화: 상시 프로세스 대신 이벤트 기반 스케줄링(EventBridge, Step Functions 등)으로 전환해 리소스 낭비 감소
     - 모듈러 모놀리스 대안 검토: Shopify는 전면 마이크로서비스 대신 명시적 모듈 경계(Packwerk)를 둔 모듈러 모놀리스로 온보딩 시간 55% 단축, 모듈 간 회귀 68% 감소 — 잡서비스(API)처럼 도메인이 아직 명확히 안 나뉜 영역은 무리하게 서비스 분리부터 하지 않는 선택지도 고려
+    - 보안 스캐닝(SCA/SAST) PR 게이트 편입: 레거시 JSP가 쓰는 오래된 서드파티 라이브러리의 알려진 취약점(CVE)을 OWASP Dependency-Check(SCA)로 먼저 걸러내고, 신규 API 코드는 SAST(정적 분석)까지 함께 돈다 — 신규 코드 없이도 기존 의존성 목록만으로 바로 시작 가능 (자세한 내용은 [`target-architecture.md`](target-architecture.md#보안-스캐닝-scasast를-pr-게이트에))
+    - 시크릿 관리: DB 자격증명·JWT 서명 키를 이미지/소스에 하드코딩하지 않고 AWS Secrets Manager/Parameter Store에서 ECS 태스크 시작 시점에 런타임으로 주입 — 태스크별 IAM 역할로 최소 권한을 지키고, 민감도 높은 값부터 자동 로테이션 적용 (자세한 내용은 [`target-architecture.md`](target-architecture.md#시크릿-관리-하드코딩에서-런타임-주입으로))
 - AI와 친해지기
   - 목표: AI를 코딩에 접목 — 코딩부터 테스트, 문서화까지 자동화
   - 전제조건: 클라우드 전환으로 구성되는 CI/CD·서버 환경 위에서 자동화 파이프라인 구성

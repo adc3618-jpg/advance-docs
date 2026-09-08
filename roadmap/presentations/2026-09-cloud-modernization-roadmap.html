@@ -287,7 +287,7 @@
     <div style="margin-top:22px;">
       <h3>파이프라인 6단계</h3>
       <ul class="bullets">
-        <li><b>PR 게이트</b> — lint/typecheck/단위 테스트 + 캐릭터라이제이션 테스트(JSP→API 전환 구간의 회귀 확인)</li>
+        <li><b>PR 게이트</b> — lint/typecheck/단위 테스트 + 캐릭터라이제이션 테스트(JSP→API 전환 구간의 회귀 확인) + SCA/SAST 보안 스캔(레거시 의존성 CVE, 시크릿 하드코딩 탐지)</li>
         <li><b>빌드</b> — 커밋 SHA 태그로 이미지 빌드 → ECR 푸시</li>
         <li><b>스테이징 배포</b> — IaC로 구성한 스테이징에 ECS 롤링 업데이트 + 통합/E2E 테스트</li>
         <li><b>프로덕션 배포</b> — 카나리(일부 태스크 우선 배포) + Shadow Traffic(신구 로직 비동기 비교) 병행. 배포(이미지)와 노출(사용자 비율)은 feature flag로 분리 제어</li>
@@ -339,6 +339,8 @@
       <div class="card"><h3>CDN 리버스 프록시로 조기 전환</h3><p style="color:var(--text-dim); font-size:.88rem;">CloudFront가 온프레미스를 커스텀 오리진으로 두고 경로별 분기 — 도메인 완전 이관 전에도 페이지 단위 전환 가능.</p></div>
       <div class="card"><h3>javax → jakarta 네임스페이스</h3><p style="color:var(--text-dim); font-size:.88rem;">Tomcat 10+/Spring Boot 3+로 갈 때 필요한 패키지 전면 변경 — OpenRewrite 레시피로 자동화.</p></div>
       <div class="card"><h3>Shadow Traffic 검증</h3><p style="color:var(--text-dim); font-size:.88rem;">GitHub Scientist 방식처럼 신규 코드를 실제 트래픽에 함께 실행해 기존 로직과 결과만 비교, 응답은 기존 로직 그대로.</p></div>
+      <div class="card"><h3>보안 스캐닝(SCA/SAST)</h3><p style="color:var(--text-dim); font-size:.88rem;">PR 게이트에 OWASP Dependency-Check(SCA)로 레거시 의존성의 알려진 CVE부터 걸러내고, 신규 API 코드는 SAST(정적 분석)까지 함께 돈다. 신규 코드 없이도 기존 의존성 목록만으로 바로 시작 가능.</p></div>
+      <div class="card"><h3>시크릿 관리</h3><p style="color:var(--text-dim); font-size:.88rem;">DB 자격증명·JWT 서명 키를 이미지/소스에 하드코딩하지 않고 AWS Secrets Manager/Parameter Store에서 ECS 태스크 시작 시점에 런타임 주입. 태스크별 IAM 역할로 최소 권한, 민감도 높은 값부터 자동 로테이션.</p></div>
     </div>
     <p class="lede" style="margin-top:24px; font-size:.85rem;">서비스 경계는 무조건 잘게 나누는 것이 능사가 아니다 — 아래 참고.</p>
     <div class="slide-num">12 / 17</div>
@@ -457,6 +459,11 @@
         <h3>Feature Flag 부채</h3>
         <p style="font-size:.9rem; color:var(--text-dim);">완전 전환 후에도 플래그와 신구 분기 코드가 정리되지 않고 코드에 계속 남을 수 있음</p>
         <div class="mitigation"><b>대응</b> — flag를 만들 때부터 "100% 전환 후 flag·레거시 분기 제거"를 완료 조건에 포함하고 주기적으로 점검</div>
+      </div>
+      <div class="card risk-card">
+        <h3>자격증명 하드코딩·이미지 유출</h3>
+        <p style="font-size:.9rem; color:var(--text-dim);">컨테이너 전환 과정에서 자격증명을 이미지/소스에 그대로 구워넣으면 레지스트리 접근 권한자 누구나 평문 자격증명을 볼 수 있음. 레거시 JSP도 알려진 취약점이 있는 오래된 라이브러리를 쓰고 있을 가능성</p>
+        <div class="mitigation"><b>대응</b> — Secrets Manager/Parameter Store 런타임 주입을 CI/CD 착수 시점부터 기본값으로, OWASP Dependency-Check(SCA)로 레거시 의존성 CVE를 PR 게이트에서 선제 차단</div>
       </div>
     </div>
     <div class="slide-num">15 / 17</div>
