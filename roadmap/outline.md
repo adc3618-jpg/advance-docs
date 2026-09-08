@@ -46,6 +46,7 @@
       - SSR·CSR을 화면 단위로 명확히 구분해서 개발해야 해 순수 CSR SPA보다 개발 복잡도가 올라간다 — 코드 리뷰·컨벤션으로 구분 기준을 지속적으로 지켜야 함
       - 금융회사의 완전한 클라우드 이관도 선례가 있다 — Capital One은 8개 데이터센터를 모두 폐쇄하고 AWS로 전면 이관, 재해복구 시간 70% 단축·트랜잭션 오류 50% 감소를 달성했다 ([AWS 공식 사례](https://aws.amazon.com/solutions/case-studies/capital-one-all-in-on-aws/))
       - feature flag를 도입하면 완전 전환 후에도 플래그·신구 분기 코드가 정리되지 않고 남는 "플래그 부채" 리스크가 생김 — flag를 만들 때부터 "100% 전환 후 제거"를 완료 조건에 포함
+      - 팀 역량이 JSP/Java 1.8·온프레미스 배포에 맞춰져 있어, React/Next.js·IaC·컨테이너·분산 추적 같은 신규 스택은 도구 교체가 아니라 팀 역량 자체의 전환을 요구함 — 특히 Next.js/React는 기존 JSP 개발자와 겹치는 부분이 거의 없는 새 학습 영역. 1단계 신규 API부터 새 스택을 작은 규모로 먼저 경험하게 해 2단계(Next.js/ECS 전면 전환) 전에 학습 곡선을 앞당겨 소화, 프론트엔드 역량은 내부 전환 교육/신규 채용 중 무엇으로 채울지 2단계 착수 전 결정 필요(확인 필요)
       - (초안 — 실제 리스크 확인 후 보완 필요)
   - 폐쇄망 극복 — DMZ API & AWS Private Network
     - 배경: 금융회사 특성상 DB 등 핵심 자원이 망분리된 폐쇄망 안에 있어, 클라우드로 옮긴 프론트/API가 직접 접근할 수 없음
@@ -66,7 +67,7 @@
     - API 문서화: 기존 JSP를 API로 전환할 때 OpenAPI 명세로 계약을 명확히 해 프론트/타 서비스와의 결합도를 낮춤
     - 스크래핑/잡서비스 컨테이너화: 상시 프로세스 대신 이벤트 기반 스케줄링(EventBridge, Step Functions 등)으로 전환해 리소스 낭비 감소
     - 모듈러 모놀리스 대안 검토: Shopify는 전면 마이크로서비스 대신 명시적 모듈 경계(Packwerk)를 둔 모듈러 모놀리스로 온보딩 시간 55% 단축, 모듈 간 회귀 68% 감소 — 잡서비스(API)처럼 도메인이 아직 명확히 안 나뉜 영역은 무리하게 서비스 분리부터 하지 않는 선택지도 고려
-    - 보안 스캐닝(SCA/SAST) PR 게이트 편입: 레거시 JSP가 쓰는 오래된 서드파티 라이브러리의 알려진 취약점(CVE)을 OWASP Dependency-Check(SCA)로 먼저 걸러내고, 신규 API 코드는 SAST(정적 분석)까지 함께 돈다 — 신규 코드 없이도 기존 의존성 목록만으로 바로 시작 가능 (자세한 내용은 [`target-architecture.md`](target-architecture.md#보안-스캐닝-scasast를-pr-게이트에))
+    - 보안 스캐닝(SCA/SAST/이미지) PR 게이트·빌드 단계 편입: 레거시 JSP가 쓰는 오래된 서드파티 라이브러리의 알려진 취약점(CVE)을 OWASP Dependency-Check(SCA)로 먼저 걸러내고, 신규 API 코드는 SAST(정적 분석)까지 함께 돈다 — 신규 코드 없이도 기존 의존성 목록만으로 바로 시작 가능. 다만 SCA·SAST 모두 컨테이너 베이스 이미지(OS 패키지) 자체의 취약점은 놓치므로, Amazon ECR 이미지 스캐닝(Enhanced/Inspector, 새 CVE 공개 시 자동 재스캔) + Trivy를 빌드 단계에 추가로 넣어 CRITICAL/HIGH 취약점 발견 시 배포를 막는다 (자세한 내용은 [`target-architecture.md`](target-architecture.md#보안-스캐닝-scasast를-pr-게이트에))
     - 시크릿 관리: DB 자격증명·JWT 서명 키를 이미지/소스에 하드코딩하지 않고 AWS Secrets Manager/Parameter Store에서 ECS 태스크 시작 시점에 런타임으로 주입 — 태스크별 IAM 역할로 최소 권한을 지키고, 민감도 높은 값부터 자동 로테이션 적용 (자세한 내용은 [`target-architecture.md`](target-architecture.md#시크릿-관리-하드코딩에서-런타임-주입으로))
 - AI와 친해지기
   - 목표: AI를 코딩에 접목 — 코딩부터 테스트, 문서화까지 자동화
