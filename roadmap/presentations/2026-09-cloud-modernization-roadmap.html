@@ -23,7 +23,7 @@
     <div class="meta">
       <span class="tag accent">2026-09</span>
     </div>
-    <div class="slide-num">01 / 16</div>
+    <div class="slide-num">01 / 17</div>
   </section>
 
   <!-- 2. Agenda -->
@@ -41,7 +41,7 @@
       <li>단계별 로드맵 &amp; 리스크<span class="sub">타임라인, 리스크와 대응</span></li>
       <li>참고 자료</li>
     </ol>
-    <div class="slide-num">02 / 16</div>
+    <div class="slide-num">02 / 17</div>
   </section>
 
   <!-- 3. Current state -->
@@ -68,7 +68,7 @@
         </ul>
       </div>
     </div>
-    <div class="slide-num">03 / 16</div>
+    <div class="slide-num">03 / 17</div>
   </section>
 
   <!-- 4. Why now -->
@@ -79,7 +79,7 @@
       <div class="card">
         <div class="num">REGULATION</div>
         <h3>망분리 규제 완화 흐름</h3>
-        <p style="color:var(--text-dim); font-size:.95rem; line-height:1.7;">2022년 금융위원회 「금융분야 클라우드 및 망분리 규제 개선방안」 발표 이후 2023년 전자금융감독규정이 개정되며, 금융회사의 상용 클라우드 이용 절차가 이전보다 명확해짐. 금융보안원은 9개 CSP와 협업해 클라우드 보안 관리 참고서를 배포.</p>
+        <p style="color:var(--text-dim); font-size:.95rem; line-height:1.7;">2022년 금융위원회 「금융분야 클라우드 및 망분리 규제 개선방안」 발표 이후 전자금융감독규정이 개정되며, 금융회사의 상용 클라우드 이용 절차가 이전보다 명확해짐. 2025-02-05 시행된 개정판(제14조의2)은 중요도 평가로 업무를 구분하고, 클라우드 이용 보고를 사전보고(7영업일 전)에서 사후보고(사유 발생 후 3개월 이내)로 전환해 착수 적시성을 높임. 금융보안원은 9개 CSP와 협업해 클라우드 보안 관리 참고서를 배포.</p>
       </div>
       <div class="card">
         <div class="num">INDUSTRY</div>
@@ -97,7 +97,7 @@
         <p style="color:var(--text-dim); font-size:.95rem; line-height:1.7;">Java 1.8/JSP는 최신 보안 패치, 라이브러리 생태계, 채용 시장 모든 면에서 유지비용이 계속 상승 중. 늦출수록 전환 난이도와 리스크가 커짐.</p>
       </div>
     </div>
-    <div class="slide-num">04 / 16</div>
+    <div class="slide-num">04 / 17</div>
   </section>
 
   <!-- 5. Target architecture diagram -->
@@ -161,7 +161,7 @@
       </div>
     </div>
     <p class="lede" style="margin-top:10px; font-size:.78rem;">CDN 리버스 프록시로 경로 분기 — 도메인 완전 이관 전에도 페이지 단위 점진 전환을 1.5단계로 앞당긴다.</p>
-    <div class="slide-num">05 / 16</div>
+    <div class="slide-num">05 / 17</div>
   </section>
 
   <!-- 6. Improvement 1: Frontend -->
@@ -187,10 +187,39 @@
         </ul>
       </div>
     </div>
-    <div class="slide-num">06 / 16</div>
+    <div class="slide-num">06 / 17</div>
   </section>
 
-  <!-- 7. Improvement 2: Cloud -->
+  <!-- 7. Why Next.js -->
+  <section class="slide">
+    <div class="kicker">Why Next.js</div>
+    <h2>왜 Next.js인가</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>SSR이 CSR보다 SEO에 유리</h3>
+        <p style="color:var(--text-dim); font-size:.95rem; line-height:1.7;">CSR(순수 SPA)은 브라우저가 JS를 실행해야 콘텐츠가 채워져, 크롤러가 빈 HTML만 보고 색인에 실패할 수 있다. Next.js는 서버사이드 렌더링을 기본 지원해 JSP가 갖고 있던 SEO 이점을 그대로 이어받는다.</p>
+      </div>
+      <div class="card risk-card">
+        <h3>대가 — 개발 복잡도 상승</h3>
+        <p style="font-size:.9rem; color:var(--text-dim);">어떤 화면·컴포넌트를 서버에서 렌더링(SSR)하고 어떤 것을 브라우저에서 렌더링(CSR)할지 명확히 나눠서 설계·개발해야 한다. 아무 컴포넌트나 클라이언트 컴포넌트로 짜면 실질적으로 CSR SPA가 되어버려 도입 의미가 사라진다.</p>
+        <div class="mitigation"><b>대응</b> — SSR/CSR 구분 기준을 컨벤션으로 문서화하고, 코드 리뷰에서 의도치 않은 CSR화를 걸러낸다.</div>
+      </div>
+    </div>
+    <table class="compare" style="margin-top:18px; font-size:.82rem;">
+      <thead><tr><th>항목</th><th>CSR (순수 SPA)</th><th>SSR (Next.js 기본)</th></tr></thead>
+      <tbody>
+        <tr><td>SEO / 초기 렌더링</td><td class="current">빈 HTML → 크롤러 색인 실패 위험</td><td class="target">완성된 HTML을 바로 수집</td></tr>
+        <tr><td>서버 부하 / 비용</td><td class="current">정적 호스팅으로 충분</td><td class="target">ECS 상시 서버 필요 (SSG/ISR로 완화)</td></tr>
+        <tr><td>로딩 vs 전환 속도</td><td class="current">첫 로딩 느림 / 전환 매우 빠름</td><td class="target">첫 로딩 빠름 / 전환은 별도 최적화 필요</td></tr>
+        <tr><td>개발/디버깅 복잡도</td><td class="current">브라우저 하나 — 단순</td><td class="target">서버·클라이언트 이중 실행 — 하이드레이션 이슈</td></tr>
+        <tr><td>캐싱 전략</td><td class="current">번들 단위 CDN 캐싱</td><td class="target">화면별 SSR/SSG/ISR 세밀 제어</td></tr>
+      </tbody>
+    </table>
+    <p class="lede" style="margin-top:10px; font-size:.8rem;">SEO/GEO 이점 때문에 SSR 기본 채택 + 변경 적은 화면은 SSG/ISR + 인터랙션 위주 화면만 의도적으로 CSR.</p>
+    <div class="slide-num">07 / 17</div>
+  </section>
+
+  <!-- 8. Improvement 2: Cloud -->
   <section class="slide">
     <div class="kicker">개선 영역 2 / 4</div>
     <h2>클라우드 전환 — AWS</h2>
@@ -207,14 +236,14 @@
         <h3>장기 비전</h3>
         <ul class="bullets">
           <li>프론트엔드가 단일 서비스 분리를 넘어, 여러 마이크로서비스 화면이 모이는 <b>슈퍼앱(마이크로프론트엔드)</b> 구조로 진화</li>
-          <li>단, 서비스 경계는 실제 배포 주기·트래픽 차이가 있는 곳에서만 분리 (10번 슬라이드 참고)</li>
+          <li>단, 서비스 경계는 실제 배포 주기·트래픽 차이가 있는 곳에서만 분리 (13번 슬라이드 참고)</li>
         </ul>
       </div>
     </div>
-    <div class="slide-num">07 / 16</div>
+    <div class="slide-num">08 / 17</div>
   </section>
 
-  <!-- 8. Why containers -->
+  <!-- 9. Why containers -->
   <section class="slide">
     <div class="kicker">Why Containers</div>
     <h2>왜 컨테이너(ECS)인가</h2>
@@ -230,7 +259,7 @@
       <div class="card"><h3>이식성</h3><p style="color:var(--text-dim); font-size:.88rem;">같은 이미지를 클라우드와 폐쇄망 양쪽에서 실행. DMZ API처럼 위치가 바뀔 수 있는 구성 요소의 재작업이 줄어든다.</p></div>
       <div class="card risk-card"><h3>대가</h3><p style="font-size:.88rem; color:var(--text-dim);">이미지·레지스트리·오케스트레이션 학습 비용, ECS 상시 실행에 따른 운영 부담·비용 증가.</p><div class="mitigation"><b>판단</b> — 어차피 스크래핑/잡서비스는 컨테이너화가 필요하다. 프론트만 다른 방식이면 CI/CD·관측성·롤백을 두 벌로 유지해야 한다.</div></div>
     </div>
-    <div class="slide-num">08 / 16</div>
+    <div class="slide-num">09 / 17</div>
   </section>
 
   <!-- 10. Improvement 3: CI/CD -->
@@ -255,10 +284,21 @@
         </ul>
       </div>
     </div>
-    <div class="slide-num">09 / 16</div>
+    <div style="margin-top:22px;">
+      <h3>파이프라인 6단계</h3>
+      <ul class="bullets">
+        <li><b>PR 게이트</b> — lint/typecheck/단위 테스트 + 캐릭터라이제이션 테스트(JSP→API 전환 구간의 회귀 확인) + SCA/SAST 보안 스캔(레거시 의존성 CVE, 시크릿 하드코딩 탐지)</li>
+        <li><b>빌드</b> — 커밋 SHA 태그로 이미지 빌드 → ECR 푸시</li>
+        <li><b>스테이징 배포</b> — IaC로 구성한 스테이징에 ECS 롤링 업데이트 + 통합/E2E 테스트</li>
+        <li><b>프로덕션 배포</b> — 카나리(일부 태스크 우선 배포) + Shadow Traffic(신구 로직 비동기 비교) 병행. 배포(이미지)와 노출(사용자 비율)은 feature flag로 분리 제어</li>
+        <li><b>롤백</b> — 이전 이미지 태그로 ECS 서비스만 업데이트하면 즉시 복구</li>
+        <li><b>배포 후 관측</b> — CloudWatch 알람과 배포 이벤트를 연결해 에러율/지연시간 급증 자동 감지</li>
+      </ul>
+    </div>
+    <div class="slide-num">10 / 17</div>
   </section>
 
-  <!-- 10. Improvement 4: DMZ / Private network -->
+  <!-- 11. Improvement 4: DMZ / Private network -->
   <section class="slide">
     <div class="kicker">개선 영역 4 / 4</div>
     <h2>폐쇄망 극복 — DMZ API &amp; AWS Private Network</h2>
@@ -280,30 +320,33 @@
         </ul>
       </div>
     </div>
-    <div class="slide-num">10 / 16</div>
+    <div class="slide-num">11 / 17</div>
   </section>
 
-  <!-- 11. Additional improvements found via research -->
+  <!-- 12. Additional improvements found via research -->
   <section class="slide">
     <div class="kicker">Research Findings</div>
     <h2>추가로 발견한 개선 기회</h2>
     <div class="grid3">
-      <div class="card"><h3>인증 체계 통합</h3><p style="color:var(--text-dim); font-size:.88rem;">세션 기반(JSP) → 토큰 기반(JWT/OAuth2). API Gateway 단에서 통합해 프론트 입장에서는 단일 인증 흐름으로.</p></div>
-      <div class="card"><h3>관측성 확보</h3><p style="color:var(--text-dim); font-size:.88rem;">구조화 로깅 + CloudWatch/APM. 배포 빈도가 늘수록 장애 원인 추적 속도가 중요해짐.</p></div>
+      <div class="card"><h3>인증 체계 통합</h3><p style="color:var(--text-dim); font-size:.88rem;">세션 기반(JSP) → 토큰 기반(JWT/OAuth2). 과도기에는 RFC 8693(Token Exchange) 방식 브릿지로 레거시 세션을 신규 JWT로 교환하고, API Gateway 단에서 검증을 통합해 프론트 입장에서는 단일 인증 흐름으로 보이게 한다.</p></div>
+      <div class="card"><h3>관측성 확보</h3><p style="color:var(--text-dim); font-size:.88rem;">구조화 로깅 + CloudWatch/APM. 폐쇄망 경계를 넘는 요청은 OpenTelemetry(ADOT)로 계측 통일 → X-Ray 수집, 경계에서 트레이스 헤더(X-Ray vs W3C Trace Context)가 끊기지 않게 프로퍼게이션 설정. 프론트는 CloudWatch RUM으로 실사용자 지표까지 확장.</p></div>
+      <div class="card"><h3>Feature Flag 점진적 노출</h3><p style="color:var(--text-dim); font-size:.88rem;">CDN은 경로 단위(all-or-nothing)로만 신구를 나눈다 — 같은 경로 안에서 사용자 비율/세그먼트별로 신규 화면을 노출·즉시 롤백하려면 AWS AppConfig Feature Flags 같은 도구로 배포와 노출을 분리한다.</p></div>
       <div class="card"><h3>IaC 도입</h3><p style="color:var(--text-dim); font-size:.88rem;">Terraform 등으로 DMZ/Private Network 구성까지 코드화해 재현 가능하게 관리.</p></div>
-      <div class="card"><h3>테스트 자동화</h3><p style="color:var(--text-dim); font-size:.88rem;">전환 중 회귀 방지를 위한 자동화 테스트, 신구 API 병행 비교(shadow traffic).</p></div>
+      <div class="card"><h3>테스트 자동화</h3><p style="color:var(--text-dim); font-size:.88rem;">API 전환 직전 캐릭터라이제이션(골든 마스터) 테스트로 기존 JSP 로직의 실제 동작을 먼저 고정 → 이후 신구 API 병행 비교(shadow traffic).</p></div>
       <div class="card"><h3>API 문서화</h3><p style="color:var(--text-dim); font-size:.88rem;">JSP를 API로 전환할 때 OpenAPI 명세로 계약을 명확히 해 결합도를 낮춤.</p></div>
       <div class="card"><h3>배치 워크로드 컨테이너화</h3><p style="color:var(--text-dim); font-size:.88rem;">스크래핑/잡서비스를 상시 프로세스 대신 이벤트 기반 스케줄링(EventBridge, Step Functions)으로.</p></div>
       <div class="card"><h3>Java 버전 업그레이드</h3><p style="color:var(--text-dim); font-size:.88rem;">JSP를 API로 전환하며 런타임도 Java 1.8 → 11 → 17(LTS)로 단계적 상향. 신규 API는 최신 LTS 위에서 개발.</p></div>
       <div class="card"><h3>CDN 리버스 프록시로 조기 전환</h3><p style="color:var(--text-dim); font-size:.88rem;">CloudFront가 온프레미스를 커스텀 오리진으로 두고 경로별 분기 — 도메인 완전 이관 전에도 페이지 단위 전환 가능.</p></div>
       <div class="card"><h3>javax → jakarta 네임스페이스</h3><p style="color:var(--text-dim); font-size:.88rem;">Tomcat 10+/Spring Boot 3+로 갈 때 필요한 패키지 전면 변경 — OpenRewrite 레시피로 자동화.</p></div>
       <div class="card"><h3>Shadow Traffic 검증</h3><p style="color:var(--text-dim); font-size:.88rem;">GitHub Scientist 방식처럼 신규 코드를 실제 트래픽에 함께 실행해 기존 로직과 결과만 비교, 응답은 기존 로직 그대로.</p></div>
+      <div class="card"><h3>보안 스캐닝(SCA/SAST/이미지)</h3><p style="color:var(--text-dim); font-size:.88rem;">PR 게이트에 OWASP Dependency-Check(SCA)로 레거시 의존성의 알려진 CVE부터 걸러내고, 신규 API 코드는 SAST(정적 분석)까지 함께 돈다. 신규 코드 없이도 기존 의존성 목록만으로 바로 시작 가능. 다만 SCA·SAST는 컨테이너 베이스 이미지 자체의 취약점은 못 보므로, 빌드 단계에 ECR 이미지 스캐닝(Inspector)·Trivy를 추가로 두어 CRITICAL/HIGH 발견 시 배포를 막는다.</p></div>
+      <div class="card"><h3>시크릿 관리</h3><p style="color:var(--text-dim); font-size:.88rem;">DB 자격증명·JWT 서명 키를 이미지/소스에 하드코딩하지 않고 AWS Secrets Manager/Parameter Store에서 ECS 태스크 시작 시점에 런타임 주입. 태스크별 IAM 역할로 최소 권한, 민감도 높은 값부터 자동 로테이션.</p></div>
     </div>
     <p class="lede" style="margin-top:24px; font-size:.85rem;">서비스 경계는 무조건 잘게 나누는 것이 능사가 아니다 — 아래 참고.</p>
-    <div class="slide-num">11 / 16</div>
+    <div class="slide-num">12 / 17</div>
   </section>
 
-  <!-- 12. Modular monolith vs microservices lesson -->
+  <!-- 13. Modular monolith vs microservices lesson -->
   <section class="slide">
     <div class="kicker">Lesson Learned</div>
     <h2>서비스 분리, 어디까지가 적정선인가</h2>
@@ -327,15 +370,15 @@
         </tr>
         <tr>
           <td>Capital One</td>
-          <td class="current">자체 데이터센터를 모두 폐쇄하고 AWS로 전면 이관한 금융회사 사례 (확인 필요)</td>
+          <td class="current">8개 데이터센터를 모두 폐쇄하고 AWS로 전면 이관 — 재해복구 시간 70% 단축, 트랜잭션 오류 50% 감소, 개발 환경 구축 3개월→수 분</td>
           <td class="target">망분리·규제 제약에서 출발한 금융회사도 단계적으로는 완전한 클라우드 전환이 가능함을 보여주는 선례</td>
         </tr>
       </tbody>
     </table>
-    <div class="slide-num">12 / 16</div>
+    <div class="slide-num">13 / 17</div>
   </section>
 
-  <!-- 13. Roadmap timeline -->
+  <!-- 14. Roadmap timeline -->
   <section class="slide">
     <div class="kicker">Roadmap</div>
     <h2>단계별 로드맵</h2>
@@ -384,10 +427,10 @@
         </div>
       </div>
     </div>
-    <div class="slide-num">13 / 16</div>
+    <div class="slide-num">14 / 17</div>
   </section>
 
-  <!-- 14. Risks -->
+  <!-- 15. Risks -->
   <section class="slide">
     <div class="kicker">Risks</div>
     <h2>리스크 및 대응</h2>
@@ -400,7 +443,7 @@
       <div class="card risk-card">
         <h3>인증/세션 불일치</h3>
         <p style="font-size:.9rem; color:var(--text-dim);">JSP 세션 기반 인증과 신규 API 토큰 기반 인증이 과도기에 공존</p>
-        <div class="mitigation"><b>대응</b> — Next.js 전환 이전에 인증 방식을 먼저 정리해 재설계 비용을 없앤다</div>
+        <div class="mitigation"><b>대응</b> — RFC 8693 기반 토큰 교환 브릿지로 세션↔JWT를 연결하고, CDN 리버스 프록시 구간은 쿠키 Domain/Path를 맞춰 재로그인 없이 신구 경로를 오가게 한다</div>
       </div>
       <div class="card risk-card">
         <h3>과도한 서비스 분리</h3>
@@ -409,14 +452,29 @@
       </div>
       <div class="card risk-card">
         <h3>보안·컴플라이언스</h3>
-        <p style="font-size:.9rem; color:var(--text-dim);">금융 데이터가 오가는 DMZ API·Private Network 구간은 보안 검토가 선행되어야 하며, PrivateLink/Direct Connect 자체가 국내 법규상 어려울 가능성이 있음(확인 필요)</p>
-        <div class="mitigation"><b>대응</b> — 금융보안원 가이드 준수, 제로트러스트 원칙 적용, 법무팀 사전 검토를 일정에 명시적으로 포함. 어려울 경우 mTLS/IP 화이트리스트 기반 옵션 B로 전환</div>
+        <p style="font-size:.9rem; color:var(--text-dim);">금융 데이터가 오가는 DMZ API·Private Network 구간은 보안 검토가 선행되어야 하며, PrivateLink/Direct Connect 자체가 국내 법규상 어려울 가능성이 있음(확인 필요). 이와 별개로 고객 데이터를 다루는 워크로드를 클라우드로 옮길 때마다 전자금융감독규정 제14조의2에 따른 중요도 평가·안전성 확보조치·보고 절차가 필요</p>
+        <div class="mitigation"><b>대응</b> — 금융보안원 가이드 준수, 제로트러스트 원칙 적용, 법무팀 사전 검토를 일정에 명시적으로 포함. PrivateLink 적법성이 어려울 경우 mTLS/IP 화이트리스트 기반 옵션 B로 전환. 워크로드별 중요도 평가는 실제 이관 착수 전에 보안팀·법무팀과 먼저 완료</div>
+      </div>
+      <div class="card risk-card">
+        <h3>Feature Flag 부채</h3>
+        <p style="font-size:.9rem; color:var(--text-dim);">완전 전환 후에도 플래그와 신구 분기 코드가 정리되지 않고 코드에 계속 남을 수 있음</p>
+        <div class="mitigation"><b>대응</b> — flag를 만들 때부터 "100% 전환 후 flag·레거시 분기 제거"를 완료 조건에 포함하고 주기적으로 점검</div>
+      </div>
+      <div class="card risk-card">
+        <h3>자격증명 하드코딩·이미지 유출</h3>
+        <p style="font-size:.9rem; color:var(--text-dim);">컨테이너 전환 과정에서 자격증명을 이미지/소스에 그대로 구워넣으면 레지스트리 접근 권한자 누구나 평문 자격증명을 볼 수 있음. 레거시 JSP도 알려진 취약점이 있는 오래된 라이브러리를 쓰고 있을 가능성</p>
+        <div class="mitigation"><b>대응</b> — Secrets Manager/Parameter Store 런타임 주입을 CI/CD 착수 시점부터 기본값으로, OWASP Dependency-Check(SCA)로 레거시 의존성 CVE를 PR 게이트에서 선제 차단</div>
+      </div>
+      <div class="card risk-card">
+        <h3>팀 역량 전환</h3>
+        <p style="font-size:.9rem; color:var(--text-dim);">팀 역량이 JSP/Java 1.8·온프레미스 배포에 맞춰져 있어, React/Next.js·IaC·컨테이너·분산 추적 같은 신규 스택은 도구 교체가 아니라 팀 역량 자체의 전환을 요구함. Next.js/React는 기존 JSP 개발자와 겹치는 부분이 거의 없는 새 학습 영역</p>
+        <div class="mitigation"><b>대응</b> — 1단계 신규 API부터 Java 11/17·컨테이너·IaC를 작은 규모로 먼저 경험시켜 2단계(Next.js/ECS 전면 전환) 전에 학습 곡선을 앞당겨 소화. 프론트엔드 역량은 내부 전환 교육/신규 채용 중 무엇으로 채울지 2단계 착수 전 결정(확인 필요)</div>
       </div>
     </div>
-    <div class="slide-num">14 / 16</div>
+    <div class="slide-num">15 / 17</div>
   </section>
 
-  <!-- 15. Next steps -->
+  <!-- 16. Next steps -->
   <section class="slide">
     <div class="kicker">Next Steps</div>
     <h2>결론 및 다음 단계</h2>
@@ -427,10 +485,10 @@
       <li><b>확인 필요</b> — 폐쇄망 DB 접근 범위와 보안 검토 주체 확정 (보안팀 협의 필요)</li>
       <li><b>확인 필요</b> — 스크래핑/잡서비스 컨테이너화 우선순위 (트래픽·배포 주기 실측 후 결정)</li>
     </ul>
-    <div class="slide-num">15 / 16</div>
+    <div class="slide-num">16 / 17</div>
   </section>
 
-  <!-- 16. Sources -->
+  <!-- 17. Sources -->
   <section class="slide">
     <div class="kicker">Appendix</div>
     <h2>참고 자료</h2>
@@ -440,16 +498,27 @@
       <li><a href="https://thenewstack.io/return-of-the-monolith-amazon-dumps-microservices-for-video-monitoring/" target="_blank" rel="noopener">Return of the Monolith — Amazon Prime Video (The New Stack)</a><span class="src-desc">과도한 서비스 분리 사례</span></li>
       <li><a href="https://www.metamindz.co.uk/post/modular-monolith-renaissance-shopify-amazon-stack-overflow-2026" target="_blank" rel="noopener">The Modular Monolith Renaissance — Shopify, Amazon, Stack Overflow</a><span class="src-desc">모듈러 모놀리스 사례</span></li>
       <li><a href="https://www.fsec.or.kr/bbs/detail?menuNo=222&bbsNo=11562" target="_blank" rel="noopener">금융분야 상용 클라우드서비스 보안 관리 참고서 — 금융보안원</a><span class="src-desc">Multi-VPC(DMZ/내부망 + Transit Gateway) 표준 패턴</span></li>
-      <li><a href="https://www.fsc.go.kr/no010101/78962" target="_blank" rel="noopener">클라우드 이용절차 합리화 및 망분리 규제 완화 — 금융위원회 보도자료</a><span class="src-desc">망분리 규제 완화 근거</span></li>
-      <li><a href="https://aws.amazon.com/ko/blogs/tech/financial-cloud-guide-a-to-z-part1/" target="_blank" rel="noopener">금융 클라우드 길라잡이 A to Z Part 1 — AWS 기술 블로그</a><span class="src-desc">전자금융감독규정과 클라우드 도입 절차</span></li>
+      <li><a href="https://www.fsc.go.kr/no010101/78962" target="_blank" rel="noopener">클라우드 이용절차 합리화 및 망분리 규제 완화 — 금융위원회 보도자료</a><span class="src-desc">망분리 규제 완화 근거, 전자금융감독규정 제14조의2 사전보고→사후보고 전환</span></li>
+      <li><a href="https://aws.amazon.com/ko/blogs/tech/financial-cloud-guide-a-to-z-part1/" target="_blank" rel="noopener">금융 클라우드 길라잡이 A to Z Part 1 — AWS 기술 블로그</a><span class="src-desc">전자금융감독규정 제14조의2 중요도 평가·차등 절차 해설</span></li>
       <li><a href="https://docs.aws.amazon.com/whitepapers/latest/aws-privatelink/use-case-examples.html" target="_blank" rel="noopener">Securely Access Services Over AWS PrivateLink — AWS Whitepaper</a><span class="src-desc">온프레미스-클라우드 연결 패턴</span></li>
+      <li><a href="https://aws.amazon.com/solutions/case-studies/capital-one-all-in-on-aws/" target="_blank" rel="noopener">Migrating from Data Centers to AWS — Capital One (AWS 공식 사례 연구)</a><span class="src-desc">금융회사의 완전한 클라우드 이관 사례, 정량 성과</span></li>
+      <li><a href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-scanning.html" target="_blank" rel="noopener">Image scanning — Amazon ECR 공식 문서</a><span class="src-desc">Basic/Enhanced 스캐닝, Amazon Inspector 연동 CVE 자동 재스캔</span></li>
+      <li><a href="https://github.com/aquasecurity/trivy" target="_blank" rel="noopener">Trivy — Aqua Security</a><span class="src-desc">오픈소스 컨테이너 이미지 취약점 스캐너, CI 파이프라인 게이트용</span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Working_Effectively_with_Legacy_Code" target="_blank" rel="noopener">Working Effectively with Legacy Code — Michael Feathers</a><span class="src-desc">캐릭터라이제이션(골든 마스터) 테스트 개념</span></li>
+      <li><a href="https://approvaltests.com/" target="_blank" rel="noopener">ApprovalTests</a><span class="src-desc">골든 마스터 스냅샷 비교 테스트 도구</span></li>
       <li><a href="https://koreascience.kr/article/JAKO202332154450212.page" target="_blank" rel="noopener">국내 금융권 클라우드 전환 동향 및 보안 — Review of KIISC</a><span class="src-desc">국내 금융권 클라우드 네이티브 채택 동향</span></li>
       <li><a href="https://ijcesen.com/index.php/ijcesen/article/view/4965" target="_blank" rel="noopener">Legacy Core Modernization via Strangler-Fig with Micro Frontends — IJCESEN</a><span class="src-desc">JSP 레거시 + 마이크로프론트엔드 전환 사례 연구</span></li>
       <li><a href="https://github.com/openrewrite/rewrite-migrate-java" target="_blank" rel="noopener">rewrite-migrate-java — OpenRewrite</a><span class="src-desc">javax → jakarta 네임스페이스 자동 마이그레이션 레시피</span></li>
       <li><a href="https://spring.io/blog/2022/05/24/preparing-for-spring-boot-3-0" target="_blank" rel="noopener">Preparing for Spring Boot 3.0 — Spring Blog</a><span class="src-desc">Jakarta EE 9 네임스페이스 변경 배경</span></li>
       <li><a href="https://github.com/github/scientist" target="_blank" rel="noopener">Scientist — GitHub</a><span class="src-desc">신구 로직 병행 비교(shadow traffic)로 안전하게 리팩터링하는 방식</span></li>
+      <li><a href="https://www.rfc-editor.org/info/rfc8693/" target="_blank" rel="noopener">RFC 8693 — OAuth 2.0 Token Exchange</a><span class="src-desc">레거시 세션을 신규 JWT로 교환하는 인증 브릿지의 표준 근거</span></li>
+      <li><a href="https://docs.aws.amazon.com/whitepapers/latest/microservices-on-aws/distributed-tracing.html" target="_blank" rel="noopener">Distributed tracing — Implementing Microservices on AWS (AWS Whitepaper)</a><span class="src-desc">X-Ray/OpenTelemetry 분산 추적 개념</span></li>
+      <li><a href="https://aws.amazon.com/about-aws/whats-new/2021/09/aws-availability-distro-opentelemetry-tracing-support" target="_blank" rel="noopener">AWS Distro for OpenTelemetry(ADOT) Tracing GA — AWS</a><span class="src-desc">OTel 계측을 X-Ray로 수집하는 방법</span></li>
+      <li><a href="https://aws.amazon.com/about-aws/whats-new/2022/03/aws-appconfig-feature-flags" target="_blank" rel="noopener">AWS AppConfig Feature Flags GA — AWS</a><span class="src-desc">배포와 노출을 분리하는 feature flag 서비스</span></li>
+      <li><a href="https://aws.amazon.com/about-aws/whats-new/2024/07/aws-appconfig-feature-flag-targets-variants-splits" target="_blank" rel="noopener">AppConfig 타겟/변형/분할 기능 — AWS</a><span class="src-desc">사용자 세그먼트별 점진적 노출</span></li>
+      <li><a href="https://docs.getunleash.io/guides/feature-flags-for-migrations" target="_blank" rel="noopener">Feature flags for cloud migrations and modernization — Unleash</a><span class="src-desc">interception layer + feature flag 기반 strangler 패턴</span></li>
     </ul>
-    <div class="slide-num">16 / 16</div>
+    <div class="slide-num">17 / 17</div>
   </section>
 
 </div>
