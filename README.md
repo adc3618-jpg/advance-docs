@@ -9,7 +9,7 @@
 - [`tools/dev_server.mjs`](tools/dev_server.mjs) — 저장 시 브라우저가 자동 새로고침되는 개발 서버 (`node tools/dev_server.mjs`)
 - [`tools/export_html.mjs`](tools/export_html.mjs) — 문서 HTML을 단독 HTML 파일로 내보내기 (`node tools/export_html.mjs 문서.html`)
 - [`services/`](services/) — 서비스별 상세 문서 (API, 실행법, 장애 대응)
-- [`standards/`](standards/) — 팀 공통 개발 원칙 (프론트엔드/백엔드 책임 분리 등)
+- [`standards/`](standards/) — 팀 공통 개발 원칙 (프론트엔드/백엔드 책임 분리 등), [Claude Code 지침 예시](standards/ai-examples/)
 
 ## 새 서비스 문서 추가하기
 
