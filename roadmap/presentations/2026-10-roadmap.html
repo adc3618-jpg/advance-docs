@@ -70,20 +70,24 @@
   <section class="slide">
     <div class="kicker">선정산이란?</div>
     <h2>종합 플랫폼 대응 (IT 관점)</h2>
-    <p class="lede" style="max-width:none">IT 관점에서는 무엇을 할 수 있는가?</p>
+    <p class="lede" style="max-width:none">왜 현대화가 필요하고, IT 관점에서는 무엇을 할 수 있는가?</p>
     <div class="arrow-row" style="margin:var(--sp-5) 0">
       <span class="tag accent">선정산 (첫 시작 서비스)</span>
       <span>→</span>
       <span class="tag">종합 플랫폼</span>
     </div>
-    <div class="grid-2">
+    <div class="grid-3">
       <div class="card">
         <h4>IT 기반을 먼저 탄탄히</h4>
         <p class="text-dim">선정산은 종합 플랫폼의 첫걸음입니다. 앞으로 더해질 서비스를 받쳐 줄 토대를 지금부터 차근차근 만들어 갑니다.</p>
       </div>
       <div class="card">
+        <h4>서비스가 늘어납니다</h4>
+        <p class="text-dim">서비스가 늘면 하나의 코드베이스를 여러 팀이 함께 고치게 되어 변경 충돌과 배포 부담이 커집니다. 개발 속도와 인력 확장에도 한계가 생깁니다.</p>
+      </div>
+      <div class="card">
         <h4>모놀리식 → 마이크로서비스</h4>
-        <p class="text-dim">서비스가 늘어나는 만큼 모놀리식 구조는 부담이 커집니다. 서비스 단위로 나누어 독립적으로 개발·배포할 수 있는 구조로 단계적으로 전환해 갑니다.</p>
+        <p class="text-dim">서비스 단위로 나누어 팀별로 독립적으로 개발·배포할 수 있는 구조로 단계적으로 전환해 갑니다.</p>
       </div>
     </div>
     <div class="slide-num"></div>
@@ -93,7 +97,55 @@
   <section class="slide">
     <div class="kicker">아키텍처 현대화</div>
     <h2>개요</h2>
-    <p class="text-dim">(작성 예정)</p>
+    <p class="lede" style="max-width:none">JSP 모놀리식에서 <b>경로 기반 라우팅 + 마이크로서비스</b> 구조로 전환합니다.</p>
+    <div class="diagram-row" style="align-items:center;margin:var(--sp-5) 0">
+      <div class="box dim">사용자</div>
+      <span class="arrow-row">→</span>
+      <div class="box accent"><div class="label">L7 스위치</div>경로 기반 라우팅</div>
+      <span class="arrow-row">→</span>
+      <div class="stack" style="flex:1;min-width:260px">
+        <div class="box"><div class="label">/</div>프론트엔드 (React · Next.js)</div>
+        <div class="box"><div class="label">/api/서비스A</div>마이크로서비스 A</div>
+        <div class="box"><div class="label">/api/서비스B</div>마이크로서비스 B</div>
+      </div>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <h4>화면과 API 분리</h4>
+        <p class="text-dim">JSP에 묶여 있던 화면과 로직을 나눕니다. 화면은 <b>프론트엔드</b>(React · Next.js)가, 로직은 <b>백엔드</b>(API)가 맡습니다.</p>
+      </div>
+      <div class="card">
+        <h4>세션 stateless 전환</h4>
+        <p class="text-dim">서버 세션 대신 토큰(ex. JWT)으로 인증합니다. 어느 서비스로 요청이 가도 같은 방식으로 사용자를 확인할 수 있어, 서비스를 자유롭게 늘리고 나눌 수 있습니다.</p>
+      </div>
+      <div class="card">
+        <h4>경로 기반 라우팅</h4>
+        <p class="text-dim">하나의 도메인 아래 서비스를 경로로 나눠 점진적 전환과 서비스 간 연동에 유리합니다.</p>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 5-1. 왜 경로 기반 라우팅인가 -->
+  <section class="slide">
+    <div class="kicker">아키텍처 현대화</div>
+    <h2>왜 경로 기반 라우팅인가</h2>
+    <p class="lede" style="max-width:none">하나의 도메인 아래에서 경로로 서비스를 나누면, <b>멈추지 않고 조금씩</b> 전환할 수 있습니다.</p>
+    <table class="compare">
+      <thead>
+        <tr><th>항목</th><th>서브도메인<br/><span class="text-faint" style="text-transform:none">api.example.com</span></th><th>경로 기반<br/><span class="text-faint" style="text-transform:none">example.com/api</span></th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>점진적 전환</b></td><td class="current">서비스 이전 시마다 URL 변경</td><td class="target">L7에서 경로 단위로 하나씩 이전, URL 유지 · 문제 시 해당 경로만 롤백</td></tr>
+        <tr><td><b>CORS</b></td><td class="current">origin이 달라 서비스마다 CORS 설정 · preflight 요청 필요</td><td class="target">같은 origin, CORS 불필요</td></tr>
+        <tr><td><b>스토리지 공유</b></td><td class="current">쿠키는 Domain 속성으로 공유 가능, localStorage는 공유 불가</td><td class="target">쿠키 · localStorage 별도 설정 없이 공유</td></tr>
+        <tr><td><b>진입점</b></td><td class="current">서비스마다 인증서 · 도메인 설정 증가</td><td class="target">인증서, WAF, 접근 로그, 트래픽 제어를 L7 한곳에서 관리</td></tr>
+        <tr><td><b>SEO</b></td><td class="current">별도 사이트로 취급될 수 있어 도메인 신호 분산 가능</td><td class="target">하나의 도메인에 콘텐츠 집중, 신호 분산 없음</td></tr>
+      </tbody>
+    </table>
+    <div class="callout is-warn">
+      <b>전제</b> — 같은 origin을 쓰는 만큼 공통 보안 기준, 스토리지·쿠키 키의 서비스별 prefix, 경로 할당 규칙, L7 이중화를 함께 갖춥니다.
+    </div>
     <div class="slide-num"></div>
   </section>
 
