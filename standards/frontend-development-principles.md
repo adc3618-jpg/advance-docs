@@ -1,7 +1,6 @@
 # 프론트엔드 개발 방향
 
-> 백엔드/프론트엔드 책임 분리 원칙. Next.js 전환([`roadmap/target-architecture.md`](../roadmap/target-architecture.md))과
-> 신규 API 설계 전반에 적용한다.
+> 백엔드/프론트엔드 책임 분리 원칙. Next.js 전환과 신규 API 설계 전반에 적용한다.
 
 ## 배경
 
@@ -128,8 +127,3 @@ await api.post('/orders', { amount });
 - [ ] 에러/상태 응답이 고정된 `code`로 내려오고, 사용자 문구는 프론트 매핑 테이블에만 있는가?
 - [ ] 신규 입력 필드에 대해 프론트 검증과 백엔드 검증이 모두 추가되었는가? 두 규칙이 같은 소스(스키마)에서 나왔는가?
 - [ ] API 요청 payload에 콤마·통화기호·마스킹 등 화면 표시용으로 가공된 값이 그대로 담겨 있지 않은가?
-
-## 관련 문서
-
-- [`roadmap/target-architecture.md`](../roadmap/target-architecture.md) — API Gateway/BFF, 인증 통합 등 API 계층 설계
-- [`roadmap/outline.md`](../roadmap/outline.md) — API 문서화(OpenAPI), 테스트 자동화 등 이 원칙과 함께 가는 개선 항목
