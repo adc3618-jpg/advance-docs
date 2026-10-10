@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>선정산 서비스 기술 로드맵</title>
+<link rel="stylesheet" as="style" crossorigin
+  href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="../../assets/css/common.css" />
+<link rel="stylesheet" href="../../assets/css/slides.css" />
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div id="deck">
+
+  <!-- 1. Title -->
+  <section class="slide title-slide">
+    <div class="kicker">Roadmap</div>
+    <h1>선정산 서비스<br/>기술 로드맵</h1>
+    <div class="meta">
+      <span class="tag accent">2026-10</span>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 2. Agenda -->
+  <section class="slide">
+    <div class="kicker">Agenda</div>
+    <h2>목차</h2>
+    <ol class="agenda">
+      <li>선정산이란?<span class="sub">정의, 종합 플랫폼 대응 (IT 관점)</span></li>
+      <li>아키텍처 현대화<span class="sub">애플리케이션 · DB · 인프라</span></li>
+      <li>AI와 친해지기</li>
+    </ol>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 3. 선정산이란? -->
+  <section class="slide">
+    <div class="kicker">선정산이란?</div>
+    <h2>정의</h2>
+    <p class="lede" style="max-width:none">온라인 플랫폼 판매자가 결제~정산 사이에 <b>묶여 있는 판매대금을 앞당겨 정산</b>받는 금융 서비스</p>
+    <div class="grid-3">
+      <div class="card">
+        <h4>대출이 아니다</h4>
+        <p class="text-dim">이미 번 매출(정산금)을 양도하고 현금화하는 매출채권 팩토링 구조. 부채로 잡히지 않고 상환은 정산일에 자동 처리</p>
+      </div>
+      <div class="card">
+        <h4>왜 필요한가</h4>
+        <p class="text-dim">소비자 결제 후 실제 정산까지 일정 기간이 걸려, 그동안 사업·광고·운영 자금이 막힘. 미리 받은 정산금은 이 용도로 활용</p>
+      </div>
+      <div class="card">
+        <h4>KG파이낸셜 선정산</h4>
+        <p class="text-dim">오픈마켓 판매자 대상. 정산 예정 금액의 <b>최대 95%</b> 선지급, 수수료 <b>최저 0.9%</b><br/>2026-04 1차 파일럿 → <b>2026-07-31 정식 오픈</b></p>
+      </div>
+    </div>
+    <div class="arrow-row" style="margin:var(--sp-5) 0">
+      <span class="tag">판매 · 정산금 발생</span>
+      <span>→</span>
+      <span class="tag accent">선정산 신청 · 선지급</span>
+      <span>→</span>
+      <span class="tag">플랫폼 정산일 · 자동 상환</span>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 4. 종합 플랫폼 대응 -->
+  <section class="slide">
+    <div class="kicker">선정산이란?</div>
+    <h2>종합 플랫폼 대응 (IT 관점)</h2>
+    <p class="text-dim">(작성 예정)</p>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 5. 아키텍처 현대화 -->
+  <section class="slide">
+    <div class="kicker">아키텍처 현대화</div>
+    <h2>개요</h2>
+    <p class="text-dim">(작성 예정)</p>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 6. 애플리케이션 -->
+  <section class="slide">
+    <div class="kicker">아키텍처 현대화</div>
+    <h2>애플리케이션</h2>
+    <div class="grid">
+      <div class="card"><h4>프론트엔드</h4><p class="text-dim">(작성 예정)</p></div>
+      <div class="card"><h4>백엔드</h4><p class="text-dim">(작성 예정)</p></div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 7. DB -->
+  <section class="slide">
+    <div class="kicker">아키텍처 현대화</div>
+    <h2>DB</h2>
+    <p class="text-dim">(작성 예정)</p>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 8. 인프라 -->
+  <section class="slide">
+    <div class="kicker">아키텍처 현대화</div>
+    <h2>인프라</h2>
+    <p class="text-dim">(작성 예정)</p>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 9. AI와 친해지기 -->
+  <section class="slide">
+    <div class="kicker">AI와 친해지기</div>
+    <h2>AI와 친해지기</h2>
+    <ul class="bullets">
+      <li><b>목표</b> — AI를 코딩에 접목: 코딩부터 테스트, 문서화까지 자동화</li>
+    </ul>
+    <div class="slide-num"></div>
+  </section>
+
+</div>
+
+<div id="dots"></div>
+<div id="navbtns">
+  <button id="prevBtn" aria-label="이전 슬라이드">↑</button>
+  <button id="nextBtn" aria-label="다음 슬라이드">↓</button>
+</div>
+
+<script>
+(function(){
+  var deck = document.getElementById('deck');
+  var slides = Array.prototype.slice.call(document.querySelectorAll('section.slide'));
+  var dotsWrap = document.getElementById('dots');
+  var progress = document.getElementById('progress');
+
+  // 슬라이드 번호는 자동으로 채운다 (슬라이드를 추가·삭제해도 손댈 필요 없음)
+  var pad = function(n){ return (n < 10 ? '0' : '') + n; };
+  slides.forEach(function(s, i){
+    var num = s.querySelector('.slide-num');
+    if (num) num.textContent = pad(i + 1) + ' / ' + pad(slides.length);
+
+    var b = document.createElement('button');
+    b.setAttribute('aria-label', '슬라이드 ' + (i + 1));
+    b.addEventListener('click', function(){ slides[i].scrollIntoView({behavior:'smooth'}); });
+    dotsWrap.appendChild(b);
+  });
+  var dots = Array.prototype.slice.call(dotsWrap.children);
+
+  function currentIndex(){
+    var mid = deck.scrollTop + deck.clientHeight / 2;
+    var idx = 0;
+    slides.forEach(function(s, i){ if (s.offsetTop <= mid) idx = i; });
+    return idx;
+  }
+
+  function updateUI(){
+    var idx = currentIndex();
+    dots.forEach(function(d, i){ d.classList.toggle('active', i === idx); });
+    var pct = deck.scrollTop / (deck.scrollHeight - deck.clientHeight) * 100;
+    progress.style.width = (isFinite(pct) ? pct : 0) + '%';
+  }
+
+  // 현재 슬라이드를 URL 해시(#slide-N)로 남긴다 — 핫리로드/새로고침 후에도 같은 슬라이드로 복원
+  slides.forEach(function(s, i){ s.id = 'slide-' + (i + 1); });
+  var lastHash = '';
+  function syncHash(){
+    var h = '#' + slides[currentIndex()].id;
+    if (h !== lastHash){ lastHash = h; history.replaceState(null, '', h); }
+  }
+
+  deck.addEventListener('scroll', function(){ updateUI(); syncHash(); }, {passive:true});
+  window.addEventListener('resize', updateUI);
+
+  var m = /^#slide-(\d+)$/.exec(location.hash);
+  if (m && slides[m[1] - 1]){
+    slides[m[1] - 1].scrollIntoView({behavior:'instant'});
+    lastHash = location.hash;
+  }
+  updateUI();
+
+  function go(delta){
+    var next = Math.min(slides.length - 1, Math.max(0, currentIndex() + delta));
+    slides[next].scrollIntoView({behavior:'smooth'});
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', function(){ go(-1); });
+  document.getElementById('nextBtn').addEventListener('click', function(){ go(1); });
+
+  window.addEventListener('keydown', function(e){
+    if (['ArrowDown','ArrowRight','PageDown',' '].indexOf(e.key) > -1){ e.preventDefault(); go(1); }
+    if (['ArrowUp','ArrowLeft','PageUp'].indexOf(e.key) > -1){ e.preventDefault(); go(-1); }
+  });
+})();
+</script>
+</body>
+</html>
