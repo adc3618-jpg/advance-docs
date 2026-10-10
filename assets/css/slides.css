@@ -9,25 +9,31 @@
 #deck{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;}
 section.slide{
   position:relative;min-height:100vh;width:100%;scroll-snap-align:start;
-  display:flex;flex-direction:column;justify-content:center;
-  padding:6vh 8vw;border-bottom:1px solid var(--border);
+  /* 위로 정렬: 슬라이드마다 내용 높이가 달라도 넘길 때 제목 위치가 고정된다 */
+  display:flex;flex-direction:column;justify-content:flex-start;
+  /* 아래 여백은 슬라이드 번호(.slide-num) 자리만큼 둬서 notes와 겹치지 않게 한다 */
+  padding:10vh 8vw calc(5vh + 40px);border-bottom:1px solid var(--border);
   /* 한글은 어절 단위로 줄바꿈 (단어 중간에서 끊기지 않게). 긴 영문·URL은 넘치지 않도록 허용 */
   word-break:keep-all;overflow-wrap:break-word;
 }
+/* kicker 바로 아래 제목은 위 여백 없이 붙인다 (모든 슬라이드에서 제목 위치를 같게 유지) */
+section.slide > .kicker + h2{margin-top:0;}
+/* 슬라이드 표는 한 화면에 들어오도록 문서보다 행 높이를 조금 줄인다 */
+section.slide :is(th,td){padding-block:10px;}
 /* 카드 그리드 바로 뒤에 오는 문단은 붙어 보이지 않게 띄운다 */
 section.slide > :is(.grid,.grid-2,.grid-3) + p{margin-top:var(--sp-5);}
 /* 하위 구역(sub): 슬라이드 안의 내용 묶음. 안쪽 마지막 여백을 없애고, 구역끼리는 일정 간격 */
 .sub > :last-child,
 .sub ul > li:last-child{margin-bottom:0;}
 .sub + .sub{margin-top:var(--sp-6);}
-/* 하단 부가 설명 묶음(notes): 본문과 일정 간격, 줄끼리는 촘촘하게 */
-.notes{margin-top:var(--sp-7);display:flex;flex-direction:column;gap:var(--sp-1);}
+/* 하단 부가 설명 묶음(notes): 슬라이드 맨 아래로 붙인다. 내용이 길 때도 본문과 최소 간격은 유지, 줄끼리는 촘촘하게 */
+.notes{margin-top:auto;padding-top:var(--sp-6);display:flex;flex-direction:column;gap:var(--sp-1);}
 /* 부가 설명(주의, 참고, *용어 설명): 본문보다 한 단계 옅게 */
 .note{color:var(--text-faint);opacity:.7;font-size:var(--fs-sm);margin:0;}
 /* 하단에 부가 설명이 있는 용어 (*용어) */
 .term{color:var(--accent);}
 .slide-num{position:absolute;bottom:5vh;left:8vw;font-size:var(--fs-sm);color:var(--text-faint);letter-spacing:.05em;}
-.title-slide{align-items:flex-start;}
+.title-slide{align-items:flex-start;justify-content:center;padding-top:6vh;}
 .title-slide .service{color:var(--text-dim);margin-bottom:36px;}
 .title-slide .meta{margin-top:40px;display:flex;gap:14px;flex-wrap:wrap;}
 
@@ -71,3 +77,35 @@ body:not(.toc-open) #tocList{display:none;}
   #deck{height:auto;overflow:visible;margin-left:0;}
   section.slide{min-height:auto;page-break-after:always;}
 }
+
+/* 참고 문서 링크: 누르면 문서 원본을 모달로 띄운다 (GitHub 권한 없이도 열람) */
+.doc-link{all:unset;cursor:pointer;color:var(--accent);text-decoration:underline;text-underline-offset:3px;}
+.doc-link:hover{color:var(--accent-strong);}
+.doc-link:focus-visible{box-shadow:var(--focus);border-radius:var(--radius-sm);}
+.doc-link code{color:inherit;}
+
+/* 참고 문서 모달 */
+#docModal{
+  width:min(860px,calc(100vw - 32px));max-height:85vh;padding:0;
+  border:1px solid var(--border);border-radius:var(--radius-lg);
+  background:var(--bg-raise);color:var(--text);box-shadow:var(--shadow);
+  /* 모달은 슬라이드 밖에 있어 따로 지정: 한글은 어절 단위로 줄바꿈 */
+  word-break:keep-all;overflow-wrap:break-word;
+}
+#docModal[open]{display:flex;flex-direction:column;}
+#docModal::backdrop{background:rgba(0,0,0,.55);}
+.doc-modal-head{
+  display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);
+  padding:var(--sp-4) var(--sp-5);border-bottom:1px solid var(--border);
+}
+.doc-modal-head code{color:var(--text-faint);font-size:var(--fs-xs);margin-left:var(--sp-2);}
+#docModalClose{all:unset;cursor:pointer;color:var(--text-faint);font-size:var(--fs-lg);padding:0 var(--sp-2);}
+#docModalClose:hover{color:var(--text);}
+.doc-modal-body{overflow-y:auto;padding:var(--sp-5) var(--sp-6) var(--sp-6);font-size:var(--fs-md);}
+.doc-modal-body h1{font-size:var(--fs-xl);margin-top:0;}
+.doc-modal-body h2{font-size:var(--fs-lg);margin-top:var(--sp-6);}
+.doc-modal-body h3{font-size:var(--fs-md);margin-top:var(--sp-5);}
+.doc-modal-body blockquote{margin:0 0 var(--sp-4);padding-left:var(--sp-4);border-left:3px solid var(--border);color:var(--text-dim);}
+/* 체크리스트(- [ ]): 불릿 대신 체크박스를 문장 앞에 붙인다 */
+.doc-modal-body li:has(> input[type="checkbox"]){list-style:none;margin-left:-1.4em;}
+.doc-modal-body li > input[type="checkbox"]{display:inline-block;width:auto;padding:0;margin:0 var(--sp-2) 0 0;vertical-align:-2px;accent-color:var(--accent);}

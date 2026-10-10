@@ -354,17 +354,25 @@
           <tr><th>구분</th><th>백엔드</th><th>프론트엔드</th></tr>
         </thead>
         <tbody>
-          <tr><td><b>데이터</b></td><td>원형 데이터 <code>1234000</code></td><td>포맷 · 계산 <code>₩1,234,000</code></td></tr>
+          <tr><td><b>데이터</b></td><td>원형 값 + 통화 <code>{ "amount": 1234000, "currency": "KRW" }</code></td><td>통화에 맞춰 포맷 <code>₩1,234,000</code></td></tr>
+          <tr><td><b>계산</b></td><td>구성 값 <code>{ "price": 100000, "fee": 100, "currency": "KRW" }</code></td><td>합산 <code>100000 + 100</code> → <code>₩100,100</code></td></tr>
           <tr><td><b>시간</b></td><td>UTC 기준 시각 <code>2026-10-10T05:30:00Z</code></td><td><span class="term">*국제화</span>로 브라우저 타임존 변환 (서울 14:30 · 뉴욕 01:30)</td></tr>
+          <tr><td><b>일자</b></td><td>날짜 문자열 그대로 <code>"settleDate": "2026-10-15"</code></td><td>타임존 변환 없이 표시 <code>2026년 10월 15일</code></td></tr>
           <tr><td><b>메시지</b></td><td>고정된 에러 <code>code</code></td><td>사용자 문구 매핑</td></tr>
           <tr><td><b>검증</b></td><td>반드시 검증 (최종 방어선)</td><td>사용자 경험을 위한 즉시 검증</td></tr>
           <tr><td><b>전송 값</b></td><td>원형 값만 받음</td><td>콤마 · 마스킹을 뺀 원형 값 전송</td></tr>
         </tbody>
       </table>
     </div>
+    <div class="sub">
+      <ul class="bullets text-dim">
+        <li>JSP에서는 문구나 표시 형식 하나만 바꿔도 백엔드 배포가 필요했습니다. 역할을 나누면 화면 변경은 프론트엔드 배포만으로 끝납니다.</li>
+        <li>시간·숫자 표시는 새 기술이 아니라 브라우저 표준(ISO 8601, <code>Intl</code>)을 따르는 것입니다. 서버가 UTC로 내려주므로 서버 시간대가 바뀌어도 화면 시간은 그대로입니다.</li>
+      </ul>
+    </div>
     <div class="notes">
-      <p class="note">JSP에서는 문구나 표시 형식 하나만 바꿔도 백엔드 배포가 필요했습니다. 역할을 나누면 화면 변경은 프론트엔드 배포만으로 끝납니다.</p>
-      <p class="note">자세한 원칙과 코드 리뷰 체크리스트는 <code>standards/frontend-development-principles.md</code>를 참고합니다.</p>
+      <p class="note"><b>주의</b> — 정산 금액·수수료처럼 최종 금액이 기준인 값은 서버가 계산합니다. 정산일처럼 시각 없는 날짜는 UTC로 변환하면 하루가 밀릴 수 있어 문자열 그대로 주고받습니다.</p>
+      <p class="note">자세한 원칙과 코드 리뷰 체크리스트는 <button type="button" class="doc-link" data-doc="doc-frontend">프론트엔드 개발 원칙</button> 문서를 참고합니다.</p>
       <p class="note">* 국제화(i18n) — 사용자의 언어·지역에 맞게 시간·숫자·통화를 표시하는 것입니다. 브라우저에 내장된 <code>Intl</code> API로 별도 라이브러리 없이 처리합니다.</p>
     </div>
     <div class="slide-num"></div>
@@ -442,9 +450,136 @@ SELECT * FROM TB_USER WHERE DELETED_AT IS NULL AND USER_ID = :userId;</code></pr
   <section class="slide">
     <div class="kicker">AI와 친해지기</div>
     <h2>AI와 친해지기</h2>
-    <ul class="bullets">
-      <li><b>목표</b> — AI를 코딩에 접목: 코딩부터 테스트, 문서화까지 자동화</li>
-    </ul>
+    <p class="lede" style="max-width:none">AI를 코딩에 접목해 <b>코딩부터 테스트, 문서화까지</b> 하나의 흐름으로 자동화합니다. <span class="text-faint" style="font-size:var(--fs-sm)">(Claude Code 기준)</span></p>
+    <div class="grid-3">
+      <div class="card">
+        <h4>지침 활용</h4>
+        <p class="text-dim">지침에는 공통 명령만 남기고, 작업별 참고 문서는 경로로 연결합니다.</p>
+      </div>
+      <div class="card">
+        <h4>서브에이전트 활용</h4>
+        <p class="text-dim">탐색·리뷰·테스트를 역할별 에이전트에게 맡기고, 결과만 돌려받습니다.</p>
+      </div>
+      <div class="card">
+        <h4>작업 순서 지침</h4>
+        <p class="text-dim">코딩 → 코드 리뷰 → 테스트 → 문서화 순서를 지침에 남겨 매번 같은 흐름으로 진행합니다.</p>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 9-1. 지침 활용 -->
+  <section class="slide">
+    <div class="kicker">AI와 친해지기</div>
+    <h2>지침 활용: 공통 명령만, 나머지는 경로로</h2>
+    <p class="lede" style="max-width:none"><span class="term">*CLAUDE.md</span>에는 <b>모든 작업에 공통인 명령</b>만 남기고, 작업별 참고 사항은 <b>문서 경로만</b> 적어 필요할 때 읽게 합니다.</p>
+    <div class="sub">
+      <div class="diagram-row" style="align-items:center">
+        <div class="box accent" style="flex:0 0 auto;min-width:0"><div class="label">CLAUDE.md · 매 세션 자동 로드</div>브랜치 전략 · 문체 · 작업 순서</div>
+        <span class="arrow-row"><span class="conn-label">필요할 때만 읽음</span>→</span>
+        <div class="zone" style="flex:1;min-width:0;padding:10px;display:grid;grid-template-columns:auto 1fr;gap:6px var(--sp-3);align-items:center">
+          <span class="text-dim" style="font-size:var(--fs-sm)">프론트엔드 작업</span>
+          <div class="box dim" style="min-width:0;padding:4px 10px"><code>standards/frontend-development-principles.md</code></div>
+          <span class="text-dim" style="font-size:var(--fs-sm)">보안 검토</span>
+          <div class="box dim" style="min-width:0;padding:4px 10px"><code>standards/security-checklist.md</code></div>
+          <span class="text-dim" style="font-size:var(--fs-sm)">서비스 실행 · 장애 대응</span>
+          <div class="box dim" style="min-width:0;padding:4px 10px"><code>services/&lt;서비스명&gt;/</code></div>
+        </div>
+      </div>
+    </div>
+    <div class="sub">
+      <table class="compare">
+        <thead>
+          <tr><th>구분</th><th>지침에 직접 작성</th><th>경로만 남김</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>대상</b></td><td>모든 작업에 공통인 규칙</td><td>특정 작업에서만 필요한 상세 내용</td></tr>
+          <tr><td><b>예시</b></td><td>브랜치 전략, 커밋 규칙, 작업 순서</td><td>코딩 원칙, 보안 체크리스트, 서비스별 실행법</td></tr>
+          <tr><td><b>로드 시점</b></td><td>세션 시작 시 항상</td><td>해당 작업을 할 때만</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="notes">
+      <p class="note">지침이 길어지면 매번 컨텍스트를 차지하고, 정작 중요한 규칙이 묻힐 수 있습니다. 상세 문서는 사람도 함께 보는 문서라 한곳에서 관리하기에도 좋습니다.</p>
+      <p class="note">* CLAUDE.md — 프로젝트 루트에 두면 Claude Code가 세션을 시작할 때마다 자동으로 읽는 지침 파일입니다.</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 9-2. 서브에이전트 활용 -->
+  <section class="slide">
+    <div class="kicker">AI와 친해지기</div>
+    <h2>서브에이전트 활용</h2>
+    <p class="lede" style="max-width:none">메인 세션이 일을 <b>역할별 서브에이전트에게 맡기고</b>, 각 에이전트는 <b>별도 <span class="term">*컨텍스트</span></b>에서 작업한 뒤 결과만 돌려줍니다.</p>
+    <div class="sub">
+      <div class="diagram-row" style="align-items:center">
+        <div class="box accent" style="flex:0 0 auto;min-width:0"><div class="label">메인 세션</div>요청 이해 · 구현 · 판단</div>
+        <span class="arrow-row"><span class="conn-label">위임</span>→</span>
+        <div class="zone" style="flex:1;min-width:0;padding:10px;display:grid;grid-template-columns:1fr auto auto;gap:6px var(--sp-3);align-items:center">
+          <div class="box" style="min-width:0;padding:4px 10px"><span class="label" style="display:inline;margin-right:6px">탐색 (Explore) · 기본</span>관련 코드 · 문서 찾기</div>
+          <span class="arrow-row"><span class="conn-label">결과만 반환</span>→</span>
+          <div class="box dim" style="grid-row:1/4;min-width:0;padding:6px 12px">메인 세션<br/>컨텍스트 유지</div>
+          <div class="box" style="min-width:0;padding:4px 10px"><span class="label" style="display:inline;margin-right:6px">code-reviewer · 직접 정의</span>변경 diff 리뷰</div>
+          <span class="arrow-row">→</span>
+          <div class="box" style="min-width:0;padding:4px 10px"><span class="label" style="display:inline;margin-right:6px">test-runner · 직접 정의</span>테스트 작성 · 실행</div>
+          <span class="arrow-row">→</span>
+        </div>
+      </div>
+    </div>
+    <div class="sub">
+      <div class="grid-2">
+        <ul class="bullets text-dim">
+          <li>파일 탐색 같은 긴 작업 내용이 메인 컨텍스트에 쌓이지 않습니다.</li>
+          <li>서로 관계없는 작업은 동시에 실행할 수 있습니다.</li>
+          <li>에이전트마다 쓸 수 있는 도구와 지침을 따로 정합니다. 리뷰어는 읽기만 하게 둘 수 있습니다.</li>
+        </ul>
+<pre><code># .claude/agents/code-reviewer.md
+---
+name: code-reviewer
+description: 코드 변경 후 diff를 리뷰한다
+tools: Read, Grep, Glob, Bash
+---
+standards/ 의 원칙을 기준으로 리뷰하고,
+지적 사항을 심각도 순으로 정리한다.</code></pre>
+      </div>
+    </div>
+    <div class="notes">
+      <p class="note">탐색(Explore)은 Claude Code에 기본으로 들어 있는 읽기 전용 에이전트입니다. code-reviewer · test-runner는 <code>.claude/agents/</code>에 직접 정의하는 예시로, 저장소에 커밋하면 팀 전체가 같이 씁니다.</p>
+      <p class="note">* 컨텍스트 — AI가 한 번에 기억하는 대화와 파일 내용입니다. 길어질수록 앞의 내용을 놓치기 쉽습니다.</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 9-3. 작업 순서 지침 -->
+  <section class="slide">
+    <div class="kicker">AI와 친해지기</div>
+    <h2>작업 순서를 지침으로 남기기</h2>
+    <p class="lede" style="max-width:none">작업 순서와 <b>다음 단계로 넘어가는 조건</b>을 지침에 적어 두면, 요청할 때마다 설명하지 않아도 같은 흐름으로 진행됩니다.</p>
+    <div class="sub">
+      <div class="diagram-row" style="align-items:stretch">
+        <div class="box accent" style="flex:1;min-width:0"><div class="label">① 코딩 + 보안 검토</div>구현 후 보안 체크리스트로 함께 점검</div>
+        <span class="arrow-row">→</span>
+        <div class="box" style="flex:1;min-width:0"><div class="label">② 코드 리뷰</div>code-reviewer에게 diff 리뷰를 맡기고 반영</div>
+        <span class="arrow-row">→</span>
+        <div class="box" style="flex:1;min-width:0"><div class="label">③ 테스트</div>test-runner로 작성 · 실행, 실패 시 ①로</div>
+        <span class="arrow-row">→</span>
+        <div class="box" style="flex:1;min-width:0"><div class="label">④ 문서화</div>변경 내용을 관련 문서에 반영</div>
+      </div>
+    </div>
+    <div class="sub">
+      <h4>CLAUDE.md 예시</h4>
+<pre><code>## 작업 순서
+기능 구현·수정 요청은 아래 순서로 진행한다. 앞 단계를 통과해야 다음 단계로 넘어간다.
+
+1. 코딩 — 구현을 마치면 standards/security-checklist.md 기준으로 보안 검토를 함께 한다.
+2. 코드 리뷰 — code-reviewer 서브에이전트에게 변경 diff 리뷰를 맡기고, 지적 사항을 반영한다.
+3. 테스트 — test-runner 서브에이전트로 테스트를 작성·실행한다. 실패하면 1단계로 돌아간다.
+4. 문서화 — 실행법·설정이 바뀌었으면 services/&lt;서비스명&gt;/ 문서에 반영한다.</code></pre>
+    </div>
+    <div class="notes">
+      <p class="note">각 단계의 상세 기준은 지침에 쓰지 않고 경로로만 연결합니다. 보안 검토는 기본 제공되는 <code>/security-review</code> 명령도 활용할 수 있습니다.</p>
+      <p class="note">지침은 AI가 따르는 안내라 상황에 따라 건너뛸 수 있습니다. 린트·테스트처럼 매번 꼭 실행되어야 하는 검사는 hooks로 자동 실행하도록 설정할 수 있습니다.</p>
+    </div>
     <div class="slide-num"></div>
   </section>
 
@@ -460,6 +595,59 @@ SELECT * FROM TB_USER WHERE DELETED_AT IS NULL AND USER_ID = :userId;</code></pr
   <button id="nextBtn" aria-label="다음 슬라이드">↓</button>
 </div>
 
+<!-- 슬라이드에서 참고하는 문서 원본. GitHub 권한이 없어도 볼 수 있도록 모달로 띄운다.
+     개발 서버에서는 src를 불러오고, export_html.mjs로 내보내면 본문이 인라인된다. -->
+<script type="text/markdown" id="doc-frontend" data-title="프론트엔드 개발 원칙" src="../../standards/frontend-development-principles.md"></script>
+
+<dialog id="docModal" aria-labelledby="docModalTitle">
+  <div class="doc-modal-head">
+    <div><b id="docModalTitle"></b> <code id="docModalPath"></code></div>
+    <button type="button" id="docModalClose" aria-label="닫기">✕</button>
+  </div>
+  <div class="doc-modal-body" id="docModalBody"></div>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script>
+// 참고 문서 모달: .doc-link[data-doc]를 누르면 해당 markdown을 렌더링해 띄운다
+(function(){
+  var modal = document.getElementById('docModal');
+  var title = document.getElementById('docModalTitle');
+  var path = document.getElementById('docModalPath');
+  var body = document.getElementById('docModalBody');
+  var cache = {};
+
+  function load(src){
+    if (src.textContent.trim()) return Promise.resolve(src.textContent);
+    if (!cache[src.id]) cache[src.id] = fetch(src.getAttribute('src')).then(function(r){
+      if (!r.ok) throw new Error(r.status);
+      return r.text();
+    });
+    return cache[src.id];
+  }
+
+  document.querySelectorAll('.doc-link[data-doc]').forEach(function(link){
+    link.addEventListener('click', function(){
+      var src = document.getElementById(link.dataset.doc);
+      title.textContent = src.dataset.title || link.textContent.trim();
+      path.textContent = src.getAttribute('src').replace(/^(\.\.\/)+/, '');
+      body.textContent = '불러오는 중입니다…';
+      modal.showModal();
+      body.scrollTop = 0;
+      load(src).then(function(md){
+        body.innerHTML = window.marked ? marked.parse(md) : '';
+        if (!window.marked){ var pre = document.createElement('pre'); pre.textContent = md; body.appendChild(pre); }
+      }).catch(function(){
+        body.textContent = '문서를 불러오지 못했습니다. 개발 서버(node tools/dev_server.mjs)나 내보낸 단일 HTML에서 열어 주세요.';
+      });
+    });
+  });
+
+  document.getElementById('docModalClose').addEventListener('click', function(){ modal.close(); });
+  // 바깥(backdrop)을 누르면 닫는다
+  modal.addEventListener('click', function(e){ if (e.target === modal) modal.close(); });
+})();
+</script>
 <script>
 (function(){
   var deck = document.getElementById('deck');
@@ -571,6 +759,7 @@ SELECT * FROM TB_USER WHERE DELETED_AT IS NULL AND USER_ID = :userId;</code></pr
   document.getElementById('nextBtn').addEventListener('click', function(){ go(1); });
 
   window.addEventListener('keydown', function(e){
+    if (document.getElementById('docModal').open) return; // 모달이 열려 있으면 슬라이드를 넘기지 않는다
     if (e.key === 'Escape'){ if (toc.classList.contains('open')) toggleToc(false); return; }
     if (['ArrowDown','ArrowRight','PageDown',' '].indexOf(e.key) > -1){ e.preventDefault(); go(1); }
     if (['ArrowUp','ArrowLeft','PageUp'].indexOf(e.key) > -1){ e.preventDefault(); go(-1); }
