@@ -52,7 +52,7 @@ body:not(.toc-open) #tocList{display:none;}
 #tocList li{margin:0;}
 #tocList li::marker{content:none;}
 #tocList .group{font-size:var(--fs-xs);color:var(--text-faint);letter-spacing:.06em;padding:10px 8px 4px;white-space:nowrap;}
-#tocList button{display:block;width:100%;padding:5px 8px;border:0;border-radius:6px;background:transparent;color:var(--text-dim);cursor:pointer;font-size:var(--fs-sm);text-align:left;
+#tocList button{display:block;width:100%;padding:5px 8px 5px 20px;border:0;border-radius:6px;background:transparent;color:var(--text-dim);cursor:pointer;font-size:var(--fs-sm);text-align:left;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 #tocList button:hover{background:var(--accent-soft);color:var(--text);}
 #tocList button.active{color:var(--accent-strong);background:var(--accent-soft);}
