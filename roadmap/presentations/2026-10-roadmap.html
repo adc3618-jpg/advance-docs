@@ -621,18 +621,18 @@ standards/ 원칙으로 리뷰하고 심각도 순으로 정리한다.</code></p
      개발 서버에서는 src를 불러오고, export_html.mjs로 내보내면 본문이 인라인된다. -->
 <script type="text/markdown" id="doc-frontend" data-title="프론트엔드 개발 원칙" src="../../standards/frontend-development-principles.md"></script>
 <!-- 지침 예시는 복사해서 쓰는 파일이라 렌더링하지 않고 원문(data-raw) 그대로 보여 준다. data-path는 복사할 위치 -->
-<script type="text/markdown" id="doc-ex-claude" data-raw data-title="CLAUDE.md 예시" data-path="저장소 루트 CLAUDE.md" src="../../standards/ai-examples/CLAUDE.example.md"></script>
-<script type="text/markdown" id="doc-ex-frontend" data-raw data-title="senior-frontend-developer 예시" data-path=".claude/agents/senior-frontend-developer.md" src="../../standards/ai-examples/agents/senior-frontend-developer.md"></script>
-<script type="text/markdown" id="doc-ex-developer" data-raw data-title="senior-java-developer 예시" data-path=".claude/agents/senior-java-developer.md" src="../../standards/ai-examples/agents/senior-java-developer.md"></script>
-<script type="text/markdown" id="doc-ex-reviewer" data-raw data-title="code-reviewer 예시" data-path=".claude/agents/code-reviewer.md" src="../../standards/ai-examples/agents/code-reviewer.md"></script>
-<script type="text/markdown" id="doc-ex-tester" data-raw data-title="test-runner 예시" data-path=".claude/agents/test-runner.md" src="../../standards/ai-examples/agents/test-runner.md"></script>
-<script type="text/markdown" id="doc-ex-writer" data-raw data-title="doc-writer 예시" data-path=".claude/agents/doc-writer.md" src="../../standards/ai-examples/agents/doc-writer.md"></script>
+<script type="text/markdown" id="doc-ex-claude" data-raw data-title="CLAUDE.md 예시" data-path="저장소 루트 CLAUDE.md" src="../ai-examples/CLAUDE.example.md"></script>
+<script type="text/markdown" id="doc-ex-frontend" data-raw data-title="senior-frontend-developer 예시" data-path=".claude/agents/senior-frontend-developer.md" src="../ai-examples/agents/senior-frontend-developer.md"></script>
+<script type="text/markdown" id="doc-ex-developer" data-raw data-title="senior-java-developer 예시" data-path=".claude/agents/senior-java-developer.md" src="../ai-examples/agents/senior-java-developer.md"></script>
+<script type="text/markdown" id="doc-ex-reviewer" data-raw data-title="code-reviewer 예시" data-path=".claude/agents/code-reviewer.md" src="../ai-examples/agents/code-reviewer.md"></script>
+<script type="text/markdown" id="doc-ex-tester" data-raw data-title="test-runner 예시" data-path=".claude/agents/test-runner.md" src="../ai-examples/agents/test-runner.md"></script>
+<script type="text/markdown" id="doc-ex-writer" data-raw data-title="doc-writer 예시" data-path=".claude/agents/doc-writer.md" src="../ai-examples/agents/doc-writer.md"></script>
 
 <dialog id="docModal" aria-labelledby="docModalTitle">
   <div class="doc-modal-head">
     <div><b id="docModalTitle"></b> <code id="docModalPath"></code></div>
     <div class="doc-modal-actions">
-      <button type="button" id="docModalCopy" hidden>복사</button>
+      <button type="button" id="docModalCopy" aria-label="복사" title="복사" hidden><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
       <button type="button" id="docModalClose" aria-label="닫기">✕</button>
     </div>
   </div>
@@ -650,6 +650,8 @@ standards/ 원칙으로 리뷰하고 심각도 순으로 정리한다.</code></p
   var copyBtn = document.getElementById('docModalCopy');
   var cache = {};
   var current = '';
+  var copyIcon = copyBtn.innerHTML;
+  var doneIcon = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
 
   function load(src){
     if (src.textContent.trim()) return Promise.resolve(src.textContent);
@@ -667,7 +669,8 @@ standards/ 원칙으로 리뷰하고 심각도 순으로 정리한다.</code></p
       path.textContent = src.dataset.path || src.getAttribute('src').replace(/^(\.\.\/)+/, '');
       var raw = src.hasAttribute('data-raw');
       copyBtn.hidden = true;
-      copyBtn.textContent = '복사';
+      copyBtn.innerHTML = copyIcon;
+      copyBtn.setAttribute('aria-label', '복사'); copyBtn.title = '복사';
       body.textContent = '불러오는 중입니다…';
       modal.showModal();
       body.scrollTop = 0;
@@ -688,7 +691,10 @@ standards/ 원칙으로 리뷰하고 심각도 순으로 정리한다.</code></p
 
   // 원문 복사: file://처럼 clipboard API를 못 쓰는 환경은 textarea 선택 방식으로 대신한다
   copyBtn.addEventListener('click', function(){
-    var done = function(){ copyBtn.textContent = '복사됨'; };
+    var done = function(){
+      copyBtn.innerHTML = doneIcon;
+      copyBtn.setAttribute('aria-label', '복사됨'); copyBtn.title = '복사됨';
+    };
     var fallback = function(){
       var t = document.createElement('textarea'); t.value = current; modal.appendChild(t);
       t.select(); document.execCommand('copy'); t.remove(); done();

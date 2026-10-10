@@ -102,12 +102,10 @@ body:not(.toc-open) #tocList{display:none;}
 .doc-modal-head code{color:var(--text-faint);font-size:var(--fs-xs);margin-left:var(--sp-2);}
 #docModalClose{all:unset;cursor:pointer;color:var(--text-faint);font-size:var(--fs-lg);padding:0 var(--sp-2);}
 .doc-modal-actions{display:flex;align-items:center;gap:var(--sp-3);flex-shrink:0;}
-#docModalCopy{
-  all:unset;cursor:pointer;font-size:var(--fs-xs);color:var(--accent);
-  padding:2px var(--sp-3);border:1px solid var(--border);border-radius:var(--radius-pill);
-}
+#docModalCopy{all:unset;cursor:pointer;display:inline-flex;color:var(--text-faint);padding:4px;border-radius:var(--radius-sm);}
 #docModalCopy[hidden]{display:none;}
-#docModalCopy:hover{border-color:var(--accent);}
+#docModalCopy:hover{color:var(--accent);}
+#docModalCopy:focus-visible{box-shadow:var(--focus);}
 /* 지침 예시 원문: 줄바꿈을 유지하되 긴 줄은 접는다 */
 .doc-raw{margin:0;white-space:pre-wrap;word-break:normal;overflow-wrap:anywhere;font-size:var(--fs-sm);line-height:1.6;}
 #docModalClose:hover{color:var(--text);}

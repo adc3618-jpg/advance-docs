@@ -1,0 +1,97 @@
+# <서비스명> API 계약 (OpenAPI 3.1)
+# 이 파일이 API 문서의 원본입니다. 작성 규칙은 roadmap/ai-examples/agents/doc-writer.md 참고.
+# 검사: npx @redocly/cli lint services/<서비스명>/openapi.yaml
+# 미리보기: npx @redocly/cli preview-docs services/<서비스명>/openapi.yaml
+openapi: 3.1.0
+info:
+  title: <서비스명> API
+  version: 0.1.0 # 호환이 깨지면 major, 필드 추가는 minor, 설명 수정은 patch
+  description: 이 서비스가 제공하는 API를 한두 문장으로 적습니다.
+servers:
+  - url: https://api.example.com/<서비스명> # API 도메인 아래 경로 기반 라우팅
+    description: 운영
+
+tags:
+  - name: example
+    description: 예시 리소스 (실제 리소스로 바꿉니다)
+
+security:
+  - bearerAuth: []
+
+paths:
+  /examples/{exampleId}:
+    get:
+      operationId: getExample
+      summary: 예시 단건 조회
+      tags: [example]
+      parameters:
+        - name: exampleId
+          in: path
+          required: true
+          description: 예시 ID
+          schema: { type: integer, format: int64 }
+      responses:
+        "200":
+          description: 조회 성공
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Example" }
+              examples:
+                default:
+                  value:
+                    exampleId: 1024
+                    amount: { amount: 1234000, currency: KRW }
+                    createdAt: "2026-10-10T05:30:00Z"
+                    settleDate: "2026-10-15"
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404":
+          description: 대상 없음
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+              examples:
+                notFound:
+                  value: { code: EXAMPLE_NOT_FOUND }
+
+components:
+  securitySchemes:
+    bearerAuth: # 실제 인증 방식에 맞게 바꿉니다
+      type: http
+      scheme: bearer
+
+  responses:
+    Unauthorized:
+      description: 인증 실패
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorResponse" }
+          examples:
+            unauthorized:
+              value: { code: UNAUTHORIZED }
+
+  schemas:
+    Example:
+      type: object
+      required: [exampleId, amount, createdAt]
+      properties:
+        exampleId: { type: integer, format: int64, description: 예시 ID }
+        amount: { $ref: "#/components/schemas/Money" }
+        createdAt: { type: string, format: date-time, description: 생성 시각 (UTC) }
+        settleDate: { type: string, format: date, description: "정산일 (날짜만, 타임존 변환 없음)" }
+
+    # 공통 스키마 — 서비스마다 그대로 씁니다
+    Money:
+      type: object
+      required: [amount, currency]
+      properties:
+        amount: { type: integer, format: int64, description: 원 단위 금액 (포맷하지 않은 원형 값) }
+        currency: { type: string, description: ISO 4217 통화 코드, example: KRW }
+
+    ErrorResponse:
+      type: object
+      required: [code]
+      properties:
+        code:
+          type: string
+          description: 고정된 에러 코드. 사용자 문구는 프론트엔드가 매핑합니다.
+          enum: [UNAUTHORIZED, EXAMPLE_NOT_FOUND]

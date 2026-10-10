@@ -22,5 +22,5 @@
 
 ## 관련 문서
 
-- [API 레퍼런스](api-reference.md)
+- [API 계약 (OpenAPI 3.1)](openapi.yaml) — API 문서의 원본입니다. `npx @redocly/cli preview-docs openapi.yaml`로 미리 볼 수 있습니다.
 - [런북](runbook.md)
