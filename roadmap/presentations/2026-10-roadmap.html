@@ -32,7 +32,7 @@
     <ol class="agenda">
       <li>선정산이란?<span class="sub">정의, 종합 플랫폼 대응 (IT 관점)</span></li>
       <li>아키텍처 현대화<span class="sub">점진적 전환 · 라우팅 · 컨테이너 · 애플리케이션 · DB</span></li>
-      <li>AI와 친해지기</li>
+      <li>AI와 함께 개발하기</li>
     </ol>
     <div class="slide-num"></div>
   </section>
@@ -446,10 +446,10 @@ SELECT * FROM TB_USER WHERE DELETED_AT IS NULL AND USER_ID = :userId;</code></pr
     <div class="slide-num"></div>
   </section>
 
-  <!-- 9. AI와 친해지기 -->
+  <!-- 9. AI와 함께 개발하기 -->
   <section class="slide">
-    <div class="kicker">AI와 친해지기</div>
-    <h2>AI와 친해지기</h2>
+    <div class="kicker">AI와 함께 개발하기</div>
+    <h2>AI와 함께 개발하기</h2>
     <p class="lede" style="max-width:none">AI를 코딩에 접목해 <b>코딩부터 테스트, 문서화까지</b> 하나의 흐름으로 자동화합니다. <span class="text-faint" style="font-size:var(--fs-sm)">(Claude Code 기준)</span></p>
     <div class="grid-3">
       <div class="card">
@@ -465,14 +465,27 @@ SELECT * FROM TB_USER WHERE DELETED_AT IS NULL AND USER_ID = :userId;</code></pr
         <p class="text-dim">코딩 → 코드 리뷰 → 테스트 → 문서화 순서를 지침에 남겨 매번 같은 흐름으로 진행합니다.</p>
       </div>
     </div>
+    <div class="sub" style="margin-top:var(--sp-6)">
+      <h4>단계별 도입</h4>
+      <div class="diagram-row" style="align-items:stretch">
+        <div class="box" style="flex:1;min-width:0"><div class="label">① 개인별 사용</div>각자 작업에 AI를 써 보며 익숙해집니다</div>
+        <span class="arrow-row">→</span>
+        <div class="box" style="flex:1;min-width:0"><div class="label">② 팀 공통화</div>지침 · 에이전트를 저장소에 커밋해 같이 씁니다</div>
+        <span class="arrow-row">→</span>
+        <div class="box accent" style="flex:1;min-width:0"><div class="label">③ 자동화</div>hooks · 예약 루틴으로 반복 작업을 맡깁니다</div>
+      </div>
+    </div>
+    <div class="notes">
+      <p class="note">이 발표 자료도 Claude Code로 만들었습니다. 저장소의 CLAUDE.md에 문체·브랜치 규칙을 남겨 두어, 매번 설명하지 않아도 같은 규칙으로 작업합니다.</p>
+    </div>
     <div class="slide-num"></div>
   </section>
 
   <!-- 9-1. 지침 활용 -->
   <section class="slide">
-    <div class="kicker">AI와 친해지기</div>
+    <div class="kicker">AI와 함께 개발하기</div>
     <h2>지침 활용: 공통 명령만, 나머지는 경로로</h2>
-    <p class="lede" style="max-width:none"><span class="term">*CLAUDE.md</span>에는 <b>모든 작업에 공통인 명령</b>만 남기고, 작업별 참고 사항은 <b>문서 경로만</b> 적어 필요할 때 읽게 합니다.</p>
+    <p class="lede" style="max-width:none"><span class="term">*CLAUDE.md</span>에는 <b>모든 작업에 공통인 명령</b>만 남기고, 작업별 참고 사항은 <b>문서 경로만</b> 적어 필요할 때 읽게 합니다.<br/>지침이 너무 길면 <span class="term">**토큰</span> 소모만 늘고, 오히려 AI가 무엇을 따라야 할지 헷갈릴 수 있습니다.</p>
     <div class="sub">
       <div class="diagram-row" style="align-items:center">
         <div class="box accent" style="flex:0 0 auto;min-width:0"><div class="label">CLAUDE.md · 매 세션 자동 로드</div>브랜치 전략 · 문체 · 작업 순서</div>
@@ -500,15 +513,16 @@ SELECT * FROM TB_USER WHERE DELETED_AT IS NULL AND USER_ID = :userId;</code></pr
       </table>
     </div>
     <div class="notes">
-      <p class="note">지침이 길어지면 매번 컨텍스트를 차지하고, 정작 중요한 규칙이 묻힐 수 있습니다. 상세 문서는 사람도 함께 보는 문서라 한곳에서 관리하기에도 좋습니다.</p>
+      <p class="note">상세 문서는 사람도 함께 보는 문서라, 경로로 연결하면 한곳에서 관리하기에도 좋습니다.</p>
       <p class="note">* CLAUDE.md — 프로젝트 루트에 두면 Claude Code가 세션을 시작할 때마다 자동으로 읽는 지침 파일입니다.</p>
+      <p class="note">** 토큰 — AI가 글을 읽고 쓰는 단위입니다. 지침은 매 세션 함께 읽히므로 길이만큼 토큰을 차지하고, 사용량과 비용에 반영됩니다.</p>
     </div>
     <div class="slide-num"></div>
   </section>
 
   <!-- 9-2. 서브에이전트 활용 -->
   <section class="slide">
-    <div class="kicker">AI와 친해지기</div>
+    <div class="kicker">AI와 함께 개발하기</div>
     <h2>서브에이전트 활용</h2>
     <p class="lede" style="max-width:none">메인 세션이 일을 <b>역할별 서브에이전트에게 맡기고</b>, 각 에이전트는 <b>별도 <span class="term">*컨텍스트</span></b>에서 작업한 뒤 결과만 돌려줍니다.</p>
     <div class="sub">
@@ -552,7 +566,7 @@ standards/ 의 원칙을 기준으로 리뷰하고,
 
   <!-- 9-3. 작업 순서 지침 -->
   <section class="slide">
-    <div class="kicker">AI와 친해지기</div>
+    <div class="kicker">AI와 함께 개발하기</div>
     <h2>작업 순서를 지침으로 남기기</h2>
     <p class="lede" style="max-width:none">작업 순서와 <b>다음 단계로 넘어가는 조건</b>을 지침에 적어 두면, 요청할 때마다 설명하지 않아도 같은 흐름으로 진행됩니다.</p>
     <div class="sub">
