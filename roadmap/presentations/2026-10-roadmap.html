@@ -93,31 +93,31 @@
       <div class="diagram-row" style="align-items:stretch">
         <div class="box dim" style="flex:2;min-width:0;padding:var(--sp-5)">
           <div class="label">모놀리식 · 앱 1개, 함께 개발·배포</div>
-          <svg viewBox="0 0 280 120" style="width:100%;height:auto;display:block" role="img" aria-label="화면, 비즈니스 로직, 데이터 접근이 하나의 앱에 묶이고 DB 하나를 씀">
+          <svg viewBox="0 0 280 126" style="width:280px;max-width:100%;height:auto;display:block;margin:0 auto" role="img" aria-label="화면, 비즈니스 로직, 데이터 접근이 하나의 앱에 묶이고 DB 하나를 씀">
             <defs>
               <g id="db"><path d="M-14 0v10a14 5 0 0 0 28 0V0" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><ellipse cx="0" cy="0" rx="14" ry="5" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/></g>
             </defs>
-            <rect x="40" y="2" width="200" height="84" rx="10" fill="none" stroke="var(--border)" stroke-width="1.5"/>
-            <g font-size="12" text-anchor="middle" fill="var(--text)">
-              <rect x="100" y="8" width="80" height="24" rx="6" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><text x="140" y="24">화면</text>
-              <rect x="50" y="38" width="88" height="42" rx="6" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><text x="94" y="55">비즈니스</text><text x="94" y="70">로직</text>
-              <rect x="142" y="38" width="88" height="42" rx="6" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><text x="186" y="55">데이터</text><text x="186" y="70">접근</text>
+            <rect x="40" y="2" width="200" height="90" rx="10" fill="none" stroke="var(--border)" stroke-width="1.5"/>
+            <g font-size="16" text-anchor="middle" fill="var(--text)">
+              <rect x="100" y="8" width="80" height="26" rx="6" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><text x="140" y="27">화면</text>
+              <rect x="50" y="40" width="88" height="46" rx="6" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><text x="94" y="57">비즈니스</text><text x="94" y="76">로직</text>
+              <rect x="142" y="40" width="88" height="46" rx="6" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><text x="186" y="57">데이터</text><text x="186" y="76">접근</text>
             </g>
-            <path d="M140 86v12" stroke="var(--border)" stroke-width="1.5"/>
-            <use href="#db" x="140" y="100"/>
+            <path d="M140 92v12" stroke="var(--border)" stroke-width="1.5"/>
+            <use href="#db" x="140" y="106"/>
           </svg>
         </div>
         <span class="arrow-row">→</span>
         <div class="zone" style="flex:3;min-width:0;padding:var(--sp-5);border-style:solid;border-color:color-mix(in srgb,var(--accent) 50%,transparent);background:color-mix(in srgb,var(--accent) 6%,transparent)">
           <div class="zone-title" style="text-transform:none;color:var(--accent-strong)">마이크로서비스 · 서비스별로 따로 개발·배포</div>
-          <svg viewBox="0 0 440 120" style="width:100%;height:auto;display:block" role="img" aria-label="KG파이낸셜을 가운데 두고 서비스마다 자기 DB를 가진 구조">
+          <svg viewBox="0 0 440 120" style="width:440px;max-width:100%;height:auto;display:block;margin:0 auto" role="img" aria-label="KG파이낸셜을 가운데 두고 서비스마다 자기 DB를 가진 구조">
             <g stroke="var(--border)" stroke-width="1.5" fill="none">
               <path d="M220 28L70 48"/><path d="M220 28V48"/><path d="M220 28L370 48"/>
               <path d="M70 80v18"/><path d="M220 80v18"/><path d="M370 80v18"/>
             </g>
-            <rect x="160" y="2" width="120" height="26" rx="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
-            <text x="220" y="20" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accent-strong)">KG파이낸셜</text>
-            <g font-size="12" text-anchor="middle" fill="var(--text)">
+            <rect x="160" y="2" width="120" height="28" rx="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="220" y="22" text-anchor="middle" font-size="16" font-weight="700" fill="var(--accent-strong)">KG파이낸셜</text>
+            <g font-size="16" text-anchor="middle" fill="var(--text)">
               <rect x="20" y="48" width="100" height="32" rx="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/><text x="70" y="68">선정산</text>
               <rect x="170" y="48" width="100" height="32" rx="6" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><text x="220" y="68">서비스 B</text>
               <rect x="320" y="48" width="100" height="32" rx="6" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><text x="370" y="68">서비스 C</text>
@@ -134,10 +134,10 @@
   <section class="slide">
     <div class="kicker">아키텍처 현대화</div>
     <h2>개요</h2>
-    <p class="lede" style="max-width:none">JSP 모놀리식에서 <b>경로 기반 라우팅 + 마이크로서비스</b> 구조를 목표로 합니다.</p>
+    <p class="lede" style="max-width:none">JSP 모놀리식에서 <b>경로 기반 라우팅 + 마이크로서비스</b> 구조를 목표로 하고, 각 서비스는 <b><span class="term">*컨테이너</span></b>에 담아 배포합니다.</p>
     <div><span class="tag">목표 구조</span></div>
     <div style="display:grid;grid-template-columns:auto auto auto auto 1fr;gap:10px var(--sp-3);align-items:center;margin:var(--sp-5) 0">
-      <div class="box dim" style="grid-row:1/3;min-width:0">사용자</div>
+      <div class="box dim" style="grid-row:1/3;min-width:0;align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-2)"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>사용자</div>
       <span class="arrow-row">→</span>
       <div class="box accent" style="min-width:0"><div class="label">example.com</div>경로 기반 라우팅</div>
       <span class="arrow-row">→</span>
@@ -166,6 +166,9 @@
         <h4>경로 기반 라우팅</h4>
         <p class="text-dim">화면(<code>example.com</code>)과 API(<code>api.example.com</code>)를 도메인으로 나누고, 각각 그 아래에서 경로로 서비스를 나눕니다.</p>
       </div>
+    </div>
+    <div class="notes">
+      <p class="note">* 컨테이너 — 프로그램과 실행에 필요한 환경(런타임 · 라이브러리)을 하나로 묶은 실행 단위입니다. 어디서 실행해도 같은 환경으로 동작합니다.</p>
     </div>
     <div class="slide-num"></div>
   </section>
@@ -223,11 +226,11 @@
     <div class="slide-num"></div>
   </section>
 
-  <!-- 5-3. 컨테이너 도입 효과 -->
+  <!-- 5-3. 왜 컨테이너를 도입하나요? -->
   <section class="slide">
     <div class="kicker">아키텍처 현대화</div>
-    <h2>컨테이너 도입 효과</h2>
-    <p class="lede" style="max-width:none">서비스를 실행 환경째로 묶어 배포합니다. <b>클라우드(AWS) 전환 가능성</b>에 대비할 수 있고, 생각보다 <b>무겁지 않습니다</b>.</p>
+    <h2>왜 컨테이너를 도입하나요?</h2>
+    <p class="lede" style="max-width:none">서비스가 나뉘면 서비스마다 실행 환경과 배포가 늘어납니다. 서비스를 <b>실행 환경째로 묶어</b> 같은 방식으로 배포하기 위해 컨테이너를 도입합니다.<br/><b>무중단 배포</b>와 <b>클라우드(AWS) 전환 가능성</b>에도 대비할 수 있고, 생각보다 <b>무겁지 않습니다</b>. <span class="text-faint" style="font-size:var(--fs-sm)">(무중단 배포는 다음 슬라이드에서 설명합니다.)</span></p>
     <div class="grid-3">
       <div class="card">
         <h4>환경 일관성</h4>
@@ -321,6 +324,8 @@
     </div>
     <div class="notes">
       <p class="note">* 리버스 프록시 — 사용자 요청을 먼저 받아 뒤쪽 컨테이너로 전달하는 중계 서버입니다. 어느 컨테이너로 보낼지 설정만 바꾸면 전환됩니다.</p>
+      <p class="note">클라우드(AWS)로 전환하면 이 역할은 <span class="term">**ALB</span>가 맡게 됩니다. 컨테이너 기반 블루-그린의 원리는 같습니다.</p>
+      <p class="note">** ALB — AWS의 로드밸런서(Application Load Balancer)로, L7 스위치에 해당합니다. HTTP 요청의 경로 · 도메인을 보고 트래픽을 나누고, 새 버전으로 전환하는 일도 맡습니다.</p>
     </div>
     <div class="slide-num"></div>
   </section>
@@ -479,6 +484,28 @@ SELECT * FROM TB_USER WHERE DELETED_AT IS NULL AND USER_ID = :userId;</code></pr
     </div>
     <div class="notes">
       <p class="note">삭제된 행의 아이디에 <code>delete_{PK}_</code>를 붙여 유니크 제약을 비워 주므로 같은 아이디로 다시 가입할 수 있습니다. PK를 함께 붙여 여러 번 삭제해도 충돌하지 않습니다.</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 8-1. 아이스브레이킹 -->
+  <section class="slide">
+    <div class="kicker">잠깐 쉬어가기</div>
+    <h2>AI 코딩 도구, 써 보셨나요?</h2>
+    <p class="lede" style="max-width:none">Claude Code, Copilot, Cursor 등 <b>AI 코딩 도구</b>를 얼마나 쓰고 계신지 손들어 주세요.</p>
+    <div class="grid-3">
+      <div class="card">
+        <h4>① 거의 매일 씁니다</h4>
+        <p class="text-dim">업무에 이미 자리 잡았습니다.</p>
+      </div>
+      <div class="card">
+        <h4>② 가끔 써 봤습니다</h4>
+        <p class="text-dim">필요할 때 한두 번 써 봤습니다.</p>
+      </div>
+      <div class="card">
+        <h4>③ 아직 안 써 봤습니다</h4>
+        <p class="text-dim">이번 기회에 처음 접해 봅니다.</p>
+      </div>
     </div>
     <div class="slide-num"></div>
   </section>
