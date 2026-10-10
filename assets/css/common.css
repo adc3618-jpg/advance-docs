@@ -204,10 +204,92 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);
 .nav a{color:var(--text-dim);font-size:var(--fs-sm);font-weight:500;}
 .nav a:hover,.nav a[aria-current="page"]{color:var(--accent);text-decoration:none;}
 
+/* ---------- 6-2. 문서 컴포넌트 (로드맵 발표자료에서 이관) ---------- */
+/* 태그 */
+.tag{
+  display:inline-block;font-size:var(--fs-xs);padding:4px 10px;margin-right:var(--sp-2);
+  border-radius:var(--radius-pill);border:1px solid var(--border);
+  color:var(--text-dim);background:var(--bg-raise);
+}
+.tag.accent{color:var(--accent-strong);border-color:color-mix(in srgb,var(--accent) 35%,transparent);background:var(--accent-soft);}
+
+/* 불릿 리스트 */
+ul.bullets{list-style:none;margin:0 0 var(--sp-4);padding:0;}
+ul.bullets li{position:relative;padding-left:22px;margin-bottom:var(--sp-3);}
+ul.bullets li::before{
+  content:"";position:absolute;left:0;top:.7em;width:7px;height:7px;border-radius:50%;background:var(--accent);
+}
+ul.bullets li b{color:var(--accent-strong);}
+ul.bullets.sub li{font-size:var(--fs-sm);color:var(--text-dim);}
+ul.bullets.sub li::before{background:var(--text-faint);width:5px;height:5px;}
+
+/* 2/3열 그리드 */
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--sp-6);}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-5);}
+.card .num{font-size:var(--fs-xs);color:var(--text-faint);font-weight:700;letter-spacing:.08em;}
+
+/* 목차 */
+ol.agenda{list-style:none;margin:0;padding:0;counter-reset:agenda;max-width:760px;}
+ol.agenda li{
+  counter-increment:agenda;display:flex;align-items:baseline;gap:var(--sp-4);
+  padding:var(--sp-4) 0;border-bottom:1px solid var(--border);font-size:var(--fs-lg);margin:0;
+}
+ol.agenda li::before{content:counter(agenda,decimal-leading-zero);color:var(--accent);font-weight:700;min-width:2.4ch;}
+ol.agenda .sub{display:block;font-size:var(--fs-sm);color:var(--text-faint);margin-top:var(--sp-1);}
+
+/* 다이어그램 (박스 / 영역 / 화살표) */
+.diagram{display:flex;flex-direction:column;gap:var(--sp-3);width:100%;}
+.diagram-row{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap;}
+.box{
+  flex:1;min-width:150px;padding:14px var(--sp-4);font-size:var(--fs-sm);
+  border:1px solid var(--border);background:var(--bg-card);border-radius:12px;
+}
+.box.accent{border-color:color-mix(in srgb,var(--accent) 50%,transparent);background:var(--accent-soft);}
+.box.dim{color:var(--text-dim);}
+.box .label{font-weight:700;margin-bottom:var(--sp-1);color:var(--accent-strong);font-size:var(--fs-xs);}
+.zone{flex:1;min-width:260px;padding:18px;border:1px dashed var(--border);border-radius:var(--radius-lg);}
+.zone .zone-title{font-size:var(--fs-xs);text-transform:uppercase;letter-spacing:.1em;color:var(--text-faint);margin-bottom:var(--sp-3);font-weight:700;}
+.arrow-row{display:flex;align-items:center;justify-content:center;gap:10px;color:var(--text-faint);font-size:1.3rem;}
+.arrow-row .conn-label{font-size:var(--fs-xs);color:var(--accent);letter-spacing:.04em;}
+
+/* 비교 표 (현재 → 목표) */
+table.compare th{font-size:var(--fs-xs);text-transform:uppercase;letter-spacing:.06em;color:var(--text-faint);}
+table.compare td.current{color:var(--text-dim);}
+table.compare td.target{color:var(--accent-strong);font-weight:600;}
+
+/* 타임라인 */
+.timeline{display:flex;flex-direction:column;}
+.phase{display:flex;gap:var(--sp-5);padding:20px 0;border-bottom:1px solid var(--border);}
+.phase:last-child{border-bottom:none;}
+.phase .when{min-width:150px;flex-shrink:0;}
+.phase .when .badge{margin-bottom:6px;border-radius:var(--radius);}
+.phase .when .period{font-size:var(--fs-sm);color:var(--text-faint);}
+.phase .what h3{margin-top:0;font-size:var(--fs-lg);}
+
+/* 리스크 카드 */
+.risk-card{border-left:3px solid var(--danger);}
+.risk-card h3{color:var(--danger);margin-top:0;font-size:var(--fs-lg);}
+.risk-card .mitigation{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:var(--fs-sm);color:var(--text-dim);}
+.risk-card .mitigation b{color:var(--accent-strong);}
+
+/* 출처 목록 */
+.sources{columns:2;column-gap:48px;list-style:none;padding:0;}
+.sources li{break-inside:avoid;font-size:var(--fs-sm);margin-bottom:var(--sp-3);}
+.sources .src-desc{display:block;color:var(--text-faint);font-size:var(--fs-xs);margin-top:2px;}
+
 /* ---------- 7. 반응형 / 접근성 ---------- */
 @media (max-width:640px){
   .container{padding:0 var(--sp-4);}
   h2{margin-top:var(--sp-6);}
   .nav{gap:var(--sp-4);overflow-x:auto;}
+}
+@media (max-width:860px){
+  .grid-2,.grid-3{grid-template-columns:1fr;}
+  .sources{columns:1;}
+  .phase{flex-direction:column;gap:var(--sp-2);}
+}
+@media print{
+  .nav{display:none;}
+  body{background:#fff;color:#000;}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;}}

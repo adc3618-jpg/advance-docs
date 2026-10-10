@@ -1,0 +1,31 @@
+/* ==========================================================================
+   slides.css — 발표자료(스크롤 스냅 덱)용 추가 스타일. common.css 와 함께 사용.
+   구조: <div id="progress"></div><div id="deck"><section class="slide">…</section></div>
+   ========================================================================== */
+#progress{
+  position:fixed;top:0;left:0;height:3px;width:0%;z-index:50;transition:width .25s ease;
+  background:linear-gradient(90deg,var(--accent),var(--accent-strong));
+}
+#deck{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;}
+section.slide{
+  position:relative;min-height:100vh;width:100%;scroll-snap-align:start;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:6vh 8vw;border-bottom:1px solid var(--border);
+}
+.slide-num{position:absolute;bottom:5vh;left:8vw;font-size:var(--fs-sm);color:var(--text-faint);letter-spacing:.05em;}
+.title-slide{align-items:flex-start;}
+.title-slide .service{color:var(--text-dim);margin-bottom:36px;}
+.title-slide .meta{margin-top:40px;display:flex;gap:14px;flex-wrap:wrap;}
+
+#dots{position:fixed;right:22px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:40;}
+#dots button{width:8px;height:8px;border-radius:50%;border:1px solid var(--text-faint);background:transparent;cursor:pointer;padding:0;}
+#dots button.active{background:var(--accent);border-color:var(--accent);}
+#navbtns{position:fixed;right:22px;bottom:22px;display:flex;gap:8px;z-index:40;}
+#navbtns button{width:36px;height:36px;border-radius:10px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:var(--fs-md);}
+#navbtns button:hover{border-color:var(--accent);color:var(--accent-strong);}
+
+@media print{
+  #dots,#navbtns,#progress{display:none;}
+  #deck{height:auto;overflow:visible;}
+  section.slide{min-height:auto;page-break-after:always;}
+}
