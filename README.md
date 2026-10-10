@@ -5,6 +5,8 @@
 ## 구조
 
 - [`roadmap/`](roadmap/) — 서비스 발전 방향, 목표 아키텍처, 발표 자료
+- [`assets/css/`](assets/css/) — 공통 CSS (`common.css`, `slides.css`)와 미리보기
+- [`tools/export_html.py`](tools/export_html.py) — 문서 HTML을 단독 HTML 파일로 내보내기 (`python3 tools/export_html.py 문서.html`)
 - [`services/`](services/) — 서비스별 상세 문서 (API, 실행법, 장애 대응)
 - [`standards/`](standards/) — 팀 공통 개발 원칙 (프론트엔드/백엔드 책임 분리 등)
 
