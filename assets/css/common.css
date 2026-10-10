@@ -1,0 +1,213 @@
+/* ==========================================================================
+   common.css — 서비스 문서 공통 스타일
+   MongoDB 브랜드 느낌(딥 포레스트 + 그린 리프 포인트, 개발자 문서 톤)을 참고한 디자인 토큰.
+   사용: <link rel="stylesheet" href="…/assets/css/common.css">
+   다크가 기본, <html data-theme="light"> 로 라이트 전환.
+   ========================================================================== */
+
+/* ---------- 1. 디자인 토큰 ---------- */
+:root{
+  /* brand */
+  --green-leaf:#00ed64;
+  --green-spruce:#00684a;
+  --green-forest:#023430;
+  --ink:#001e2b;
+  --slate:#112733;
+
+  /* surface / text (dark) */
+  --bg:var(--ink);
+  --bg-raise:var(--slate);
+  --bg-card:#16313f;
+  --border:#2b4655;
+  --text:#f9fbfa;
+  --text-dim:#b8c4c2;
+  --text-faint:#889397;
+
+  /* accent */
+  --accent:var(--green-leaf);
+  --accent-strong:#71f6ba;
+  --accent-soft:rgba(0,237,100,.12);
+  --on-accent:#001e2b;
+
+  /* status */
+  --info:#6cb8ff;
+  --warn:#ffc010;
+  --danger:#ff6f61;
+  --success:var(--green-leaf);
+
+  /* type */
+  --font:'Pretendard Variable',Pretendard,'Noto Sans KR','Segoe UI',Roboto,Arial,sans-serif;
+  --font-mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+  --fs-xs:.75rem; --fs-sm:.875rem; --fs-md:1rem; --fs-lg:1.125rem;
+  --fs-xl:1.5rem; --fs-2xl:2rem; --fs-3xl:clamp(2rem,4vw,3rem);
+  --lh-tight:1.25; --lh-base:1.65;
+
+  /* space (4px scale) */
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px;
+  --sp-5:24px; --sp-6:32px; --sp-7:48px; --sp-8:64px;
+
+  /* shape / elevation */
+  --radius-sm:4px; --radius:8px; --radius-lg:16px; --radius-pill:999px;
+  --shadow:0 4px 16px rgba(0,0,0,.28);
+  --focus:0 0 0 3px rgba(0,237,100,.4);
+
+  --content-w:960px;
+}
+
+:root[data-theme="light"]{
+  --bg:#ffffff;
+  --bg-raise:#f9fbfa;
+  --bg-card:#ffffff;
+  --border:#e8edeb;
+  --text:#001e2b;
+  --text-dim:#3d4f58;
+  --text-faint:#5c6c75;
+  --accent:var(--green-spruce);
+  --accent-strong:#00684a;
+  --accent-soft:rgba(0,104,74,.08);
+  --on-accent:#ffffff;
+  --info:#016bf8;
+  --warn:#944f01;
+  --danger:#db3030;
+  --success:var(--green-spruce);
+  --shadow:0 4px 16px rgba(0,30,43,.1);
+  --focus:0 0 0 3px rgba(0,104,74,.35);
+}
+
+/* ---------- 2. 리셋 / 베이스 ---------- */
+*,*::before,*::after{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  font-size:var(--fs-md);
+  line-height:var(--lh-base);
+  -webkit-font-smoothing:antialiased;
+}
+img,svg{max-width:100%;vertical-align:middle;}
+hr{border:0;border-top:1px solid var(--border);margin:var(--sp-6) 0;}
+:focus-visible{outline:none;box-shadow:var(--focus);border-radius:var(--radius-sm);}
+
+/* ---------- 3. 타이포그래피 ---------- */
+h1,h2,h3,h4{line-height:var(--lh-tight);margin:0 0 var(--sp-4);letter-spacing:-.01em;}
+h1{font-size:var(--fs-3xl);font-weight:700;}
+h2{font-size:var(--fs-2xl);font-weight:700;margin-top:var(--sp-7);}
+h3{font-size:var(--fs-xl);font-weight:600;margin-top:var(--sp-6);}
+h4{font-size:var(--fs-lg);font-weight:600;color:var(--accent-strong);}
+p{margin:0 0 var(--sp-4);}
+a{color:var(--accent);text-decoration:none;}
+a:hover{text-decoration:underline;text-underline-offset:3px;}
+strong{font-weight:700;}
+small,.text-sm{font-size:var(--fs-sm);}
+.text-dim{color:var(--text-dim);}
+.text-faint{color:var(--text-faint);}
+.kicker{
+  text-transform:uppercase;letter-spacing:.14em;
+  font-size:var(--fs-xs);font-weight:600;color:var(--accent);
+  margin-bottom:var(--sp-3);
+}
+.lede{font-size:var(--fs-lg);color:var(--text-dim);max-width:60ch;}
+ul,ol{padding-left:1.4em;margin:0 0 var(--sp-4);}
+li{margin-bottom:var(--sp-1);}
+li::marker{color:var(--accent);}
+blockquote{
+  margin:var(--sp-5) 0;padding:var(--sp-3) var(--sp-4);
+  border-left:3px solid var(--accent);background:var(--accent-soft);
+  border-radius:0 var(--radius) var(--radius) 0;color:var(--text-dim);
+}
+blockquote>:last-child{margin-bottom:0;}
+
+/* ---------- 4. 코드 ---------- */
+code,kbd,pre{font-family:var(--font-mono);font-size:.9em;}
+code{background:var(--accent-soft);color:var(--accent-strong);padding:.1em .4em;border-radius:var(--radius-sm);}
+pre{
+  background:var(--bg-raise);border:1px solid var(--border);border-radius:var(--radius);
+  padding:var(--sp-4);overflow:auto;line-height:1.5;margin:0 0 var(--sp-4);
+}
+pre code{background:none;color:inherit;padding:0;}
+
+/* ---------- 5. 레이아웃 ---------- */
+.container{width:100%;max-width:var(--content-w);margin:0 auto;padding:0 var(--sp-5);}
+.stack>*+*{margin-top:var(--sp-4);}
+.row{display:flex;flex-wrap:wrap;gap:var(--sp-4);align-items:center;}
+.grid{display:grid;gap:var(--sp-4);grid-template-columns:repeat(auto-fit,minmax(240px,1fr));}
+
+/* ---------- 6. 컴포넌트 ---------- */
+/* 버튼 */
+.btn{
+  display:inline-flex;align-items:center;gap:var(--sp-2);
+  padding:var(--sp-2) var(--sp-4);border-radius:var(--radius-pill);
+  border:1px solid var(--accent);background:var(--accent);color:var(--on-accent);
+  font:600 var(--fs-sm)/1.4 var(--font);cursor:pointer;text-decoration:none;
+  transition:background .15s,color .15s,border-color .15s;
+}
+.btn:hover{background:var(--accent-strong);border-color:var(--accent-strong);text-decoration:none;}
+.btn-outline{background:transparent;color:var(--accent);}
+.btn-outline:hover{background:var(--accent-soft);color:var(--accent-strong);}
+.btn:disabled,.btn[aria-disabled="true"]{opacity:.45;cursor:not-allowed;}
+
+/* 카드 */
+.card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:var(--sp-5);
+}
+.card.is-raised{box-shadow:var(--shadow);}
+.card>:last-child{margin-bottom:0;}
+
+/* 배지 */
+.badge{
+  display:inline-block;padding:2px var(--sp-3);border-radius:var(--radius-pill);
+  font-size:var(--fs-xs);font-weight:600;line-height:1.6;
+  background:var(--accent-soft);color:var(--accent-strong);border:1px solid transparent;
+}
+.badge-info{color:var(--info);background:color-mix(in srgb,var(--info) 14%,transparent);}
+.badge-warn{color:var(--warn);background:color-mix(in srgb,var(--warn) 14%,transparent);}
+.badge-danger{color:var(--danger);background:color-mix(in srgb,var(--danger) 14%,transparent);}
+
+/* 콜아웃 */
+.callout{
+  border:1px solid var(--border);border-left:4px solid var(--accent);
+  background:var(--bg-raise);border-radius:var(--radius);padding:var(--sp-3) var(--sp-4);
+  margin:var(--sp-4) 0;
+}
+.callout.is-info{border-left-color:var(--info);}
+.callout.is-warn{border-left-color:var(--warn);}
+.callout.is-danger{border-left-color:var(--danger);}
+.callout>:last-child{margin-bottom:0;}
+
+/* 표 */
+table{width:100%;border-collapse:collapse;margin:0 0 var(--sp-4);font-size:var(--fs-sm);}
+th,td{padding:var(--sp-3) var(--sp-4);text-align:left;border-bottom:1px solid var(--border);vertical-align:top;}
+th{color:var(--text-dim);font-weight:600;background:var(--bg-raise);white-space:nowrap;}
+tbody tr:hover{background:var(--accent-soft);}
+
+/* 폼 */
+label{display:block;font-size:var(--fs-sm);font-weight:600;margin-bottom:var(--sp-1);}
+input,select,textarea{
+  width:100%;padding:var(--sp-2) var(--sp-3);
+  background:var(--bg-raise);color:var(--text);
+  border:1px solid var(--border);border-radius:var(--radius);font:inherit;
+}
+input::placeholder,textarea::placeholder{color:var(--text-faint);}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:var(--focus);}
+
+/* 상단 내비게이션 */
+.nav{
+  position:sticky;top:0;z-index:10;
+  display:flex;align-items:center;gap:var(--sp-5);
+  padding:var(--sp-3) var(--sp-5);
+  background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+}
+.nav a{color:var(--text-dim);font-size:var(--fs-sm);font-weight:500;}
+.nav a:hover,.nav a[aria-current="page"]{color:var(--accent);text-decoration:none;}
+
+/* ---------- 7. 반응형 / 접근성 ---------- */
+@media (max-width:640px){
+  .container{padding:0 var(--sp-4);}
+  h2{margin-top:var(--sp-6);}
+  .nav{gap:var(--sp-4);overflow-x:auto;}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;}}
