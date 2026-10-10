@@ -11,6 +11,8 @@ section.slide{
   position:relative;min-height:100vh;width:100%;scroll-snap-align:start;
   display:flex;flex-direction:column;justify-content:center;
   padding:6vh 8vw;border-bottom:1px solid var(--border);
+  /* 한글은 어절 단위로 줄바꿈 (단어 중간에서 끊기지 않게). 긴 영문·URL은 넘치지 않도록 허용 */
+  word-break:keep-all;overflow-wrap:break-word;
 }
 .slide-num{position:absolute;bottom:5vh;left:8vw;font-size:var(--fs-sm);color:var(--text-faint);letter-spacing:.05em;}
 .title-slide{align-items:flex-start;}
