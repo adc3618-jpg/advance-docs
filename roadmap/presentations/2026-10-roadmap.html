@@ -31,7 +31,7 @@
     <h2>목차</h2>
     <ol class="agenda">
       <li>선정산이란?<span class="sub">정의, 종합 플랫폼 대응 (IT 관점)</span></li>
-      <li>아키텍처 현대화<span class="sub">애플리케이션 · DB · 인프라</span></li>
+      <li>아키텍처 현대화<span class="sub">점진적 전환 · 라우팅 · 컨테이너 · 애플리케이션 · DB</span></li>
       <li>AI와 친해지기</li>
     </ol>
     <div class="slide-num"></div>
@@ -133,28 +133,6 @@
     <div class="slide-num"></div>
   </section>
 
-  <!-- 5-1. 왜 경로 기반 라우팅인가 -->
-  <section class="slide">
-    <div class="kicker">아키텍처 현대화</div>
-    <h2>왜 경로 기반 라우팅인가</h2>
-    <p class="lede" style="max-width:none">하나의 도메인 아래에서 경로로 서비스를 나누면, <b>멈추지 않고 조금씩</b> 전환할 수 있습니다.</p>
-    <table class="compare">
-      <thead>
-        <tr><th>항목</th><th>서브도메인<br/><span class="text-faint" style="text-transform:none">a.example.com</span></th><th>경로 기반<br/><span class="text-faint" style="text-transform:none">example.com/ServiceA</span></th></tr>
-      </thead>
-      <tbody>
-        <tr><td><b>점진적 전환</b></td><td class="current">서비스 이전 시마다 URL 변경</td><td class="target">L7 도입 시 경로 단위로 하나씩 이전 가능, URL 유지 · 문제 시 해당 경로만 롤백</td></tr>
-        <tr><td><b>스토리지 공유</b></td><td class="current">쿠키는 Domain 속성으로 공유 가능, localStorage는 공유 불가</td><td class="target">쿠키 · localStorage 별도 설정 없이 공유</td></tr>
-        <tr><td><b>진입점</b></td><td class="current">서비스마다 인증서 · 도메인 설정 증가</td><td class="target">인증서, WAF, 접근 로그, 트래픽 제어를 L7 한곳에서 관리</td></tr>
-        <tr><td><b>SEO</b></td><td class="current">별도 사이트로 취급될 수 있어 도메인 신호 분산 가능</td><td class="target">하나의 도메인에 콘텐츠 집중, 신호 분산 없음</td></tr>
-      </tbody>
-    </table>
-    <div class="callout is-warn">
-      <b>전제</b> — 같은 origin을 쓰는 만큼 공통 보안 기준, 스토리지·쿠키 키의 서비스별 prefix, 경로 할당 규칙, L7 이중화를 함께 갖춥니다.
-    </div>
-    <div class="slide-num"></div>
-  </section>
-
   <!-- 5-2. 선정산 서비스 점진적 전환 -->
   <section class="slide">
     <div class="kicker">아키텍처 현대화</div>
@@ -186,10 +164,32 @@
     <div class="slide-num"></div>
   </section>
 
-  <!-- 5-3. 왜 컨테이너인가 -->
+  <!-- 5-2-1. 경로 기반 라우팅 vs 서브도메인 -->
   <section class="slide">
     <div class="kicker">아키텍처 현대화</div>
-    <h2>왜 컨테이너인가</h2>
+    <h2>경로 기반 라우팅 vs 서브도메인</h2>
+    <p class="lede" style="max-width:none">하나의 도메인 아래에서 경로로 서비스를 나누면, <b>멈추지 않고 조금씩</b> 전환할 수 있습니다.</p>
+    <table class="compare">
+      <thead>
+        <tr><th>항목</th><th>서브도메인<br/><span class="text-faint" style="text-transform:none">a.example.com</span></th><th>경로 기반<br/><span class="text-faint" style="text-transform:none">example.com/ServiceA</span></th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>점진적 전환</b></td><td class="current">서비스 이전 시마다 URL 변경</td><td class="target">L7 도입 시 경로 단위로 하나씩 이전 가능, URL 유지 · 문제 시 해당 경로만 롤백</td></tr>
+        <tr><td><b>스토리지 공유</b></td><td class="current">쿠키는 Domain 속성으로 공유 가능, localStorage는 공유 불가</td><td class="target">쿠키 · localStorage 별도 설정 없이 공유</td></tr>
+        <tr><td><b>진입점</b></td><td class="current">서비스마다 인증서 · 도메인 설정 증가</td><td class="target">인증서, WAF, 접근 로그, 트래픽 제어를 L7 한곳에서 관리</td></tr>
+        <tr><td><b>SEO</b></td><td class="current">별도 사이트로 취급될 수 있어 도메인 신호 분산 가능</td><td class="target">하나의 도메인에 콘텐츠 집중, 신호 분산 없음</td></tr>
+      </tbody>
+    </table>
+    <div class="callout is-warn">
+      <b>전제</b> — 같은 origin을 쓰는 만큼 공통 보안 기준, 스토리지·쿠키 키의 서비스별 prefix, 경로 할당 규칙, L7 이중화를 함께 갖춥니다.
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 5-3. 컨테이너 도입 효과 -->
+  <section class="slide">
+    <div class="kicker">아키텍처 현대화</div>
+    <h2>컨테이너 도입 효과</h2>
     <p class="lede" style="max-width:none">서비스를 실행 환경째로 묶어 배포합니다. <b>클라우드(AWS) 전환 가능성</b>에 대비할 수 있고, 생각보다 <b>무겁지 않습니다</b>.</p>
     <div class="grid-3">
       <div class="card">
@@ -346,10 +346,26 @@
   <!-- 6. 애플리케이션 -->
   <section class="slide">
     <div class="kicker">아키텍처 현대화</div>
-    <h2>애플리케이션</h2>
-    <div class="grid">
-      <div class="card"><h4>프론트엔드</h4><p class="text-dim">(작성 예정)</p></div>
-      <div class="card"><h4>백엔드</h4><p class="text-dim">(작성 예정)</p></div>
+    <h2>애플리케이션: 프론트엔드 / 백엔드 책임 분리</h2>
+    <p class="lede" style="max-width:none">서버는 <b>정답 데이터와 규칙</b>을 책임지고, 화면에 <b>어떻게 보여줄지</b>는 프론트엔드가 책임집니다.</p>
+    <div class="sub">
+      <table class="compare">
+        <thead>
+          <tr><th>구분</th><th>백엔드</th><th>프론트엔드</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>데이터</b></td><td>원형 데이터 <code>1234000</code></td><td>포맷 · 계산 <code>₩1,234,000</code></td></tr>
+          <tr><td><b>시간</b></td><td>UTC 기준 시각 <code>2026-10-10T05:30:00Z</code></td><td><span class="term">*국제화</span>로 브라우저 타임존 변환 (서울 14:30 · 뉴욕 01:30)</td></tr>
+          <tr><td><b>메시지</b></td><td>고정된 에러 <code>code</code></td><td>사용자 문구 매핑</td></tr>
+          <tr><td><b>검증</b></td><td>반드시 검증 (최종 방어선)</td><td>사용자 경험을 위한 즉시 검증</td></tr>
+          <tr><td><b>전송 값</b></td><td>원형 값만 받음</td><td>콤마 · 마스킹을 뺀 원형 값 전송</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="notes">
+      <p class="note">JSP에서는 문구나 표시 형식 하나만 바꿔도 백엔드 배포가 필요했습니다. 역할을 나누면 화면 변경은 프론트엔드 배포만으로 끝납니다.</p>
+      <p class="note">자세한 원칙과 코드 리뷰 체크리스트는 <code>standards/frontend-development-principles.md</code>를 참고합니다.</p>
+      <p class="note">* 국제화(i18n) — 사용자의 언어·지역에 맞게 시간·숫자·통화를 표시하는 것입니다. 브라우저에 내장된 <code>Intl</code> API로 별도 라이브러리 없이 처리합니다.</p>
     </div>
     <div class="slide-num"></div>
   </section>
@@ -387,20 +403,37 @@
     <div class="slide-num"></div>
   </section>
 
-  <!-- 8. 인프라 -->
+  <!-- 7-1. Soft Delete 예시 -->
   <section class="slide">
     <div class="kicker">아키텍처 현대화</div>
-    <h2>인프라</h2>
-    <p class="lede" style="max-width:none">클라우드(AWS) 전환 가능성을 열어 두고, <b>어디서든 옮겨 갈 수 있는 구조</b>로 준비합니다.</p>
-    <div class="grid-2">
-      <div class="card">
-        <h4>컨테이너로 이식성 확보</h4>
-        <p class="text-dim">서비스를 컨테이너 이미지로 배포하면 지금 환경과 AWS 어디서든 같은 방식으로 실행됩니다. AWS로 옮기게 되더라도 이전 부담이 줄어듭니다.</p>
-      </div>
-      <div class="card">
-        <h4>ALB 경로 기반 라우팅</h4>
-        <p class="text-dim">경로 단위로 서비스를 나누어 넘기려면 L7이 필요합니다. AWS로 전환하게 되면 ALB(L7 로드밸런서)로 경로 기반 라우팅을 적용할 수 있습니다.</p>
-      </div>
+    <h2>Soft Delete 예시</h2>
+    <p class="lede" style="max-width:none">회원 <code>hong</code>이 탈퇴한 뒤 같은 아이디로 다시 가입하는 경우입니다.</p>
+    <div class="sub">
+      <table class="compare">
+        <thead>
+          <tr><th>시점</th><th>USER_NO</th><th>USER_ID</th><th>DELETED_AT</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>삭제 전</b></td><td><code>1024</code></td><td><code>hong</code></td><td class="target">NULL (정상)</td></tr>
+          <tr><td><b>삭제 후</b></td><td class="current"><code>1024</code></td><td class="current"><code>delete_1024_hong</code></td><td class="current">2026-10-01 14:30</td></tr>
+          <tr><td><b>재가입</b></td><td><code>1107</code></td><td><code>hong</code></td><td class="target">NULL (정상)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sub">
+      <h4>삭제는 UPDATE 한 번</h4>
+<pre><code>UPDATE TB_USER
+   SET USER_ID    = 'delete_' || USER_NO || '_' || USER_ID,
+       DELETED_AT = SYSTIMESTAMP,
+       DELETED_BY = :operator
+ WHERE USER_NO = :userNo
+   AND DELETED_AT IS NULL;
+
+-- 조회는 항상 정상 행만
+SELECT * FROM TB_USER WHERE DELETED_AT IS NULL AND USER_ID = :userId;</code></pre>
+    </div>
+    <div class="notes">
+      <p class="note">삭제된 행의 아이디에 <code>delete_{PK}_</code>를 붙여 유니크 제약을 비워 주므로 같은 아이디로 다시 가입할 수 있습니다. PK를 함께 붙여 여러 번 삭제해도 충돌하지 않습니다.</p>
     </div>
     <div class="slide-num"></div>
   </section>
@@ -417,6 +450,7 @@
 
 </div>
 
+<div id="dots"></div>
 <nav id="toc" aria-label="목차">
   <button id="tocToggle" aria-expanded="false" aria-label="목차 펼치기">☰</button>
   <ol id="tocList"></ol>
@@ -433,6 +467,7 @@
   var toc = document.getElementById('toc');
   var tocList = document.getElementById('tocList');
   var tocToggle = document.getElementById('tocToggle');
+  var dotsWrap = document.getElementById('dots');
   var progress = document.getElementById('progress');
 
   // 슬라이드 번호는 자동으로 채운다 (슬라이드를 추가·삭제해도 손댈 필요 없음)
@@ -441,10 +476,16 @@
     var num = s.querySelector('.slide-num');
     if (num) num.textContent = pad(i + 1) + ' / ' + pad(slides.length);
 
+    // 오른쪽 점 내비게이션
+    var d = document.createElement('button');
+    d.setAttribute('aria-label', '슬라이드 ' + (i + 1));
+    d.addEventListener('click', function(){ slides[i].scrollIntoView({behavior:'smooth'}); });
+    dotsWrap.appendChild(d);
   });
+  var dots = Array.prototype.slice.call(dotsWrap.children);
 
-  // 사이드 목차: 슬라이드 제목으로 자동 생성, kicker가 바뀔 때마다 그룹 제목을 넣는다
-  var dots = [];
+  // 왼쪽 목차: 슬라이드 제목으로 자동 생성, kicker가 바뀔 때마다 그룹 제목을 넣는다
+  var tocItems = [];
   var lastGroup = null;
   slides.forEach(function(s, i){
     var kicker = s.querySelector('.kicker');
@@ -461,17 +502,17 @@
     var li = document.createElement('li');
     var b = document.createElement('button');
     b.setAttribute('aria-label', pad(i + 1) + '. ' + title);
-    b.innerHTML = '<span class="label"></span><span class="dot"></span>';
-    b.querySelector('.label').textContent = pad(i + 1) + '  ' + title;
+    b.textContent = title;
     b.addEventListener('click', function(){ slides[i].scrollIntoView({behavior:'instant'}); });
     li.appendChild(b);
     tocList.appendChild(li);
-    dots.push(b);
+    tocItems.push(b);
   });
 
   // 접기/펼치기 (상태는 브라우저에 기억, 저장이 막혀 있어도 동작)
   function setToc(open){
     toc.classList.toggle('open', open);
+    document.body.classList.toggle('toc-open', open);
     tocToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
     tocToggle.setAttribute('aria-label', open ? '목차 접기' : '목차 펼치기');
     try { localStorage.setItem('roadmap:toc', open ? '1' : '0'); } catch(e) {}
@@ -479,7 +520,13 @@
   var savedToc = null;
   try { savedToc = localStorage.getItem('roadmap:toc'); } catch(e) {}
   setToc(savedToc === '1');
-  tocToggle.addEventListener('click', function(){ setToc(!toc.classList.contains('open')); });
+  // 패널 폭이 바뀌면 슬라이드 높이가 달라질 수 있으므로, 보던 슬라이드에 다시 맞춘다
+  function toggleToc(open){
+    var idx = currentIndex();
+    setToc(open);
+    setTimeout(function(){ slides[idx].scrollIntoView({behavior:'instant'}); }, 220);
+  }
+  tocToggle.addEventListener('click', function(){ toggleToc(!toc.classList.contains('open')); });
 
   function currentIndex(){
     var mid = deck.scrollTop + deck.clientHeight / 2;
@@ -491,8 +538,10 @@
   function updateUI(){
     var idx = currentIndex();
     dots.forEach(function(d, i){ d.classList.toggle('active', i === idx); });
+    tocItems.forEach(function(t, i){ t.classList.toggle('active', i === idx); });
     var pct = deck.scrollTop / (deck.scrollHeight - deck.clientHeight) * 100;
-    progress.style.width = (isFinite(pct) ? pct : 0) + '%';
+    // 목차 패널이 펼쳐져 있으면 그 폭을 뺀 나머지 안에서만 차오르게 한다
+    progress.style.width = 'calc((100% - var(--toc-w)) * ' + ((isFinite(pct) ? pct : 0) / 100) + ')';
   }
 
   // 현재 슬라이드를 URL 해시(#slide-N)로 남긴다 — 핫리로드/새로고침 후에도 같은 슬라이드로 복원
@@ -522,7 +571,7 @@
   document.getElementById('nextBtn').addEventListener('click', function(){ go(1); });
 
   window.addEventListener('keydown', function(e){
-    if (e.key === 'Escape'){ setToc(false); return; }
+    if (e.key === 'Escape'){ if (toc.classList.contains('open')) toggleToc(false); return; }
     if (['ArrowDown','ArrowRight','PageDown',' '].indexOf(e.key) > -1){ e.preventDefault(); go(1); }
     if (['ArrowUp','ArrowLeft','PageUp'].indexOf(e.key) > -1){ e.preventDefault(); go(-1); }
   });
