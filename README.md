@@ -15,6 +15,29 @@
 1. `services/_template/`을 `services/<서비스명>/`으로 복사
 2. 각 파일의 내용을 채운다
 
+## 단독 HTML 파일로 내보내기
+
+공통 CSS를 쓰는 문서 HTML을 외부 파일 없이 열리는 단일 `.html`로 만들 때 [`tools/export_html.mjs`](tools/export_html.mjs)를 쓴다.
+메일 첨부나 공유용으로 적합하다. Node 18 이상만 있으면 되고 별도 패키지 설치는 필요 없다.
+
+```bash
+# 기본: 문서와 같은 폴더에 <이름>.standalone.html 생성
+node tools/export_html.mjs docs/my-doc.html
+
+# 출력 경로 지정
+node tools/export_html.mjs docs/my-doc.html -o out/doc.html
+
+# 웹폰트 등 외부(http/https) 리소스까지 받아서 포함 (오프라인용)
+node tools/export_html.mjs docs/my-doc.html --inline-remote
+```
+
+변환 규칙:
+
+- `<link rel="stylesheet">` → `<style>`로 인라인 (CSS 안의 `@import`, `url()`도 재귀 처리)
+- `<script src>` → 인라인 `<script>`
+- `<img src>`와 CSS `url()`의 로컬 이미지·폰트 → data URI
+- `http(s)://` 외부 리소스는 기본적으로 그대로 두고, `--inline-remote`를 주면 받아서 포함
+
 ## 메모 남기기 (INBOX)
 
 지금 바로 문서화하기 애매하거나 다음 세션(예약된 루틴 포함)이 처리했으면 하는 메모는
