@@ -97,7 +97,8 @@
   <section class="slide">
     <div class="kicker">아키텍처 현대화</div>
     <h2>개요</h2>
-    <p class="lede" style="max-width:none">JSP 모놀리식에서 <b>경로 기반 라우팅 + 마이크로서비스</b> 구조로 전환합니다.</p>
+    <p class="lede" style="max-width:none">JSP 모놀리식에서 <b>경로 기반 라우팅 + 마이크로서비스</b> 구조를 목표로 합니다.</p>
+    <div><span class="tag">목표 구조</span></div>
     <div class="diagram-row" style="align-items:center;margin:var(--sp-5) 0">
       <div class="box dim">사용자</div>
       <span class="arrow-row">→</span>
@@ -136,7 +137,7 @@
         <tr><th>항목</th><th>서브도메인<br/><span class="text-faint" style="text-transform:none">api.example.com</span></th><th>경로 기반<br/><span class="text-faint" style="text-transform:none">example.com/api</span></th></tr>
       </thead>
       <tbody>
-        <tr><td><b>점진적 전환</b></td><td class="current">서비스 이전 시마다 URL 변경</td><td class="target">L7에서 경로 단위로 하나씩 이전, URL 유지 · 문제 시 해당 경로만 롤백</td></tr>
+        <tr><td><b>점진적 전환</b></td><td class="current">서비스 이전 시마다 URL 변경</td><td class="target">L7 도입 시 경로 단위로 하나씩 이전 가능, URL 유지 · 문제 시 해당 경로만 롤백</td></tr>
         <tr><td><b>CORS</b></td><td class="current">origin이 달라 서비스마다 CORS 설정 · preflight 요청 필요</td><td class="target">같은 origin, CORS 불필요</td></tr>
         <tr><td><b>스토리지 공유</b></td><td class="current">쿠키는 Domain 속성으로 공유 가능, localStorage는 공유 불가</td><td class="target">쿠키 · localStorage 별도 설정 없이 공유</td></tr>
         <tr><td><b>진입점</b></td><td class="current">서비스마다 인증서 · 도메인 설정 증가</td><td class="target">인증서, WAF, 접근 로그, 트래픽 제어를 L7 한곳에서 관리</td></tr>
@@ -146,6 +147,112 @@
     <div class="callout is-warn">
       <b>전제</b> — 같은 origin을 쓰는 만큼 공통 보안 기준, 스토리지·쿠키 키의 서비스별 prefix, 경로 할당 규칙, L7 이중화를 함께 갖춥니다.
     </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 5-2. 선정산 서비스 점진적 전환 -->
+  <section class="slide">
+    <div class="kicker">아키텍처 현대화</div>
+    <h2>선정산 서비스 점진적 전환</h2>
+    <p class="lede" style="max-width:none">지금의 모놀리식 선정산 서비스를 <b>세 단계</b>로 나누어 전환합니다. 이 과정에서 <b>컨테이너</b>를 도입합니다.</p>
+    <div class="timeline">
+      <div class="phase">
+        <div class="when"><span class="badge badge-info">STEP 1</span></div>
+        <div class="what">
+          <h3>백엔드 API화</h3>
+          <p class="text-dim">API는 있지만 응답 규격이 확립되어 있지 않고, 일부는 HTML을 응답합니다. 공통 JSON 응답 규격을 정해 적용하고, HTML 응답을 JSON으로 바꿉니다.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="when"><span class="badge badge-info">STEP 2</span></div>
+        <div class="what">
+          <h3>stateful → stateless</h3>
+          <p class="text-dim">서버 세션에 의존하는 인증을 토큰(ex. JWT) 기반으로 바꿉니다. 어느 서비스에서든 같은 방식으로 사용자를 확인할 수 있게 합니다.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="when"><span class="badge badge-info">STEP 3</span></div>
+        <div class="what">
+          <h3>JSP → React(Next.js)</h3>
+          <p class="text-dim">정리된 API 위에 화면을 React(Next.js)로 옮깁니다. L7이 도입되면 경로 단위로 나누어 넘길 수도 있습니다.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 5-3. 왜 컨테이너인가 -->
+  <section class="slide">
+    <div class="kicker">아키텍처 현대화</div>
+    <h2>왜 컨테이너인가</h2>
+    <p class="lede" style="max-width:none">서비스를 실행 환경째로 묶어 배포합니다. <b>클라우드(AWS) 전환 가능성</b>에 대비할 수 있고, 생각보다 <b>무겁지 않습니다</b>.</p>
+    <div class="grid-3">
+      <div class="card">
+        <h4>환경 일관성</h4>
+        <p class="text-dim">로컬·개발·운영이 같은 이미지로 실행됩니다. "내 PC에서는 되는데" 같은 환경 차이가 사라집니다.</p>
+      </div>
+      <div class="card">
+        <h4>서비스별 독립 배포·확장</h4>
+        <p class="text-dim">서비스마다 런타임과 버전을 따로 가져갈 수 있습니다. 필요한 서비스만 늘리고, 이미지 태그로 바로 롤백합니다.</p>
+      </div>
+      <div class="card">
+        <h4>VM보다 가볍고 빠름</h4>
+        <p class="text-dim">게스트 OS 없이 호스트 커널을 공유합니다. 분 단위가 아니라 초 단위로 기동합니다.</p>
+      </div>
+    </div>
+    <table class="compare" style="margin-top:var(--sp-5)">
+      <thead>
+        <tr><th>베이스 이미지</th><th>일반 배포판 (Ubuntu)</th><th>Alpine Linux</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>이미지 크기</b></td><td class="current">약 80MB</td><td class="target">약 5MB</td></tr>
+        <tr><td><b>구성</b></td><td class="current">기본 패키지 다수 포함</td><td class="target">필요한 패키지만 추가, 공격 표면 최소</td></tr>
+        <tr><td><b>배포</b></td><td class="current">이미지 전송·기동 상대적으로 느림</td><td class="target">빠른 pull · 기동, 저장 공간 절약</td></tr>
+      </tbody>
+    </table>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 5-4. 컨테이너 활용: 무중단 배포 -->
+  <section class="slide">
+    <div class="kicker">아키텍처 현대화</div>
+    <h2>컨테이너 활용: 프론트엔드 무중단 배포</h2>
+    <p class="lede" style="max-width:none">프론트엔드(Next.js)는 Nginx *리버스 프록시 안에서 트래픽을 전환합니다. <b>다운타임이 없고, 인프라팀의 배포 작업이 줄어듭니다</b>.</p>
+    <div class="timeline">
+      <div class="phase" style="display:grid;grid-template-columns:150px 1fr;column-gap:var(--sp-5);row-gap:var(--sp-3);align-items:center">
+        <div><span class="badge">현재</span></div>
+        <div class="arrow-row" style="justify-content:flex-start;flex-wrap:wrap;font-size:1rem">
+            <span class="tag">서버 1 연결 해제</span><span>→</span>
+            <span class="tag">업데이트</span><span>→</span>
+            <span class="tag">재연결</span><span>→</span>
+            <span class="tag">서버 2 반복</span>
+          </div>
+        <div class="text-dim">L4 수동 롤링</div>
+        <p class="text-dim" style="margin:0">배포할 때마다 L4 조작이 필요하고, 배포 중에는 서버 1대로 운영합니다.</p>
+      </div>
+      <div class="phase" style="display:grid;grid-template-columns:150px 1fr;column-gap:var(--sp-5);row-gap:var(--sp-3);align-items:center">
+        <div><span class="badge badge-info">컨테이너</span></div>
+        <div class="arrow-row" style="justify-content:flex-start;flex-wrap:wrap;font-size:1rem">
+            <span class="tag">새 프론트엔드 컨테이너 기동</span><span>→</span>
+            <span class="tag">헬스체크</span><span>→</span>
+            <span class="tag accent">Nginx 라우팅 전환</span><span>→</span>
+            <span class="tag">일정 시간 후 기존 컨테이너 삭제</span>
+          </div>
+        <div class="text-dim">블루-그린</div>
+        <p class="text-dim" style="margin:0">L4는 그대로 두고 서버 안에서 전환합니다. 처리 용량을 유지하고, 기존 컨테이너가 남아 있는 동안은 라우팅만 되돌려 바로 롤백합니다.</p>
+      </div>
+    </div>
+    <div style="margin-top:var(--sp-5)">
+      <h4>다운타임이 없는 이유</h4>
+      <ul class="bullets text-dim">
+        <li>reload는 처리 중인 요청을 끊지 않고, 새 요청만 새 컨테이너로 보냅니다.</li>
+        <li>헬스체크를 통과한 뒤에만 전환하고, 설정 오류가 있으면 기존 설정이 유지됩니다.</li>
+        <li>기존 컨테이너는 처리 중인 요청이 끝난 뒤 삭제합니다.</li>
+      </ul>
+    </div>
+    <p class="note"><b>주의</b> — 헬스체크 전에 전환하거나, 기존 컨테이너를 너무 빨리 지우거나, 앱이 처리 중인 요청을 마치지 않고 바로 꺼지면 요청이 실패할 수 있습니다.</p>
+    <p class="note">지금은 Docker + Nginx로 시작합니다. 클라우드(AWS)로 전환하게 되면 오케스트레이션으로 ECS(Fargate)를 우선 검토하고, 서비스가 크게 늘어나면 Kubernetes도 검토합니다.</p>
+    <p class="note">* 리버스 프록시 — 사용자 요청을 먼저 받아 뒤쪽 컨테이너로 전달하는 중계 서버입니다. 어느 컨테이너로 보낼지 설정만 바꾸면 전환됩니다.</p>
     <div class="slide-num"></div>
   </section>
 
@@ -172,7 +279,17 @@
   <section class="slide">
     <div class="kicker">아키텍처 현대화</div>
     <h2>인프라</h2>
-    <p class="text-dim">(작성 예정)</p>
+    <p class="lede" style="max-width:none">클라우드(AWS) 전환 가능성을 열어 두고, <b>어디서든 옮겨 갈 수 있는 구조</b>로 준비합니다.</p>
+    <div class="grid-2">
+      <div class="card">
+        <h4>컨테이너로 이식성 확보</h4>
+        <p class="text-dim">서비스를 컨테이너 이미지로 배포하면 지금 환경과 AWS 어디서든 같은 방식으로 실행됩니다. AWS로 옮기게 되더라도 이전 부담이 줄어듭니다.</p>
+      </div>
+      <div class="card">
+        <h4>ALB 경로 기반 라우팅</h4>
+        <p class="text-dim">경로 단위로 서비스를 나누어 넘기려면 L7이 필요합니다. AWS로 전환하게 되면 ALB(L7 로드밸런서)로 경로 기반 라우팅을 적용할 수 있습니다.</p>
+      </div>
+    </div>
     <div class="slide-num"></div>
   </section>
 
