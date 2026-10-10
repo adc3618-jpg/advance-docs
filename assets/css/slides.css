@@ -18,6 +18,7 @@ section.slide{
 }
 /* kicker 바로 아래 제목은 위 여백 없이 붙인다 (모든 슬라이드에서 제목 위치를 같게 유지) */
 section.slide > .kicker + h2{margin-top:0;}
+section.slide .lede{font-size:calc(var(--fs-lg) - 1px);}
 /* 슬라이드 표는 한 화면에 들어오도록 문서보다 행 높이를 조금 줄인다 */
 section.slide :is(th,td){padding-block:10px;}
 /* 카드 그리드 바로 뒤에 오는 문단은 붙어 보이지 않게 띄운다 */

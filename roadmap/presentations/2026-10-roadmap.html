@@ -492,9 +492,9 @@ SELECT * FROM TB_USER WHERE DELETED_AT IS NULL AND USER_ID = :userId;</code></pr
         <span class="arrow-row"><span class="conn-label">필요할 때만 읽음</span>→</span>
         <div class="zone" style="flex:1;min-width:0;padding:10px;display:grid;grid-template-columns:auto 1fr;gap:6px var(--sp-3);align-items:center">
           <span class="text-dim" style="font-size:var(--fs-sm)">프론트엔드 작업</span>
-          <div class="box dim" style="min-width:0;padding:4px 10px"><code>standards/frontend-development-principles.md</code></div>
+          <div class="box dim" style="min-width:0;padding:4px 10px"><button type="button" class="doc-link" data-doc="doc-frontend"><code>standards/frontend-development-principles.md</code></button></div>
           <span class="text-dim" style="font-size:var(--fs-sm)">보안 검토</span>
-          <div class="box dim" style="min-width:0;padding:4px 10px"><code>standards/security-checklist.md</code></div>
+          <div class="box dim" style="min-width:0;padding:4px 10px"><button type="button" class="doc-link" data-doc="doc-ex-security"><code>standards/security-checklist.md</code></button></div>
           <span class="text-dim" style="font-size:var(--fs-sm)">서비스 실행 · 장애 대응</span>
           <div class="box dim" style="min-width:0;padding:4px 10px"><code>services/&lt;서비스명&gt;/</code></div>
         </div>
@@ -571,6 +571,52 @@ standards/ 원칙으로 리뷰하고 심각도 순으로 정리한다.</code></p
     <div class="slide-num"></div>
   </section>
 
+  <!-- 9-2-1. 서브에이전트 만들기 -->
+  <section class="slide">
+    <div class="kicker">AI와 함께 개발하기</div>
+    <h2>서브에이전트 쉽게 만들기: /agents</h2>
+    <p class="lede" style="max-width:none">파일을 직접 작성하지 않아도, Claude Code에서 <code>/agents</code>를 실행하고 <b>역할만 한두 문장으로 적으면</b> 에이전트가 만들어집니다.</p>
+    <div class="sub">
+      <div class="diagram-row" style="align-items:stretch">
+        <div class="box accent" style="flex:1;min-width:0"><div class="label">① 실행</div><code>/agents</code> 입력 후 Create new agent 선택</div>
+        <span class="arrow-row">→</span>
+        <div class="box" style="flex:1;min-width:0"><div class="label">② 저장 위치</div>프로젝트 <code>.claude/agents/</code> 또는 개인 <code>~/.claude/agents/</code></div>
+        <span class="arrow-row">→</span>
+        <div class="box" style="flex:1;min-width:0"><div class="label">③ 역할 입력</div><b>Generate with Claude</b>에 역할을 적으면 이름 · 설명 · 지침을 생성</div>
+        <span class="arrow-row">→</span>
+        <div class="box" style="flex:1;min-width:0"><div class="label">④ 도구 · 모델</div>쓸 도구와 모델을 고르고 저장</div>
+      </div>
+    </div>
+    <div class="sub">
+      <h4>역할 입력 예시</h4>
+      <table class="compare">
+        <thead>
+          <tr><th>에이전트</th><th>Generate with Claude에 입력</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>자바 개발자</b></td><td>Java·Spring Boot 백엔드 기능을 구현하는 시니어 개발자. API·서비스 로직 작업에 사용</td></tr>
+          <tr><td><b>프론트엔드 개발자</b></td><td>React, JavaScript(ES6)로 화면을 구현하는 시니어 개발자. 화면·컴포넌트 작업에 사용</td></tr>
+          <tr><td><b>코드 리뷰어</b></td><td>변경된 코드의 diff를 리뷰하는 에이전트. 코드 수정 후에 사용</td></tr>
+          <tr><td><b>테스트 엔지니어</b></td><td>변경된 코드의 테스트를 작성하고 실행하는 에이전트. 구현·리뷰 후에 사용</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sub">
+      <h4>만들 때 팁</h4>
+      <ul class="bullets text-dim">
+        <li><b>프로젝트 단위로 에이전트를 사용</b>해 코드 품질을 균일하게 관리합니다. 저장소에 커밋해 두면 누가 작업해도 같은 기준으로 구현하고 리뷰합니다.</li>
+        <li><b>description에 "언제 쓰는지"를 분명히</b> 적습니다. 메인 세션이 이 설명을 보고 일을 맡깁니다.</li>
+        <li><b>도구는 최소한</b>으로 줍니다. 리뷰어처럼 읽기만 하면 되는 에이전트는 읽기 도구만 허용합니다.</li>
+        <li><b>짧게 시작해서 다듬습니다.</b> 생성된 지침을 써 보며 부족한 부분을 채웁니다. 이 과정이 <span class="term">*하네스 엔지니어링</span>입니다.</li>
+      </ul>
+    </div>
+    <div class="notes">
+      <p class="note">개인용(<code>~/.claude/agents/</code>)은 내 모든 프로젝트에서 쓸 수 있지만 팀과 공유되지 않습니다.</p>
+      <p class="note">* 하네스 엔지니어링 — AI가 잘 일하도록 지침 · 에이전트 · 도구 권한 등 주변 환경을 설계하고 개선하는 일입니다.</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
   <!-- 9-3. 작업 순서 지침 -->
   <section class="slide">
     <div class="kicker">AI와 함께 개발하기</div>
@@ -626,6 +672,7 @@ standards/ 원칙으로 리뷰하고 심각도 순으로 정리한다.</code></p
 <script type="text/markdown" id="doc-ex-developer" data-raw data-title="senior-java-developer 예시" data-path=".claude/agents/senior-java-developer.md" src="../ai-examples/agents/senior-java-developer.md"></script>
 <script type="text/markdown" id="doc-ex-reviewer" data-raw data-title="code-reviewer 예시" data-path=".claude/agents/code-reviewer.md" src="../ai-examples/agents/code-reviewer.md"></script>
 <script type="text/markdown" id="doc-ex-tester" data-raw data-title="test-runner 예시" data-path=".claude/agents/test-runner.md" src="../ai-examples/agents/test-runner.md"></script>
+<script type="text/markdown" id="doc-ex-security" data-raw data-title="보안 체크리스트 예시" data-path="standards/security-checklist.md" src="../ai-examples/security-checklist.md"></script>
 <script type="text/markdown" id="doc-ex-writer" data-raw data-title="doc-writer 예시" data-path=".claude/agents/doc-writer.md" src="../ai-examples/agents/doc-writer.md"></script>
 
 <dialog id="docModal" aria-labelledby="docModalTitle">
