@@ -5,6 +5,7 @@
 
 | 파일 | 복사할 위치 | 내용 |
 |---|---|---|
+| [`CLAUDE.starter.md`](CLAUDE.starter.md) | 저장소 루트 `CLAUDE.md` | 처음 시작할 때 붙여 넣는 기본 코딩 원칙 4가지. 공개 저장소(`multica-ai/andrej-karpathy-skills`)의 CLAUDE.md 원문 |
 | [`CLAUDE.example.md`](CLAUDE.example.md) | 저장소 루트 `CLAUDE.md` | 공통 규칙, 작업 순서(코딩 → 코드 리뷰 → 테스트 → 문서화), 참고 문서 경로 |
 | [`agents/senior-frontend-developer.md`](agents/senior-frontend-developer.md) | `.claude/agents/senior-frontend-developer.md` | 프론트엔드(Next.js · TypeScript) 화면을 구현하는 에이전트 |
 | [`agents/senior-java-developer.md`](agents/senior-java-developer.md) | `.claude/agents/senior-java-developer.md` | 백엔드(Java · Spring Boot) 기능을 구현하는 에이전트 |
