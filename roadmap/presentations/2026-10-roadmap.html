@@ -17,8 +17,7 @@
 
   <!-- 1. Title -->
   <section class="slide title-slide">
-    <div class="kicker">Roadmap</div>
-    <h1>선정산 서비스<br/>기술 로드맵</h1>
+    <h1>선정산 서비스 기술 로드맵</h1>
     <div class="meta">
       <span class="tag accent">2026-10</span>
     </div>
@@ -88,6 +87,44 @@
       <div class="card">
         <h4>모놀리식 → 마이크로서비스</h4>
         <p class="text-dim">서비스 단위로 나누어 팀별로 독립적으로 개발·배포할 수 있는 구조로 단계적으로 전환해 갑니다.</p>
+      </div>
+    </div>
+    <div class="sub">
+      <div class="diagram-row" style="align-items:stretch">
+        <div class="box dim" style="flex:2;min-width:0;padding:var(--sp-5)">
+          <div class="label">모놀리식 · 앱 1개, 함께 개발·배포</div>
+          <svg viewBox="0 0 280 120" style="width:100%;height:auto;display:block" role="img" aria-label="화면, 비즈니스 로직, 데이터 접근이 하나의 앱에 묶이고 DB 하나를 씀">
+            <defs>
+              <g id="db"><path d="M-14 0v10a14 5 0 0 0 28 0V0" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><ellipse cx="0" cy="0" rx="14" ry="5" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/></g>
+            </defs>
+            <rect x="40" y="2" width="200" height="84" rx="10" fill="none" stroke="var(--border)" stroke-width="1.5"/>
+            <g font-size="12" text-anchor="middle" fill="var(--text)">
+              <rect x="100" y="8" width="80" height="24" rx="6" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><text x="140" y="24">화면</text>
+              <rect x="50" y="38" width="88" height="42" rx="6" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><text x="94" y="55">비즈니스</text><text x="94" y="70">로직</text>
+              <rect x="142" y="38" width="88" height="42" rx="6" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><text x="186" y="55">데이터</text><text x="186" y="70">접근</text>
+            </g>
+            <path d="M140 86v12" stroke="var(--border)" stroke-width="1.5"/>
+            <use href="#db" x="140" y="100"/>
+          </svg>
+        </div>
+        <span class="arrow-row">→</span>
+        <div class="zone" style="flex:3;min-width:0;padding:var(--sp-5);border-style:solid;border-color:color-mix(in srgb,var(--accent) 50%,transparent);background:color-mix(in srgb,var(--accent) 6%,transparent)">
+          <div class="zone-title" style="text-transform:none;color:var(--accent-strong)">마이크로서비스 · 서비스별로 따로 개발·배포</div>
+          <svg viewBox="0 0 440 120" style="width:100%;height:auto;display:block" role="img" aria-label="KG파이낸셜을 가운데 두고 서비스마다 자기 DB를 가진 구조">
+            <g stroke="var(--border)" stroke-width="1.5" fill="none">
+              <path d="M220 28L70 48"/><path d="M220 28V48"/><path d="M220 28L370 48"/>
+              <path d="M70 80v18"/><path d="M220 80v18"/><path d="M370 80v18"/>
+            </g>
+            <rect x="160" y="2" width="120" height="26" rx="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="220" y="20" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accent-strong)">KG파이낸셜</text>
+            <g font-size="12" text-anchor="middle" fill="var(--text)">
+              <rect x="20" y="48" width="100" height="32" rx="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/><text x="70" y="68">선정산</text>
+              <rect x="170" y="48" width="100" height="32" rx="6" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><text x="220" y="68">서비스 B</text>
+              <rect x="320" y="48" width="100" height="32" rx="6" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><text x="370" y="68">서비스 C</text>
+            </g>
+            <use href="#db" x="70" y="100"/><use href="#db" x="220" y="100"/><use href="#db" x="370" y="100"/>
+          </svg>
+        </div>
       </div>
     </div>
     <div class="slide-num"></div>

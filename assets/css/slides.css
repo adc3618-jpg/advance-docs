@@ -23,6 +23,7 @@ section.slide .lede{font-size:calc(var(--fs-lg) - 1px);}
 section.slide :is(th,td){padding-block:10px;}
 /* 카드 그리드 바로 뒤에 오는 문단은 붙어 보이지 않게 띄운다 */
 section.slide > :is(.grid,.grid-2,.grid-3) + p{margin-top:var(--sp-5);}
+section.slide > :is(.grid,.grid-2,.grid-3) + .sub{margin-top:var(--sp-6);}
 /* 하위 구역(sub): 슬라이드 안의 내용 묶음. 안쪽 마지막 여백을 없애고, 구역끼리는 일정 간격 */
 .sub > :last-child,
 .sub ul > li:last-child{margin-bottom:0;}
@@ -34,9 +35,10 @@ section.slide > :is(.grid,.grid-2,.grid-3) + p{margin-top:var(--sp-5);}
 /* 하단에 부가 설명이 있는 용어 (*용어) */
 .term{color:var(--accent);}
 .slide-num{position:absolute;bottom:5vh;left:8vw;font-size:var(--fs-sm);color:var(--text-faint);letter-spacing:.05em;}
-.title-slide{align-items:flex-start;justify-content:center;padding-top:6vh;}
+section.slide.title-slide{align-items:center;justify-content:center;text-align:center;padding-block:0;}
+.title-slide h1{font-size:clamp(3rem,6vw,5rem);margin-bottom:0;}
 .title-slide .service{color:var(--text-dim);margin-bottom:36px;}
-.title-slide .meta{margin-top:40px;display:flex;gap:14px;flex-wrap:wrap;}
+.title-slide .meta{margin-top:40px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
 
 /* 오른쪽 점 내비게이션 */
 #dots{position:fixed;right:22px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:40;}
@@ -84,6 +86,13 @@ body:not(.toc-open) #tocList{display:none;}
 .doc-link:hover{color:var(--accent-strong);}
 .doc-link:focus-visible{box-shadow:var(--focus);border-radius:var(--radius-sm);}
 .doc-link code{color:inherit;}
+/* 누르면 문서가 열린다는 표시: 글자색을 따라가는 문서 아이콘 */
+.doc-link::after{
+  content:"";display:inline-block;width:.9em;height:.9em;margin-left:.3em;vertical-align:-.12em;
+  background:currentColor;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z'/%3E%3Cpath d='M14 3v5h5M9 13h6M9 17h6'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z'/%3E%3Cpath d='M14 3v5h5M9 13h6M9 17h6'/%3E%3C/svg%3E") center/contain no-repeat;
+}
 .doc-link-sm{font-size:var(--fs-sm);font-weight:400;margin-left:var(--sp-2);}
 
 /* 참고 문서 모달 */
