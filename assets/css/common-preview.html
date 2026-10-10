@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>common.css 미리보기</title>
+<link rel="stylesheet" href="common.css">
+</head>
+<body>
+<nav class="nav"><strong>Docs</strong><a href="#" aria-current="page">개요</a><a href="#">서비스</a><a href="#">표준</a>
+<a href="#" style="margin-left:auto" onclick="var r=document.documentElement;r.dataset.theme=r.dataset.theme==='light'?'':'light';return false">테마 전환</a></nav>
+<main class="container">
+<p class="kicker" style="margin-top:48px">Common CSS</p>
+<h1>공통 스타일 미리보기</h1>
+<p class="lede">다크 기본, 라이트 전환 가능한 문서용 공통 스타일입니다.</p>
+<div class="row"><a class="btn" href="#">Primary</a><a class="btn btn-outline" href="#">Outline</a>
+<span class="badge">기본</span><span class="badge badge-info">info</span><span class="badge badge-warn">warn</span><span class="badge badge-danger">danger</span></div>
+<h2>카드 / 콜아웃</h2>
+<div class="grid"><div class="card"><h4>카드 제목 A</h4><p>카드 본문</p></div><div class="card is-raised"><h4>카드 제목 B</h4><p>카드 본문</p></div><div class="card"><h4>카드 제목 C</h4><p>카드 본문</p></div></div>
+<div class="callout is-warn"><strong>주의</strong> 콜아웃 예시입니다.</div>
+<blockquote>인용문 예시</blockquote>
+<h2>표 / 코드 / 폼</h2>
+<table><thead><tr><th>항목</th><th>값</th></tr></thead><tbody><tr><td>토큰</td><td><code>--accent</code></td></tr></tbody></table>
+<pre><code>npm run build</code></pre>
+<label for="a">이름</label><input id="a" placeholder="입력">
+</main>
+</body>
+</html>

@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>선정산 서비스 기술 로드맵</title>
+<link rel="stylesheet" as="style" crossorigin
+  href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="../../assets/css/common.css" />
+<link rel="stylesheet" href="../../assets/css/slides.css" />
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div id="deck">
+
+  <!-- 1. Title -->
+  <section class="slide title-slide">
+    <h1>선정산 서비스 기술 로드맵</h1>
+    <div class="meta">
+      <span class="tag accent">2026-10</span>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 2. Agenda -->
+  <section class="slide">
+    <div class="kicker">Agenda</div>
+    <h2>목차</h2>
+    <ol class="agenda">
+      <li>선정산이란?<span class="sub">정의, 종합 플랫폼 대응 (IT 관점)</span></li>
+      <li>아키텍처 현대화<span class="sub">점진적 전환 · 라우팅 · 컨테이너 · 애플리케이션 · DB</span></li>
+      <li>AI와 함께 개발하기</li>
+    </ol>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 3. 선정산이란? -->
+  <section class="slide">
+    <div class="kicker">선정산이란?</div>
+    <h2>정의</h2>
+    <p class="lede" style="max-width:none">온라인 플랫폼 판매자가 결제~정산 사이에 <b>묶여 있는 판매대금을 앞당겨 정산</b>받는 금융 서비스</p>
+    <div class="grid-3">
+      <div class="card">
+        <h4>대출이 아니다</h4>
+        <p class="text-dim">이미 번 매출(정산금)을 양도하고 현금화하는 매출채권 팩토링 구조. 부채로 잡히지 않고 상환은 정산일에 자동 처리</p>
+      </div>
+      <div class="card">
+        <h4>왜 필요한가</h4>
+        <p class="text-dim">소비자 결제 후 실제 정산까지 일정 기간이 걸려, 그동안 사업·광고·운영 자금이 막힘. 미리 받은 정산금은 이 용도로 활용</p>
+      </div>
+      <div class="card">
+        <h4>KG파이낸셜 선정산</h4>
+        <p class="text-dim">오픈마켓 판매자 대상. 정산 예정 금액의 <b>최대 95%</b> 선지급, 수수료 <b>최저 0.9%</b><br/>2026-04 1차 파일럿 → <b>2026-07-31 정식 오픈</b></p>
+      </div>
+    </div>
+    <div class="arrow-row" style="margin:var(--sp-5) 0">
+      <span class="tag">판매 · 정산금 발생</span>
+      <span>→</span>
+      <span class="tag accent">선정산 신청 · 선지급</span>
+      <span>→</span>
+      <span class="tag">플랫폼 정산일 · 자동 상환</span>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 4. 종합 플랫폼 대응 -->
+  <section class="slide">
+    <div class="kicker">선정산이란?</div>
+    <h2>종합 플랫폼 대응 (IT 관점)</h2>
+    <p class="lede" style="max-width:none">왜 현대화가 필요하고, IT 관점에서는 무엇을 할 수 있는가?</p>
+    <div class="arrow-row" style="margin:var(--sp-5) 0">
+      <span class="tag accent">선정산 (첫 시작 서비스)</span>
+      <span>→</span>
+      <span class="tag">종합 플랫폼</span>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <h4>IT 기반을 먼저 탄탄히</h4>
+        <p class="text-dim">선정산은 종합 플랫폼의 첫걸음입니다. 앞으로 더해질 서비스를 받쳐 줄 토대를 지금부터 차근차근 만들어 갑니다.</p>
+      </div>
+      <div class="card">
+        <h4>서비스가 늘어납니다</h4>
+        <p class="text-dim">서비스가 늘면 하나의 코드베이스를 여러 팀이 함께 고치게 되어 변경 충돌과 배포 부담이 커집니다. 개발 속도와 인력 확장에도 한계가 생깁니다.</p>
+      </div>
+      <div class="card">
+        <h4>모놀리식 → 마이크로서비스</h4>
+        <p class="text-dim">서비스 단위로 나누어 팀별로 독립적으로 개발·배포할 수 있는 구조로 단계적으로 전환해 갑니다.</p>
+      </div>
+    </div>
+    <div class="sub">
+      <div class="diagram-row" style="align-items:stretch">
+        <div class="box dim" style="flex:2;min-width:0;padding:var(--sp-5)">
+          <div class="label">모놀리식 · 앱 1개, 함께 개발·배포</div>
+          <svg viewBox="0 0 280 126" style="width:280px;max-width:100%;height:auto;display:block;margin:0 auto" role="img" aria-label="화면, 비즈니스 로직, 데이터 접근이 하나의 앱에 묶이고 DB 하나를 씀">
+            <defs>
+              <g id="db"><path d="M-14 0v10a14 5 0 0 0 28 0V0" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><ellipse cx="0" cy="0" rx="14" ry="5" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/></g>
+            </defs>
+            <rect x="40" y="2" width="200" height="90" rx="10" fill="none" stroke="var(--border)" stroke-width="1.5"/>
+            <g font-size="16" text-anchor="middle" fill="var(--text)">
+              <rect x="100" y="8" width="80" height="26" rx="6" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><text x="140" y="27">화면</text>
+              <rect x="50" y="40" width="88" height="46" rx="6" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><text x="94" y="57">비즈니스</text><text x="94" y="76">로직</text>
+              <rect x="142" y="40" width="88" height="46" rx="6" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><text x="186" y="57">데이터</text><text x="186" y="76">접근</text>
+            </g>
+            <path d="M140 92v12" stroke="var(--border)" stroke-width="1.5"/>
+            <use href="#db" x="140" y="106"/>
+          </svg>
+        </div>
+        <span class="arrow-row">→</span>
+        <div class="zone" style="flex:3;min-width:0;padding:var(--sp-5);border-style:solid;border-color:color-mix(in srgb,var(--accent) 50%,transparent);background:color-mix(in srgb,var(--accent) 6%,transparent)">
+          <div class="zone-title" style="text-transform:none;color:var(--accent-strong)">마이크로서비스 · 서비스별로 따로 개발·배포</div>
+          <svg viewBox="0 0 440 120" style="width:440px;max-width:100%;height:auto;display:block;margin:0 auto" role="img" aria-label="KG파이낸셜을 가운데 두고 서비스마다 자기 DB를 가진 구조">
+            <g stroke="var(--border)" stroke-width="1.5" fill="none">
+              <path d="M220 28L70 48"/><path d="M220 28V48"/><path d="M220 28L370 48"/>
+              <path d="M70 80v18"/><path d="M220 80v18"/><path d="M370 80v18"/>
+            </g>
+            <rect x="160" y="2" width="120" height="28" rx="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="220" y="22" text-anchor="middle" font-size="16" font-weight="700" fill="var(--accent-strong)">KG파이낸셜</text>
+            <g font-size="16" text-anchor="middle" fill="var(--text)">
+              <rect x="20" y="48" width="100" height="32" rx="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/><text x="70" y="68">선정산</text>
+              <rect x="170" y="48" width="100" height="32" rx="6" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><text x="220" y="68">서비스 B</text>
+              <rect x="320" y="48" width="100" height="32" rx="6" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1.5"/><text x="370" y="68">서비스 C</text>
+            </g>
+            <use href="#db" x="70" y="100"/><use href="#db" x="220" y="100"/><use href="#db" x="370" y="100"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 5. 아키텍처 현대화 -->
+  <section class="slide">
+    <div class="kicker">아키텍처 현대화</div>
+    <h2>개요</h2>
+    <p class="lede" style="max-width:none">JSP 모놀리식에서 <b>경로 기반 라우팅 + 마이크로서비스</b> 구조를 목표로 하고, 각 서비스는 <b><span class="term">*컨테이너</span></b>에 담아 배포합니다.</p>
+    <div><span class="tag">목표 구조</span></div>
+    <div style="display:grid;grid-template-columns:auto auto auto auto 1fr;gap:10px var(--sp-3);align-items:center;margin:var(--sp-5) 0">
+      <div class="box dim" style="grid-row:1/3;min-width:0;align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-2)"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>사용자</div>
+      <span class="arrow-row">→</span>
+      <div class="box accent" style="min-width:0"><div class="label">example.com</div>경로 기반 라우팅</div>
+      <span class="arrow-row">→</span>
+      <div class="diagram-row">
+        <div class="box" style="min-width:0"><div class="label">/ServiceA</div>프론트엔드 A (Next.js)</div>
+        <div class="box" style="min-width:0"><div class="label">/ServiceB</div>프론트엔드 B (Next.js)</div>
+      </div>
+      <span class="arrow-row">→</span>
+      <div class="box accent" style="min-width:0"><div class="label">api.example.com</div>경로 기반 라우팅</div>
+      <span class="arrow-row">→</span>
+      <div class="diagram-row">
+        <div class="box" style="min-width:0"><div class="label">/ServiceA</div>API A</div>
+        <div class="box" style="min-width:0"><div class="label">/ServiceB</div>API B</div>
+      </div>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <h4>화면과 API 분리</h4>
+        <p class="text-dim">JSP에 묶여 있던 화면과 로직을 나눕니다. 화면은 <b>프론트엔드</b>(React · Next.js)가, 로직은 <b>백엔드</b>(API)가 맡습니다.</p>
+      </div>
+      <div class="card">
+        <h4>세션 stateless 전환</h4>
+        <p class="text-dim">서버 세션 대신 토큰(ex. JWT)으로 인증합니다. 어느 서비스로 요청이 가도 같은 방식으로 사용자를 확인할 수 있어, 서비스를 자유롭게 늘리고 나눌 수 있습니다.</p>
+      </div>
+      <div class="card">
+        <h4>경로 기반 라우팅</h4>
+        <p class="text-dim">화면(<code>example.com</code>)과 API(<code>api.example.com</code>)를 도메인으로 나누고, 각각 그 아래에서 경로로 서비스를 나눕니다.</p>
+      </div>
+    </div>
+    <div class="notes">
+      <p class="note">현대화는 예정되어 있지만, 여기서 소개하는 기술이 모두 그대로 도입되지는 않을 수 있습니다. 상황에 따라 범위와 시점이 달라질 수 있습니다.</p>
+      <p class="note">* 컨테이너 — 프로그램과 실행에 필요한 환경(런타임 · 라이브러리)을 하나로 묶은 실행 단위입니다. 어디서 실행해도 같은 환경으로 동작합니다.</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 5-2. 선정산 서비스 점진적 전환 -->
+  <section class="slide">
+    <div class="kicker">아키텍처 현대화</div>
+    <h2>선정산 서비스 점진적 전환</h2>
+    <p class="lede" style="max-width:none">지금의 모놀리식 선정산 서비스를 <b>세 단계</b>로 나누어 전환합니다. 이 과정에서 <b>컨테이너</b>를 도입합니다.</p>
+    <div class="timeline">
+      <div class="phase">
+        <div class="when"><span class="badge badge-info">STEP 1</span></div>
+        <div class="what">
+          <h3>백엔드 API화</h3>
+          <p class="text-dim">API는 있지만 응답 규격이 확립되어 있지 않고, 일부는 HTML을 응답합니다. 공통 JSON 응답 규격을 정해 적용하고, HTML 응답을 JSON으로 바꿉니다.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="when"><span class="badge badge-info">STEP 2</span></div>
+        <div class="what">
+          <h3>stateful → stateless</h3>
+          <p class="text-dim">서버 세션에 의존하는 인증을 토큰(ex. JWT) 기반으로 바꿉니다. 어느 서비스에서든 같은 방식으로 사용자를 확인할 수 있게 합니다.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="when"><span class="badge badge-info">STEP 3</span></div>
+        <div class="what">
+          <h3>JSP → React(Next.js)</h3>
+          <p class="text-dim">정리된 API 위에 화면을 React(Next.js)로 옮깁니다. L7이 도입되면 경로 단위로 나누어 넘길 수도 있습니다.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 5-2-1. 경로 기반 라우팅 vs 서브도메인 -->
+  <section class="slide">
+    <div class="kicker">아키텍처 현대화</div>
+    <h2>경로 기반 라우팅 vs 서브도메인</h2>
+    <p class="lede" style="max-width:none">하나의 도메인 아래에서 경로로 서비스를 나누면, <b>멈추지 않고 조금씩</b> 전환할 수 있습니다.</p>
+    <table class="compare">
+      <thead>
+        <tr><th>항목</th><th>서브도메인<br/><span class="text-faint" style="text-transform:none">a.example.com</span></th><th>경로 기반<br/><span class="text-faint" style="text-transform:none">example.com/ServiceA</span></th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>점진적 전환</b></td><td class="current">서비스 이전 시마다 URL 변경</td><td class="target">L7 도입 시 경로 단위로 하나씩 이전 가능, URL 유지 · 문제 시 해당 경로만 롤백</td></tr>
+        <tr><td><b>스토리지 공유</b></td><td class="current">쿠키는 Domain 속성으로 공유 가능, localStorage는 공유 불가</td><td class="target">쿠키 · localStorage 별도 설정 없이 공유</td></tr>
+        <tr><td><b>진입점</b></td><td class="current">서비스마다 인증서 · 도메인 설정 증가</td><td class="target">인증서, WAF, 접근 로그, 트래픽 제어를 L7 한곳에서 관리</td></tr>
+        <tr><td><b>SEO</b></td><td class="current">별도 사이트로 취급될 수 있어 도메인 신호 분산 가능</td><td class="target">하나의 도메인에 콘텐츠 집중, 신호 분산 없음</td></tr>
+      </tbody>
+    </table>
+    <div class="callout is-warn">
+      <b>전제</b> — 같은 origin을 쓰는 만큼 공통 보안 기준, 스토리지·쿠키 키의 서비스별 prefix, 경로 할당 규칙, L7 이중화를 함께 갖춥니다.
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 5-3. 왜 컨테이너를 도입하나요? -->
+  <section class="slide">
+    <div class="kicker">아키텍처 현대화</div>
+    <h2>왜 컨테이너를 도입하나요?</h2>
+    <p class="lede" style="max-width:none">서비스가 나뉘면 서비스마다 실행 환경과 배포가 늘어납니다. 서비스를 <b>실행 환경째로 묶어</b> 같은 방식으로 배포하기 위해 컨테이너를 도입합니다.<br/><b>무중단 배포</b>와 <b>클라우드(AWS) 전환 가능성</b>에도 대비할 수 있고, 생각보다 <b>무겁지 않습니다</b>. <span class="text-faint" style="font-size:var(--fs-sm)">(무중단 배포는 다음 슬라이드에서 설명합니다.)</span></p>
+    <div class="grid-3">
+      <div class="card">
+        <h4>환경 일관성</h4>
+        <p class="text-dim">로컬·개발·운영이 같은 이미지로 실행됩니다. "내 PC에서는 되는데" 같은 환경 차이가 사라집니다.</p>
+      </div>
+      <div class="card">
+        <h4>서비스별 독립 배포·확장</h4>
+        <p class="text-dim">서비스마다 런타임과 버전을 따로 가져갈 수 있습니다. 필요한 서비스만 늘리고, 이미지 태그로 바로 롤백합니다.</p>
+      </div>
+      <div class="card">
+        <h4>VM보다 가볍고 빠름</h4>
+        <p class="text-dim">게스트 OS 없이 호스트 커널을 공유합니다. 분 단위가 아니라 초 단위로 기동합니다.</p>
+      </div>
+    </div>
+    <table class="compare" style="margin-top:var(--sp-5)">
+      <thead>
+        <tr><th>베이스 이미지</th><th>일반 배포판 (Ubuntu)</th><th>Alpine Linux</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>이미지 크기</b></td><td class="current">약 80MB</td><td class="target">약 5MB</td></tr>
+        <tr><td><b>구성</b></td><td class="current">기본 패키지 다수 포함</td><td class="target">필요한 패키지만 추가, 공격 표면 최소</td></tr>
+        <tr><td><b>배포</b></td><td class="current">이미지 전송·기동 상대적으로 느림</td><td class="target">빠른 pull · 기동, 저장 공간 절약</td></tr>
+      </tbody>
+    </table>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 5-4. 컨테이너 활용: 무중단 배포 -->
+  <section class="slide">
+    <div class="kicker">아키텍처 현대화</div>
+    <h2>컨테이너 활용: 프론트엔드 무중단 배포</h2>
+    <p class="lede" style="max-width:none">프론트엔드(Next.js)는 Nginx <span class="term">*리버스 프록시</span> 안에서 트래픽을 전환합니다. <b>다운타임이 없고, 인프라팀의 배포 작업이 줄어듭니다</b>. <span class="text-faint" style="font-size:var(--fs-sm)">(API에도 추후 도입할 예정입니다.)</span></p>
+    <div class="timeline">
+      <div class="phase" style="display:grid;grid-template-columns:150px 1fr;column-gap:var(--sp-5);row-gap:var(--sp-3);align-items:center">
+        <div><span class="badge">현재</span></div>
+        <div class="diagram-row" style="align-items:stretch">
+          <div class="zone" style="min-width:0;padding:10px">
+            <div class="zone-title" style="margin-bottom:6px">① 서버 1 배포</div>
+            <div style="display:grid;grid-template-columns:auto auto 1fr;gap:4px 8px;align-items:center">
+              <div class="box" style="grid-row:1/3;min-width:0;padding:6px 10px;border-color:var(--warn)"><div class="label" style="color:var(--warn);margin:0">L4</div></div>
+              <span class="arrow-row" style="opacity:.4">⇢</span>
+              <div class="box dim" style="min-width:0;padding:4px 10px;opacity:.6">서버 1 · 업데이트</div>
+              <span class="arrow-row">→</span>
+              <div class="box" style="min-width:0;padding:4px 10px">서버 2 · 단독 처리</div>
+            </div>
+          </div>
+          <span class="arrow-row">→</span>
+          <div class="zone" style="min-width:0;padding:10px">
+            <div class="zone-title" style="margin-bottom:6px">② 서버 2 배포</div>
+            <div style="display:grid;grid-template-columns:auto auto 1fr;gap:4px 8px;align-items:center">
+              <div class="box" style="grid-row:1/3;min-width:0;padding:6px 10px;border-color:var(--warn)"><div class="label" style="color:var(--warn);margin:0">L4</div></div>
+              <span class="arrow-row">→</span>
+              <div class="box" style="min-width:0;padding:4px 10px">서버 1 · 새 버전</div>
+              <span class="arrow-row" style="opacity:.4">⇢</span>
+              <div class="box dim" style="min-width:0;padding:4px 10px;opacity:.6">서버 2 · 업데이트</div>
+            </div>
+          </div>
+          <span class="arrow-row">→</span>
+          <div class="zone" style="min-width:0;padding:10px">
+            <div class="zone-title" style="margin-bottom:6px">③ 둘 다 재연결</div>
+            <div style="display:grid;grid-template-columns:auto auto 1fr;gap:4px 8px;align-items:center">
+              <div class="box" style="grid-row:1/3;min-width:0;padding:6px 10px;border-color:var(--warn)"><div class="label" style="color:var(--warn);margin:0">L4</div></div>
+              <span class="arrow-row">→</span>
+              <div class="box" style="min-width:0;padding:4px 10px">서버 1 · 새 버전</div>
+              <span class="arrow-row">→</span>
+              <div class="box" style="min-width:0;padding:4px 10px">서버 2 · 새 버전</div>
+            </div>
+          </div>
+        </div>
+        <div class="text-dim">L4 수동 롤링</div>
+        <p class="text-dim" style="margin:0">배포할 때마다 L4 조작이 필요하고, 배포 중에는 서버 1대로 운영합니다.</p>
+      </div>
+      <div class="phase" style="display:grid;grid-template-columns:150px 1fr;column-gap:var(--sp-5);row-gap:var(--sp-3);align-items:center">
+        <div><span class="badge badge-info">컨테이너</span></div>
+        <div class="diagram-row" style="align-items:center">
+          <div class="box dim" style="flex:0 0 auto;min-width:0">사용자</div>
+          <span class="arrow-row">→</span>
+          <div class="box dim" style="flex:0 0 auto;min-width:0"><div class="label">L4</div>변경 없음</div>
+          <span class="arrow-row">→</span>
+          <div class="zone" style="flex:1;min-width:0;padding:8px;display:grid;grid-template-columns:auto auto 1fr;gap:6px var(--sp-3);align-items:center">
+            <div class="box accent" style="grid-row:1/3;min-width:0"><div class="label">Nginx</div>리버스 프록시</div>
+            <span class="arrow-row" style="opacity:.4">⇢</span>
+            <div class="box dim" style="min-width:0;opacity:.6;padding:6px 14px"><div class="label">③ 대기 후 삭제</div>기존 컨테이너 (v1) <code>:3000</code></div>
+            <span class="arrow-row"><span class="conn-label">② 전환 :3000 → :3001</span>→</span>
+            <div class="box accent" style="min-width:0;padding:6px 14px"><div class="label">① 기동 · 헬스체크</div>새 컨테이너 (v2) <code>:3001</code></div>
+          </div>
+        </div>
+        <div class="text-dim">블루-그린</div>
+        <p class="text-dim" style="margin:0">L4는 그대로 두고 서버 안에서 전환합니다. 처리 용량을 유지하고, 기존 컨테이너가 남아 있는 동안은 라우팅만 되돌려 바로 롤백합니다.</p>
+      </div>
+    </div>
+    <div class="notes">
+      <p class="note">* 리버스 프록시 — 사용자 요청을 먼저 받아 뒤쪽 컨테이너로 전달하는 중계 서버입니다. 어느 컨테이너로 보낼지 설정만 바꾸면 전환됩니다.</p>
+      <p class="note">클라우드(AWS)로 전환하면 이 역할은 <span class="term">**ALB</span>가 맡게 됩니다. 컨테이너 기반 블루-그린의 원리는 같습니다.</p>
+      <p class="note">** ALB — AWS의 로드밸런서(Application Load Balancer)로, L7 스위치에 해당합니다. HTTP 요청의 경로 · 도메인을 보고 트래픽을 나누고, 새 버전으로 전환하는 일도 맡습니다.</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 5-5. 다운타임이 없는 이유 -->
+  <section class="slide">
+    <div class="kicker">아키텍처 현대화</div>
+    <h2>다운타임이 없는 이유</h2>
+    <div class="sub">
+      <h4>Nginx reload 과정</h4>
+      <div class="diagram-row" style="align-items:stretch">
+          <div class="zone" style="min-width:0;padding:10px">
+          <div class="zone-title" style="margin-bottom:6px;text-transform:none">① reload 전</div>
+          <div style="display:grid;grid-template-columns:auto auto 1fr;gap:6px 8px;align-items:center">
+              <div class="box dim" style="min-width:0;padding:4px 10px">기존 워커</div>
+                <span class="arrow-row">→</span>
+              <div class="box accent" style="min-width:0;padding:4px 10px">기존 컨테이너 v1 <code>:3000</code></div>
+          </div>
+        </div>
+          <span class="arrow-row">→</span>
+          <div class="zone" style="min-width:0;padding:10px">
+          <div class="zone-title" style="margin-bottom:6px;text-transform:none">② reload 중</div>
+          <div style="display:grid;grid-template-columns:auto auto 1fr;gap:6px 8px;align-items:center">
+              <div class="box accent" style="min-width:0;padding:4px 10px">새 워커</div>
+              <span class="arrow-row"><span class="conn-label">새 요청</span>→</span>
+              <div class="box accent" style="min-width:0;padding:4px 10px">새 컨테이너 v2 <code>:3001</code></div>
+              <div class="box dim" style="min-width:0;padding:4px 10px;opacity:.6">기존 워커</div>
+              <span class="arrow-row" style="opacity:.5"><span class="conn-label">처리 중 요청만</span>⇢</span>
+              <div class="box dim" style="min-width:0;padding:4px 10px;opacity:.6">기존 컨테이너 v1 <code>:3000</code></div>
+          </div>
+        </div>
+          <span class="arrow-row">→</span>
+          <div class="zone" style="min-width:0;padding:10px">
+          <div class="zone-title" style="margin-bottom:6px;text-transform:none">③ reload 후</div>
+          <div style="display:grid;grid-template-columns:auto auto 1fr;gap:6px 8px;align-items:center">
+              <div class="box accent" style="min-width:0;padding:4px 10px">새 워커</div>
+                <span class="arrow-row">→</span>
+              <div class="box accent" style="min-width:0;padding:4px 10px">새 컨테이너 v2 <code>:3001</code></div>
+              <div class="box dim" style="min-width:0;padding:4px 10px;opacity:.6">기존 워커 종료</div>
+              <span></span>
+              <span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sub">
+      <ul class="bullets text-dim">
+        <li>reload는 처리 중인 요청을 끊지 않고, 새 요청만 새 컨테이너로 보냅니다.</li>
+        <li>헬스체크를 통과한 뒤에만 전환하고, 설정 오류가 있으면 기존 설정이 유지됩니다.</li>
+        <li>기존 컨테이너는 처리 중인 요청이 끝난 뒤 삭제합니다.</li>
+      </ul>
+    </div>
+    <div class="notes">
+      <p class="note"><b>주의</b> — 헬스체크 전에 전환하거나, 기존 컨테이너를 너무 빨리 지우거나, 앱이 처리 중인 요청을 마치지 않고 바로 꺼지면 요청이 실패할 수 있습니다.</p>
+      <p class="note">지금은 Docker + Nginx로 시작합니다. 클라우드(AWS)로 전환하게 되면 오케스트레이션으로 ECS(Fargate)를 우선 검토하고, 서비스가 크게 늘어나면 Kubernetes도 검토합니다.</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 6. 애플리케이션 -->
+  <section class="slide">
+    <div class="kicker">아키텍처 현대화</div>
+    <h2>애플리케이션: 프론트엔드 / 백엔드 책임 분리</h2>
+    <p class="lede" style="max-width:none">서버는 <b>정답 데이터와 규칙</b>을 책임지고, 화면에 <b>어떻게 보여줄지</b>는 프론트엔드가 책임집니다.</p>
+    <div class="sub">
+      <table class="compare">
+        <thead>
+          <tr><th>구분</th><th>백엔드</th><th>프론트엔드</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>데이터</b></td><td>원형 값 + 통화 <code>{ "amount": 1234000, "currency": "KRW" }</code></td><td>통화에 맞춰 포맷 <code>₩1,234,000</code></td></tr>
+          <tr><td><b>계산</b></td><td>구성 값 <code>{ "price": 100000, "fee": 100, "currency": "KRW" }</code></td><td>합산 <code>100000 + 100</code> → <code>₩100,100</code></td></tr>
+          <tr><td><b>시간</b></td><td>UTC 기준 시각 <code>2026-10-10T05:30:00Z</code></td><td><span class="term">*국제화</span>로 브라우저 타임존 변환 (서울 14:30 · 뉴욕 01:30)</td></tr>
+          <tr><td><b>일자</b></td><td>날짜 문자열 그대로 <code>"settleDate": "2026-10-15"</code></td><td>타임존 변환 없이 표시 <code>2026년 10월 15일</code></td></tr>
+          <tr><td><b>메시지</b></td><td>고정된 에러 <code>code</code></td><td>사용자 문구 매핑</td></tr>
+          <tr><td><b>검증</b></td><td>반드시 검증 (최종 방어선)</td><td>사용자 경험을 위한 즉시 검증</td></tr>
+          <tr><td><b>전송 값</b></td><td>원형 값만 받음</td><td>콤마 · 마스킹을 뺀 원형 값 전송</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sub">
+      <ul class="bullets text-dim">
+        <li>JSP에서는 문구나 표시 형식 하나만 바꿔도 백엔드 배포가 필요했습니다. 역할을 나누면 화면 변경은 프론트엔드 배포만으로 끝납니다.</li>
+        <li>시간·숫자 표시는 새 기술이 아니라 브라우저 표준(ISO 8601, <code>Intl</code>)을 따르는 것입니다. 서버가 UTC로 내려주므로 서버 시간대가 바뀌어도 화면 시간은 그대로입니다.</li>
+      </ul>
+    </div>
+    <div class="notes">
+      <p class="note"><b>주의</b> — 정산 금액·수수료처럼 최종 금액이 기준인 값은 서버가 계산합니다. 정산일처럼 시각 없는 날짜는 UTC로 변환하면 하루가 밀릴 수 있어 문자열 그대로 주고받습니다.</p>
+      <p class="note">자세한 원칙과 코드 리뷰 체크리스트는 <button type="button" class="doc-link" data-doc="doc-frontend">프론트엔드 개발 원칙</button> 문서를 참고합니다.</p>
+      <p class="note">* 국제화(i18n) — 사용자의 언어·지역에 맞게 시간·숫자·통화를 표시하는 것입니다. 브라우저에 내장된 <code>Intl</code> API로 별도 라이브러리 없이 처리합니다.</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 7. DB -->
+  <section class="slide">
+    <div class="kicker">아키텍처 현대화</div>
+    <h2>DB: Soft Delete 도입</h2>
+    <p class="lede" style="max-width:none">데이터를 지우지 않고 <b>삭제 일시만 기록</b>합니다. DBA를 거치던 삭제·복구를 애플리케이션에서 처리합니다.</p>
+    <div class="sub">
+      <table class="compare">
+        <thead>
+          <tr><th>항목</th><th>Hard Delete (현재)</th><th>Soft Delete</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>삭제</b></td><td class="current"><code>DELETE</code>로 행 삭제</td><td class="target"><code>UPDATE</code>로 <code>DELETED_AT</code> 기록</td></tr>
+          <tr><td><b>복구</b></td><td class="current">DBA에게 백업 복원 요청</td><td class="target">UPDATE 한 번으로 개발자가 직접 복구</td></tr>
+          <tr><td><b>삭제 이력</b></td><td class="current">별도 이력 테이블 없으면 남지 않음</td><td class="target"><code>DELETED_AT</code> · <code>DELETED_BY</code>로 바로 조회</td></tr>
+          <tr><td><b>정책 변경</b></td><td class="current">DB 작업에 의존</td><td class="target">코드 배포로 반영</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sub">
+      <h4>핵심 원칙</h4>
+      <ul class="bullets text-dim">
+        <li>조회·조인·집계·배치 쿼리에는 항상 <code>DELETED_AT IS NULL</code> 조건을 넣습니다.</li>
+        <li>유니크 컬럼(아이디, 이메일 등)은 삭제할 때 <code>delete_{PK}_원래값</code>으로 바꿔 재가입 충돌을 막습니다.</li>
+        <li>PK는 삭제·복구 어느 단계에서도 수정하지 않습니다.</li>
+      </ul>
+    </div>
+    <div class="notes">
+      <p class="note">신규 테이블에만 적용하고 기존 테이블은 변경하지 않습니다. 삭제된 행은 기본적으로 영구 보관하고, 로그성 데이터만 보관 기간이 지나면 배치로 정리합니다.</p>
+      <p class="note"><b>주의</b> — 개인정보 파기 의무가 있는 데이터에는 그대로 적용할 수 없으므로, 보관 기간과 파기 방식을 법무·보안 담당과 먼저 협의합니다.</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 7-1. Soft Delete 예시 -->
+  <section class="slide">
+    <div class="kicker">아키텍처 현대화</div>
+    <h2>Soft Delete 예시</h2>
+    <p class="lede" style="max-width:none">회원 <code>hong</code>이 탈퇴한 뒤 같은 아이디로 다시 가입하는 경우입니다.</p>
+    <div class="sub">
+      <table class="compare">
+        <thead>
+          <tr><th>시점</th><th>USER_NO</th><th>USER_ID</th><th>DELETED_AT</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>삭제 전</b></td><td><code>1024</code></td><td><code>hong</code></td><td class="target">NULL (정상)</td></tr>
+          <tr><td><b>삭제 후</b></td><td class="current"><code>1024</code></td><td class="current"><code>delete_1024_hong</code></td><td class="current">2026-10-01 14:30</td></tr>
+          <tr><td><b>재가입</b></td><td><code>1107</code></td><td><code>hong</code></td><td class="target">NULL (정상)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sub">
+      <h4>삭제는 UPDATE 한 번</h4>
+<pre><code>UPDATE TB_USER
+   SET USER_ID    = 'delete_' || USER_NO || '_' || USER_ID,
+       DELETED_AT = SYSTIMESTAMP,
+       DELETED_BY = :operator
+ WHERE USER_NO = :userNo
+   AND DELETED_AT IS NULL;
+
+-- 조회는 항상 정상 행만
+SELECT * FROM TB_USER WHERE DELETED_AT IS NULL AND USER_ID = :userId;</code></pre>
+    </div>
+    <div class="notes">
+      <p class="note">삭제된 행의 아이디에 <code>delete_{PK}_</code>를 붙여 유니크 제약을 비워 주므로 같은 아이디로 다시 가입할 수 있습니다. PK를 함께 붙여 여러 번 삭제해도 충돌하지 않습니다.</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 8-1. 아이스브레이킹 -->
+  <section class="slide">
+    <div class="kicker">잠깐 쉬어가기</div>
+    <h2>AI 코딩 도구, 어디쯤이신가요?</h2>
+    <p class="lede" style="max-width:none">Claude Code, Copilot, Cursor 등 <b>AI 코딩 도구</b>를 쓰는 모습에 가장 가까운 단계에서 손들어 주세요.</p>
+    <div style="display:flex;flex-direction:column;gap:var(--sp-3);margin-top:var(--sp-5)">
+      <div style="display:grid;grid-template-columns:230px 1fr auto;align-items:center;gap:var(--sp-4);padding:10px var(--sp-4);border:1px solid var(--border);border-radius:12px;background:var(--bg-card)">
+        <div style="padding:6px 12px;border-radius:8px;background:color-mix(in srgb,var(--accent) 6%,transparent)"><div style="display:flex;align-items:baseline;gap:var(--sp-3)"><span class="label" style="color:var(--accent-strong);font-weight:700;font-size:var(--fs-xs)">LV.1</span><b>초보</b></div><div class="text-dim" style="font-size:var(--fs-xs)">복붙 견습생</div></div>
+        <div>"고쳐 줘" → 안 됨 → "다시 고쳐 줘" → 안 됨 → 새 채팅창을 엽니다.</div>
+        <div style="display:flex;align-items:center;gap:3px"><span class="text-faint" style="font-size:var(--fs-xs);margin-right:6px">토큰</span><span style="width:16px;height:10px;border-radius:2px;background:var(--accent)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--border)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--border)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--border)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--border)"></span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:230px 1fr auto;align-items:center;gap:var(--sp-4);padding:10px var(--sp-4);border:1px solid var(--border);border-radius:12px;background:var(--bg-card)">
+        <div style="padding:6px 12px;border-radius:8px;background:color-mix(in srgb,var(--accent) 14%,transparent)"><div style="display:flex;align-items:baseline;gap:var(--sp-3)"><span class="label" style="color:var(--accent-strong);font-weight:700;font-size:var(--fs-xs)">LV.2</span><b>중수</b></div><div class="text-dim" style="font-size:var(--fs-xs)">Tab 수련생</div></div>
+        <div>Tab 키가 닳아 가고 있습니다.</div>
+        <div style="display:flex;align-items:center;gap:3px"><span class="text-faint" style="font-size:var(--fs-xs);margin-right:6px">토큰</span><span style="width:16px;height:10px;border-radius:2px;background:var(--accent)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--accent)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--border)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--border)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--border)"></span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:230px 1fr auto;align-items:center;gap:var(--sp-4);padding:10px var(--sp-4);border:1px solid var(--border);border-radius:12px;background:var(--bg-card)">
+        <div style="padding:6px 12px;border-radius:8px;background:color-mix(in srgb,var(--accent) 24%,transparent)"><div style="display:flex;align-items:baseline;gap:var(--sp-3)"><span class="label" style="color:var(--accent-strong);font-weight:700;font-size:var(--fs-xs)">LV.3</span><b>고수</b></div><div class="text-dim" style="font-size:var(--fs-xs)">인수인계 장인</div></div>
+        <div>AI에게도 인수인계서를 써 주고 일을 시킵니다.</div>
+        <div style="display:flex;align-items:center;gap:3px"><span class="text-faint" style="font-size:var(--fs-xs);margin-right:6px">토큰</span><span style="width:16px;height:10px;border-radius:2px;background:var(--accent)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--accent)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--accent)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--border)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--border)"></span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:230px 1fr auto;align-items:center;gap:var(--sp-4);padding:10px var(--sp-4);border:1px solid var(--border);border-radius:12px;background:var(--bg-card)">
+        <div style="padding:6px 12px;border-radius:8px;background:color-mix(in srgb,var(--accent) 38%,transparent)"><div style="display:flex;align-items:baseline;gap:var(--sp-3)"><span class="label" style="color:var(--accent-strong);font-weight:700;font-size:var(--fs-xs)">LV.4</span><b>초고수</b></div><div class="text-dim" style="font-size:var(--fs-xs)">에이전트 사령관</div></div>
+        <div>에이전트 다섯을 부려 놓고, 저는 커피를 마십니다.</div>
+        <div style="display:flex;align-items:center;gap:3px"><span class="text-faint" style="font-size:var(--fs-xs);margin-right:6px">토큰</span><span style="width:16px;height:10px;border-radius:2px;background:var(--accent)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--accent)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--accent)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--accent)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--border)"></span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:230px 1fr auto;align-items:center;gap:var(--sp-4);padding:10px var(--sp-4);border:1px solid var(--border);border-color:color-mix(in srgb,var(--accent) 60%,transparent);border-radius:12px;background:var(--bg-card)">
+        <div style="padding:6px 12px;border-radius:8px;background:color-mix(in srgb,var(--accent) 55%,transparent)"><div style="display:flex;align-items:baseline;gap:var(--sp-3)"><span class="label" style="color:var(--accent-strong);font-weight:700;font-size:var(--fs-xs)">LV.???</span><b>???</b></div><div class="text-dim" style="font-size:var(--fs-xs)">잠들지 않는 자</div></div>
+        <div>자는 동안에도 <b>CLAUDE</b>가 돌고 있습니다.<br/>클대리는 오늘도 철야 중입니다.</div>
+        <div style="display:flex;align-items:center;gap:3px"><span class="text-faint" style="font-size:var(--fs-xs);margin-right:6px">토큰</span><span style="width:16px;height:10px;border-radius:2px;background:var(--danger)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--danger)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--danger)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--danger)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--danger)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--danger)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--danger);opacity:.5"></span><b style="color:var(--danger);margin-left:6px;white-space:nowrap">이번 달 7번째 충전 +$</b></div>
+      </div>
+      <div style="display:grid;grid-template-columns:230px 1fr auto;align-items:center;gap:var(--sp-4);padding:10px var(--sp-4);border:1px solid color-mix(in srgb,var(--danger) 60%,transparent);border-radius:12px;background:var(--bg-card)">
+        <div style="padding:6px 12px;border-radius:8px;background:color-mix(in srgb,var(--danger) 30%,transparent)"><div style="display:flex;align-items:baseline;gap:var(--sp-3)"><span class="label" style="color:var(--danger);font-weight:700;font-size:var(--fs-xs)">LV.MAX</span><b>API 사용자</b></div><div class="text-dim" style="font-size:var(--fs-xs)">한도 없는 자</div></div>
+        <div>구독 한도요? 그런 건 없습니다. 쓴 만큼 냅니다.</div>
+        <div style="display:flex;align-items:center;gap:3px"><span class="text-faint" style="font-size:var(--fs-xs);margin-right:6px">토큰</span><span style="width:16px;height:10px;border-radius:2px;background:var(--danger)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--danger)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--danger)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--danger)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--danger)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--danger)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--danger)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--danger)"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--danger);opacity:.5"></span><span style="width:16px;height:10px;border-radius:2px;background:var(--danger);opacity:.5"></span><b style="color:var(--danger);margin-left:6px;white-space:nowrap">청구서는 월말에 확인합니다</b></div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 9. AI와 함께 개발하기 -->
+  <section class="slide">
+    <div class="kicker">AI와 함께 개발하기</div>
+    <h2>AI와 함께 개발하기</h2>
+    <p class="lede" style="max-width:none">AI를 코딩에 접목해 <b>코딩부터 테스트, 문서화까지</b> 하나의 흐름으로 자동화합니다. <span class="text-faint" style="font-size:var(--fs-sm)">(Claude Code 기준)</span></p>
+    <div class="grid-3">
+      <div class="card">
+        <h4>지침 활용</h4>
+        <p class="text-dim">지침에는 공통 명령만 남기고, 작업별 참고 문서는 경로로 연결합니다.</p>
+      </div>
+      <div class="card">
+        <h4>서브에이전트 활용</h4>
+        <p class="text-dim">탐색·리뷰·테스트를 역할별 에이전트에게 맡기고, 결과만 돌려받습니다.</p>
+      </div>
+      <div class="card">
+        <h4>작업 순서 지침</h4>
+        <p class="text-dim">코딩 → 코드 리뷰 → 테스트 → 문서화 순서를 지침에 남겨 매번 같은 흐름으로 진행합니다.</p>
+      </div>
+    </div>
+    <div class="sub" style="margin-top:var(--sp-6)">
+      <h4>단계별 도입</h4>
+      <div class="diagram-row" style="align-items:stretch">
+        <div class="box" style="flex:1;min-width:0"><div class="label">① 개인별 사용</div>각자 작업에 AI를 써 보며 익숙해집니다</div>
+        <span class="arrow-row">→</span>
+        <div class="box" style="flex:1;min-width:0"><div class="label">② 팀 공통화</div>지침 · 에이전트를 저장소에 커밋해 같이 사용합니다</div>
+        <span class="arrow-row">→</span>
+        <div class="box accent" style="flex:1;min-width:0"><div class="label">③ 자동화</div>hooks · 예약 루틴으로 반복 작업을 맡깁니다</div>
+      </div>
+    </div>
+    <div class="sub">
+      <h4>처음 시작한다면: 기본 지침 <button type="button" class="doc-link doc-link-sm" data-doc="doc-ex-starter">전체 보기</button></h4>
+      <p class="text-dim">생각하고 코딩하기 · 단순하게 만들기 · 필요한 곳만 고치기 · 검증할 수 있는 목표로 바꾸기, 이 4가지를 <span class="term">*CLAUDE.md</span>에 붙여 넣고 시작합니다.</p>
+    </div>
+    <div class="notes">
+      <p class="note">* CLAUDE.md — 프로젝트 루트에 두면 Claude Code가 세션을 시작할 때마다 자동으로 읽는 지침 파일입니다. 기본 지침은 공개된 코딩 지침(GitHub <code>multica-ai/andrej-karpathy-skills</code>)의 원문(영문)입니다.</p>
+      <p class="note">이 발표 자료도 Claude Code로 만들었습니다. 저장소의 CLAUDE.md에 문체·브랜치 규칙을 남겨 두어, 매번 설명하지 않아도 같은 규칙으로 작업합니다.</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 9-1. 지침 활용 -->
+  <section class="slide">
+    <div class="kicker">AI와 함께 개발하기</div>
+    <h2>지침 활용: 공통 명령만, 나머지는 경로로</h2>
+    <p class="lede" style="max-width:none"><span class="term">*CLAUDE.md</span>에는 <b>모든 작업에 공통인 명령</b>만 남기고, 작업별 참고 사항은 <b>문서 경로만</b> 적어 필요할 때 읽게 합니다.<br/>지침이 너무 길면 <span class="term">**토큰</span> 소모만 늘고, 오히려 AI가 무엇을 따라야 할지 헷갈릴 수 있습니다.</p>
+    <div class="sub">
+      <div class="diagram-row" style="align-items:center">
+        <div class="box accent" style="flex:0 0 auto;min-width:0"><div class="label">CLAUDE.md · 매 세션 자동 로드</div>브랜치 전략 · 문체 · 작업 순서</div>
+        <span class="arrow-row"><span class="conn-label">필요할 때만 읽음</span>→</span>
+        <div class="zone" style="flex:1;min-width:0;padding:10px;display:grid;grid-template-columns:auto 1fr;gap:6px var(--sp-3);align-items:center">
+          <span class="text-dim" style="font-size:var(--fs-sm)">프론트엔드 작업</span>
+          <div class="box dim" style="min-width:0;padding:4px 10px"><button type="button" class="doc-link" data-doc="doc-frontend"><code>standards/frontend-development-principles.md</code></button></div>
+          <span class="text-dim" style="font-size:var(--fs-sm)">보안 검토</span>
+          <div class="box dim" style="min-width:0;padding:4px 10px"><button type="button" class="doc-link" data-doc="doc-ex-security"><code>standards/security-checklist.md</code></button></div>
+          <span class="text-dim" style="font-size:var(--fs-sm)">서비스 실행 · 장애 대응</span>
+          <div class="box dim" style="min-width:0;padding:4px 10px"><code>services/&lt;서비스명&gt;/</code></div>
+        </div>
+      </div>
+    </div>
+    <div class="sub">
+      <table class="compare">
+        <thead>
+          <tr><th>구분</th><th>지침에 직접 작성</th><th>경로만 남김</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>대상</b></td><td>모든 작업에 공통인 규칙</td><td>특정 작업에서만 필요한 상세 내용</td></tr>
+          <tr><td><b>예시</b></td><td>브랜치 전략, 커밋 규칙, 작업 순서</td><td>코딩 원칙, 보안 체크리스트, 서비스별 실행법</td></tr>
+          <tr><td><b>로드 시점</b></td><td>세션 시작 시 항상</td><td>해당 작업을 할 때만</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="notes">
+      <p class="note">상세 문서는 사람도 함께 보는 문서라, 경로로 연결하면 한곳에서 관리하기에도 좋습니다. 전체 예시는 <button type="button" class="doc-link" data-doc="doc-ex-claude">CLAUDE.md 예시</button>에서 볼 수 있습니다.</p>
+      <p class="note">* CLAUDE.md — 프로젝트 루트에 두면 Claude Code가 세션을 시작할 때마다 자동으로 읽는 지침 파일입니다.</p>
+      <p class="note">** 토큰 — AI가 글을 읽고 쓰는 단위입니다. 지침은 매 세션 함께 읽히므로 길이만큼 토큰을 차지하고, 사용량과 비용에 반영됩니다.</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 9-2. 서브에이전트 활용 -->
+  <section class="slide">
+    <div class="kicker">AI와 함께 개발하기</div>
+    <h2>서브에이전트 활용</h2>
+    <p class="lede" style="max-width:none">메인 세션이 일을 <b>역할별 서브에이전트에게 맡기고</b>, 각 에이전트는 <b>별도 <span class="term">*컨텍스트</span></b>에서 작업한 뒤 결과만 돌려줍니다.</p>
+    <div class="sub">
+      <div class="diagram-row" style="align-items:center">
+        <div class="box accent" style="flex:0 0 auto;min-width:0"><div class="label">메인 세션</div>요청 이해 · 판단</div>
+        <span class="arrow-row"><span class="conn-label">위임</span>→</span>
+        <div class="zone" style="flex:1;min-width:0;padding:10px;display:grid;grid-template-columns:1fr auto max-content;gap:6px var(--sp-3);align-items:center">
+          <div class="box" style="min-width:0;padding:4px 10px"><span class="label" style="display:inline;margin-right:6px">탐색 (Explore) · 기본</span>관련 코드 · 문서 찾기</div>
+          <span class="arrow-row"><span class="conn-label">결과만 반환</span>→</span>
+          <div class="box dim" style="grid-column:3;grid-row:1/6;min-width:0;padding:6px 12px">메인 세션<br/>컨텍스트 유지</div>
+          <div class="zone" style="min-width:0;padding:6px 8px;display:grid;grid-template-columns:auto 1fr 1fr;gap:6px;align-items:center">
+            <div class="zone-title" style="margin:0 4px;text-transform:none">개발<br/>직접 정의</div>
+            <div class="box" style="min-width:0;padding:4px 10px"><span class="label" style="display:inline;margin-right:6px"><button type="button" class="doc-link" data-doc="doc-ex-frontend">senior-frontend-developer</button></span>화면 구현</div>
+            <div class="box" style="min-width:0;padding:4px 10px"><span class="label" style="display:inline;margin-right:6px"><button type="button" class="doc-link" data-doc="doc-ex-developer">senior-java-developer</button></span>백엔드 구현</div>
+          </div>
+          <span class="arrow-row">→</span>
+          <div class="box" style="min-width:0;padding:4px 10px"><span class="label" style="display:inline;margin-right:6px"><button type="button" class="doc-link" data-doc="doc-ex-reviewer">code-reviewer</button> · 직접 정의</span>변경 diff 리뷰</div>
+          <span class="arrow-row">→</span>
+          <div class="box" style="min-width:0;padding:4px 10px"><span class="label" style="display:inline;margin-right:6px"><button type="button" class="doc-link" data-doc="doc-ex-tester">test-runner</button> · 직접 정의</span>테스트 작성 · 실행</div>
+          <span class="arrow-row">→</span>
+          <div class="box" style="min-width:0;padding:4px 10px"><span class="label" style="display:inline;margin-right:6px"><button type="button" class="doc-link" data-doc="doc-ex-writer">doc-writer</button> · 직접 정의</span>API 문서(OpenAPI) 갱신</div>
+          <span class="arrow-row">→</span>
+        </div>
+      </div>
+    </div>
+    <div class="sub">
+      <div class="grid-2">
+        <ul class="bullets text-dim">
+          <li>파일 탐색 같은 긴 작업 내용이 메인 컨텍스트에 쌓이지 않습니다.</li>
+          <li>서로 관계없는 작업은 동시에 실행할 수 있습니다.</li>
+          <li>에이전트마다 쓸 수 있는 도구와 지침을 따로 정합니다. 리뷰어는 읽기만 하게 둘 수 있습니다.</li>
+        </ul>
+<pre><code># .claude/agents/code-reviewer.md
+---
+name: code-reviewer
+description: 코드 변경 후 diff를 리뷰한다
+tools: Read, Grep, Glob, Bash
+---
+standards/ 원칙으로 리뷰하고 심각도 순으로 정리한다.</code></pre>
+      </div>
+    </div>
+    <div class="notes">
+      <p class="note">탐색(Explore)은 Claude Code에 기본으로 들어 있는 읽기 전용 에이전트입니다. 직접 정의한 에이전트는 이름을 누르면 전체 예시를 볼 수 있습니다.</p>
+      <p class="note">* 컨텍스트 — AI가 한 번에 기억하는 대화와 파일 내용입니다. 길어질수록 앞의 내용을 놓치기 쉽습니다.</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 9-2-1. 서브에이전트 만들기 -->
+  <section class="slide">
+    <div class="kicker">AI와 함께 개발하기</div>
+    <h2>서브에이전트 쉽게 만들기: /agents</h2>
+    <p class="lede" style="max-width:none">파일을 직접 작성하지 않아도, Claude Code에서 <code>/agents</code>를 실행하고 <b>역할만 한두 문장으로 적으면</b> 에이전트가 만들어집니다.</p>
+    <div class="sub">
+      <div class="diagram-row" style="align-items:stretch">
+        <div class="box accent" style="flex:1;min-width:0"><div class="label">① 실행</div><code>/agents</code> 입력 후 Create new agent 선택</div>
+        <span class="arrow-row">→</span>
+        <div class="box" style="flex:1;min-width:0"><div class="label">② 저장 위치</div>프로젝트 <code>.claude/agents/</code> 또는 개인 <code>~/.claude/agents/</code></div>
+        <span class="arrow-row">→</span>
+        <div class="box" style="flex:1;min-width:0"><div class="label">③ 역할 입력</div><b>Generate with Claude</b>에 역할을 적으면 이름 · 설명 · 지침을 생성</div>
+        <span class="arrow-row">→</span>
+        <div class="box" style="flex:1;min-width:0"><div class="label">④ 도구 · 모델</div>쓸 도구와 모델을 고르고 저장</div>
+      </div>
+    </div>
+    <div class="sub">
+      <h4>역할 입력 예시</h4>
+      <table class="compare">
+        <thead>
+          <tr><th>에이전트</th><th>Generate with Claude에 입력</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>자바 개발자</b></td><td>Java·Spring Boot 백엔드 기능을 구현하는 시니어 개발자. API·서비스 로직 작업에 사용</td></tr>
+          <tr><td><b>프론트엔드 개발자</b></td><td>React, JavaScript(ES6)로 화면을 구현하는 시니어 개발자. 화면·컴포넌트 작업에 사용</td></tr>
+          <tr><td><b>코드 리뷰어</b></td><td>변경된 코드의 diff를 리뷰하는 에이전트. 코드 수정 후에 사용</td></tr>
+          <tr><td><b>테스트 엔지니어</b></td><td>변경된 코드의 테스트를 작성하고 실행하는 에이전트. 구현·리뷰 후에 사용</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sub">
+      <h4>만들 때 팁</h4>
+      <ul class="bullets text-dim">
+        <li><b>프로젝트 단위로 에이전트를 사용</b>해 코드 품질을 균일하게 관리합니다. 저장소에 커밋해 두면 누가 작업해도 같은 기준으로 구현하고 리뷰합니다.</li>
+        <li><b>description에 "언제 쓰는지"를 분명히</b> 적습니다. 메인 세션이 이 설명을 보고 일을 맡깁니다.</li>
+        <li><b>도구는 최소한</b>으로 줍니다. 리뷰어처럼 읽기만 하면 되는 에이전트는 읽기 도구만 허용합니다.</li>
+        <li><b>짧게 시작해서 다듬습니다.</b> 생성된 지침을 써 보며 부족한 부분을 채웁니다. 이 과정이 <span class="term">*하네스 엔지니어링</span>입니다.</li>
+      </ul>
+    </div>
+    <div class="notes">
+      <p class="note">개인용(<code>~/.claude/agents/</code>)은 내 모든 프로젝트에서 쓸 수 있지만 팀과 공유되지 않습니다.</p>
+      <p class="note">* 하네스 엔지니어링 — AI가 잘 일하도록 지침 · 에이전트 · 도구 권한 등 주변 환경을 설계하고 개선하는 일입니다.</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 9-3. 작업 순서 지침 -->
+  <section class="slide">
+    <div class="kicker">AI와 함께 개발하기</div>
+    <h2>작업 순서를 지침으로 남기기</h2>
+    <p class="lede" style="max-width:none">작업 순서와 <b>다음 단계로 넘어가는 조건</b>을 지침에 적어 두면, 요청할 때마다 설명하지 않아도 같은 흐름으로 진행됩니다.</p>
+    <div class="sub">
+      <div class="diagram-row" style="align-items:stretch">
+        <div class="box accent" style="flex:1;min-width:0"><div class="label">① 코딩 + 보안 검토</div>개발 에이전트가 구현하고 보안 체크리스트로 점검</div>
+        <span class="arrow-row">→</span>
+        <div class="box" style="flex:1;min-width:0"><div class="label">② 코드 리뷰</div>code-reviewer에게 diff 리뷰를 맡기고 반영</div>
+        <span class="arrow-row">→</span>
+        <div class="box" style="flex:1;min-width:0"><div class="label">③ 테스트</div>test-runner로 작성 · 실행, 실패 시 ①로</div>
+        <span class="arrow-row">→</span>
+        <div class="box" style="flex:1;min-width:0"><div class="label">④ 문서화</div>doc-writer가 API 문서(OpenAPI) 갱신</div>
+      </div>
+    </div>
+    <div class="sub">
+      <h4>CLAUDE.md 예시 <button type="button" class="doc-link doc-link-sm" data-doc="doc-ex-claude">전체 예시 보기</button></h4>
+<pre><code>## 작업 순서
+기능 구현·수정 요청은 아래 순서로 진행한다. 앞 단계를 통과해야 다음 단계로 넘어간다.
+
+1. 코딩 — 화면은 senior-frontend-developer, 백엔드는 senior-java-developer에게 맡기고,
+   standards/security-checklist.md 기준으로 보안 검토를 함께 한다.
+2. 코드 리뷰 — code-reviewer 서브에이전트에게 변경 diff 리뷰를 맡기고, 지적 사항을 반영한다.
+3. 테스트 — test-runner 서브에이전트로 테스트를 작성·실행한다. 실패하면 1단계로 돌아간다.
+4. 문서화 — doc-writer에게 API 문서(OpenAPI)와 services/&lt;서비스명&gt;/ 문서 갱신을 맡긴다.</code></pre>
+    </div>
+    <div class="notes">
+      <p class="note">각 단계의 상세 기준은 지침에 쓰지 않고 경로로만 연결합니다. 보안 검토는 기본 제공되는 <code>/security-review</code> 명령도 활용할 수 있습니다.</p>
+      <p class="note">지침은 AI가 따르는 안내라 상황에 따라 건너뛸 수 있습니다. 린트·테스트처럼 매번 꼭 실행되어야 하는 검사는 hooks로 자동 실행하도록 설정할 수 있습니다.</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+</div>
+
+<div id="dots"></div>
+<nav id="toc" aria-label="목차">
+  <button id="tocToggle" aria-expanded="false" aria-label="목차 펼치기">☰</button>
+  <ol id="tocList"></ol>
+</nav>
+<div id="navbtns">
+  <button id="prevBtn" aria-label="이전 슬라이드">↑</button>
+  <button id="nextBtn" aria-label="다음 슬라이드">↓</button>
+</div>
+
+<!-- 슬라이드에서 참고하는 문서 원본. GitHub 권한이 없어도 볼 수 있도록 모달로 띄운다.
+     개발 서버에서는 src를 불러오고, export_html.mjs로 내보내면 본문이 인라인된다. -->
+<script type="text/markdown" id="doc-frontend" data-title="프론트엔드 개발 원칙" data-path="roadmap/frontend-development-principles.md" src="../frontend-development-principles.md"></script>
+<!-- 지침 예시는 복사해서 쓰는 파일이라 렌더링하지 않고 원문(data-raw) 그대로 보여 준다. data-path는 복사할 위치 -->
+<script type="text/markdown" id="doc-ex-claude" data-raw data-title="CLAUDE.md 예시" data-path="저장소 루트 CLAUDE.md" src="../ai-examples/CLAUDE.example.md"></script>
+<script type="text/markdown" id="doc-ex-starter" data-raw data-title="처음 쓰기 좋은 기본 지침" data-path="저장소 루트 CLAUDE.md" src="../ai-examples/CLAUDE.starter.md"></script>
+<script type="text/markdown" id="doc-ex-frontend" data-raw data-title="senior-frontend-developer 예시" data-path=".claude/agents/senior-frontend-developer.md" src="../ai-examples/agents/senior-frontend-developer.md"></script>
+<script type="text/markdown" id="doc-ex-developer" data-raw data-title="senior-java-developer 예시" data-path=".claude/agents/senior-java-developer.md" src="../ai-examples/agents/senior-java-developer.md"></script>
+<script type="text/markdown" id="doc-ex-reviewer" data-raw data-title="code-reviewer 예시" data-path=".claude/agents/code-reviewer.md" src="../ai-examples/agents/code-reviewer.md"></script>
+<script type="text/markdown" id="doc-ex-tester" data-raw data-title="test-runner 예시" data-path=".claude/agents/test-runner.md" src="../ai-examples/agents/test-runner.md"></script>
+<script type="text/markdown" id="doc-ex-security" data-raw data-title="보안 체크리스트 예시" data-path="standards/security-checklist.md" src="../ai-examples/security-checklist.md"></script>
+<script type="text/markdown" id="doc-ex-writer" data-raw data-title="doc-writer 예시" data-path=".claude/agents/doc-writer.md" src="../ai-examples/agents/doc-writer.md"></script>
+
+<dialog id="docModal" aria-labelledby="docModalTitle">
+  <div class="doc-modal-head">
+    <div><b id="docModalTitle"></b> <code id="docModalPath"></code></div>
+    <div class="doc-modal-actions">
+      <button type="button" id="docModalCopy" aria-label="복사" title="복사" hidden><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+      <button type="button" id="docModalClose" aria-label="닫기">✕</button>
+    </div>
+  </div>
+  <div class="doc-modal-body" id="docModalBody"></div>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script>
+// 참고 문서 모달: .doc-link[data-doc]를 누르면 해당 markdown을 렌더링해 띄운다
+(function(){
+  var modal = document.getElementById('docModal');
+  var title = document.getElementById('docModalTitle');
+  var path = document.getElementById('docModalPath');
+  var body = document.getElementById('docModalBody');
+  var copyBtn = document.getElementById('docModalCopy');
+  var cache = {};
+  var current = '';
+  var copyIcon = copyBtn.innerHTML;
+  var doneIcon = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+
+  function load(src){
+    if (src.textContent.trim()) return Promise.resolve(src.textContent);
+    if (!cache[src.id]) cache[src.id] = fetch(src.getAttribute('src')).then(function(r){
+      if (!r.ok) throw new Error(r.status);
+      return r.text();
+    });
+    return cache[src.id];
+  }
+
+  document.querySelectorAll('.doc-link[data-doc]').forEach(function(link){
+    link.addEventListener('click', function(){
+      var src = document.getElementById(link.dataset.doc);
+      title.textContent = src.dataset.title || link.textContent.trim();
+      path.textContent = src.dataset.path || src.getAttribute('src').replace(/^(\.\.\/)+/, '');
+      var raw = src.hasAttribute('data-raw');
+      copyBtn.hidden = true;
+      copyBtn.innerHTML = copyIcon;
+      copyBtn.setAttribute('aria-label', '복사'); copyBtn.title = '복사';
+      body.textContent = '불러오는 중입니다…';
+      modal.showModal();
+      body.scrollTop = 0;
+      load(src).then(function(md){
+        current = md;
+        copyBtn.hidden = !raw;
+        if (raw || !window.marked){
+          var pre = document.createElement('pre'); pre.className = 'doc-raw'; pre.textContent = md;
+          body.textContent = ''; body.appendChild(pre);
+        } else {
+          body.innerHTML = marked.parse(md);
+        }
+      }).catch(function(){
+        body.textContent = '문서를 불러오지 못했습니다. 개발 서버(node tools/dev_server.mjs)나 내보낸 단일 HTML에서 열어 주세요.';
+      });
+    });
+  });
+
+  // 원문 복사: file://처럼 clipboard API를 못 쓰는 환경은 textarea 선택 방식으로 대신한다
+  copyBtn.addEventListener('click', function(){
+    var done = function(){
+      copyBtn.innerHTML = doneIcon;
+      copyBtn.setAttribute('aria-label', '복사됨'); copyBtn.title = '복사됨';
+    };
+    var fallback = function(){
+      var t = document.createElement('textarea'); t.value = current; modal.appendChild(t);
+      t.select(); document.execCommand('copy'); t.remove(); done();
+    };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(current).then(done, fallback);
+    else fallback();
+  });
+
+  document.getElementById('docModalClose').addEventListener('click', function(){ modal.close(); });
+  // 바깥(backdrop)을 누르면 닫는다
+  modal.addEventListener('click', function(e){ if (e.target === modal) modal.close(); });
+})();
+</script>
+<script>
+(function(){
+  var deck = document.getElementById('deck');
+  var slides = Array.prototype.slice.call(document.querySelectorAll('section.slide'));
+  var toc = document.getElementById('toc');
+  var tocList = document.getElementById('tocList');
+  var tocToggle = document.getElementById('tocToggle');
+  var dotsWrap = document.getElementById('dots');
+  var progress = document.getElementById('progress');
+
+  // 슬라이드 번호는 자동으로 채운다 (슬라이드를 추가·삭제해도 손댈 필요 없음)
+  var pad = function(n){ return (n < 10 ? '0' : '') + n; };
+  slides.forEach(function(s, i){
+    var num = s.querySelector('.slide-num');
+    if (num) num.textContent = pad(i + 1) + ' / ' + pad(slides.length);
+
+    // 오른쪽 점 내비게이션
+    var d = document.createElement('button');
+    d.setAttribute('aria-label', '슬라이드 ' + (i + 1));
+    d.addEventListener('click', function(){ slides[i].scrollIntoView({behavior:'smooth'}); });
+    dotsWrap.appendChild(d);
+  });
+  var dots = Array.prototype.slice.call(dotsWrap.children);
+
+  // 왼쪽 목차: 슬라이드 제목으로 자동 생성, kicker가 바뀔 때마다 그룹 제목을 넣는다
+  var tocItems = [];
+  var lastGroup = null;
+  slides.forEach(function(s, i){
+    var kicker = s.querySelector('.kicker');
+    var head = s.querySelector('h2, h1');
+    var group = kicker ? kicker.textContent.trim() : '';
+    if (group && group !== lastGroup){
+      var g = document.createElement('li');
+      g.className = 'group';
+      g.textContent = group;
+      tocList.appendChild(g);
+    }
+    lastGroup = group;
+    var title = head ? (head.innerText || head.textContent).replace(/\s+/g, ' ').trim() : '슬라이드 ' + (i + 1);
+    var li = document.createElement('li');
+    var b = document.createElement('button');
+    b.setAttribute('aria-label', pad(i + 1) + '. ' + title);
+    b.textContent = title;
+    b.addEventListener('click', function(){ slides[i].scrollIntoView({behavior:'instant'}); });
+    li.appendChild(b);
+    tocList.appendChild(li);
+    tocItems.push(b);
+  });
+
+  // 접기/펼치기 (상태는 브라우저에 기억, 저장이 막혀 있어도 동작)
+  function setToc(open){
+    toc.classList.toggle('open', open);
+    document.body.classList.toggle('toc-open', open);
+    tocToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    tocToggle.setAttribute('aria-label', open ? '목차 접기' : '목차 펼치기');
+    try { localStorage.setItem('roadmap:toc', open ? '1' : '0'); } catch(e) {}
+  }
+  var savedToc = null;
+  try { savedToc = localStorage.getItem('roadmap:toc'); } catch(e) {}
+  setToc(savedToc === '1');
+  // 패널 폭이 바뀌면 슬라이드 높이가 달라질 수 있으므로, 보던 슬라이드에 다시 맞춘다
+  function toggleToc(open){
+    var idx = currentIndex();
+    setToc(open);
+    setTimeout(function(){ slides[idx].scrollIntoView({behavior:'instant'}); }, 220);
+  }
+  tocToggle.addEventListener('click', function(){ toggleToc(!toc.classList.contains('open')); });
+
+  function currentIndex(){
+    var mid = deck.scrollTop + deck.clientHeight / 2;
+    var idx = 0;
+    slides.forEach(function(s, i){ if (s.offsetTop <= mid) idx = i; });
+    return idx;
+  }
+
+  function updateUI(){
+    var idx = currentIndex();
+    dots.forEach(function(d, i){ d.classList.toggle('active', i === idx); });
+    tocItems.forEach(function(t, i){ t.classList.toggle('active', i === idx); });
+    var pct = deck.scrollTop / (deck.scrollHeight - deck.clientHeight) * 100;
+    // 목차 패널이 펼쳐져 있으면 그 폭을 뺀 나머지 안에서만 차오르게 한다
+    progress.style.width = 'calc((100% - var(--toc-w)) * ' + ((isFinite(pct) ? pct : 0) / 100) + ')';
+  }
+
+  // 현재 슬라이드를 URL 해시(#slide-N)로 남긴다 — 핫리로드/새로고침 후에도 같은 슬라이드로 복원
+  slides.forEach(function(s, i){ s.id = 'slide-' + (i + 1); });
+  var lastHash = '';
+  function syncHash(){
+    var h = '#' + slides[currentIndex()].id;
+    if (h !== lastHash){ lastHash = h; history.replaceState(null, '', h); }
+  }
+
+  deck.addEventListener('scroll', function(){ updateUI(); syncHash(); }, {passive:true});
+  window.addEventListener('resize', updateUI);
+
+  var m = /^#slide-(\d+)$/.exec(location.hash);
+  if (m && slides[m[1] - 1]){
+    slides[m[1] - 1].scrollIntoView({behavior:'instant'});
+    lastHash = location.hash;
+  }
+  updateUI();
+
+  function go(delta){
+    var next = Math.min(slides.length - 1, Math.max(0, currentIndex() + delta));
+    slides[next].scrollIntoView({behavior:'smooth'});
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', function(){ go(-1); });
+  document.getElementById('nextBtn').addEventListener('click', function(){ go(1); });
+
+  window.addEventListener('keydown', function(e){
+    if (document.getElementById('docModal').open) return; // 모달이 열려 있으면 슬라이드를 넘기지 않는다
+    if (e.key === 'Escape'){ if (toc.classList.contains('open')) toggleToc(false); return; }
+    if (['ArrowDown','ArrowRight','PageDown',' '].indexOf(e.key) > -1){ e.preventDefault(); go(1); }
+    if (['ArrowUp','ArrowLeft','PageUp'].indexOf(e.key) > -1){ e.preventDefault(); go(-1); }
+  });
+})();
+</script>
+</body>
+</html>
