@@ -16,8 +16,16 @@ section.slide{
 }
 /* 카드 그리드 바로 뒤에 오는 문단은 붙어 보이지 않게 띄운다 */
 section.slide > :is(.grid,.grid-2,.grid-3) + p{margin-top:var(--sp-5);}
-/* 부가 설명(주의, 참고 등): 본문보다 한 단계 옅게 */
-.note{color:var(--text-faint);opacity:.7;font-size:var(--fs-sm);margin-bottom:var(--sp-1);}
+/* 하위 구역(sub): 슬라이드 안의 내용 묶음. 안쪽 마지막 여백을 없애고, 구역끼리는 일정 간격 */
+.sub > :last-child,
+.sub ul > li:last-child{margin-bottom:0;}
+.sub + .sub{margin-top:var(--sp-6);}
+/* 하단 부가 설명 묶음(notes): 본문과 일정 간격, 줄끼리는 촘촘하게 */
+.notes{margin-top:var(--sp-7);display:flex;flex-direction:column;gap:var(--sp-1);}
+/* 부가 설명(주의, 참고, *용어 설명): 본문보다 한 단계 옅게 */
+.note{color:var(--text-faint);opacity:.7;font-size:var(--fs-sm);margin:0;}
+/* 하단에 부가 설명이 있는 용어 (*용어) */
+.term{color:var(--accent);}
 .slide-num{position:absolute;bottom:5vh;left:8vw;font-size:var(--fs-sm);color:var(--text-faint);letter-spacing:.05em;}
 .title-slide{align-items:flex-start;}
 .title-slide .service{color:var(--text-dim);margin-bottom:36px;}

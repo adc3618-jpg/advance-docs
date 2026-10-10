@@ -217,42 +217,124 @@
   <section class="slide">
     <div class="kicker">아키텍처 현대화</div>
     <h2>컨테이너 활용: 프론트엔드 무중단 배포</h2>
-    <p class="lede" style="max-width:none">프론트엔드(Next.js)는 Nginx *리버스 프록시 안에서 트래픽을 전환합니다. <b>다운타임이 없고, 인프라팀의 배포 작업이 줄어듭니다</b>.</p>
+    <p class="lede" style="max-width:none">프론트엔드(Next.js)는 Nginx <span class="term">*리버스 프록시</span> 안에서 트래픽을 전환합니다. <b>다운타임이 없고, 인프라팀의 배포 작업이 줄어듭니다</b>.</p>
     <div class="timeline">
       <div class="phase" style="display:grid;grid-template-columns:150px 1fr;column-gap:var(--sp-5);row-gap:var(--sp-3);align-items:center">
         <div><span class="badge">현재</span></div>
-        <div class="arrow-row" style="justify-content:flex-start;flex-wrap:wrap;font-size:1rem">
-            <span class="tag">서버 1 연결 해제</span><span>→</span>
-            <span class="tag">업데이트</span><span>→</span>
-            <span class="tag">재연결</span><span>→</span>
-            <span class="tag">서버 2 반복</span>
+        <div class="diagram-row" style="align-items:stretch">
+          <div class="zone" style="min-width:0;padding:10px">
+            <div class="zone-title" style="margin-bottom:6px">① 서버 1 배포</div>
+            <div style="display:grid;grid-template-columns:auto auto 1fr;gap:4px 8px;align-items:center">
+              <div class="box" style="grid-row:1/3;min-width:0;padding:6px 10px;border-color:var(--warn)"><div class="label" style="color:var(--warn);margin:0">L4</div></div>
+              <span class="arrow-row" style="opacity:.4">⇢</span>
+              <div class="box dim" style="min-width:0;padding:4px 10px;opacity:.6">서버 1 · 업데이트</div>
+              <span class="arrow-row">→</span>
+              <div class="box" style="min-width:0;padding:4px 10px">서버 2 · 단독 처리</div>
+            </div>
           </div>
+          <span class="arrow-row">→</span>
+          <div class="zone" style="min-width:0;padding:10px">
+            <div class="zone-title" style="margin-bottom:6px">② 서버 2 배포</div>
+            <div style="display:grid;grid-template-columns:auto auto 1fr;gap:4px 8px;align-items:center">
+              <div class="box" style="grid-row:1/3;min-width:0;padding:6px 10px;border-color:var(--warn)"><div class="label" style="color:var(--warn);margin:0">L4</div></div>
+              <span class="arrow-row">→</span>
+              <div class="box" style="min-width:0;padding:4px 10px">서버 1 · 새 버전</div>
+              <span class="arrow-row" style="opacity:.4">⇢</span>
+              <div class="box dim" style="min-width:0;padding:4px 10px;opacity:.6">서버 2 · 업데이트</div>
+            </div>
+          </div>
+          <span class="arrow-row">→</span>
+          <div class="zone" style="min-width:0;padding:10px">
+            <div class="zone-title" style="margin-bottom:6px">③ 둘 다 재연결</div>
+            <div style="display:grid;grid-template-columns:auto auto 1fr;gap:4px 8px;align-items:center">
+              <div class="box" style="grid-row:1/3;min-width:0;padding:6px 10px;border-color:var(--warn)"><div class="label" style="color:var(--warn);margin:0">L4</div></div>
+              <span class="arrow-row">→</span>
+              <div class="box" style="min-width:0;padding:4px 10px">서버 1 · 새 버전</div>
+              <span class="arrow-row">→</span>
+              <div class="box" style="min-width:0;padding:4px 10px">서버 2 · 새 버전</div>
+            </div>
+          </div>
+        </div>
         <div class="text-dim">L4 수동 롤링</div>
         <p class="text-dim" style="margin:0">배포할 때마다 L4 조작이 필요하고, 배포 중에는 서버 1대로 운영합니다.</p>
       </div>
       <div class="phase" style="display:grid;grid-template-columns:150px 1fr;column-gap:var(--sp-5);row-gap:var(--sp-3);align-items:center">
         <div><span class="badge badge-info">컨테이너</span></div>
-        <div class="arrow-row" style="justify-content:flex-start;flex-wrap:wrap;font-size:1rem">
-            <span class="tag">새 프론트엔드 컨테이너 기동</span><span>→</span>
-            <span class="tag">헬스체크</span><span>→</span>
-            <span class="tag accent">Nginx 라우팅 전환</span><span>→</span>
-            <span class="tag">일정 시간 후 기존 컨테이너 삭제</span>
+        <div class="diagram-row" style="align-items:center">
+          <div class="box dim" style="flex:0 0 auto;min-width:0">사용자</div>
+          <span class="arrow-row">→</span>
+          <div class="box dim" style="flex:0 0 auto;min-width:0"><div class="label">L4</div>변경 없음</div>
+          <span class="arrow-row">→</span>
+          <div class="zone" style="flex:1;min-width:0;padding:8px;display:grid;grid-template-columns:auto auto 1fr;gap:6px var(--sp-3);align-items:center">
+            <div class="box accent" style="grid-row:1/3;min-width:0"><div class="label">Nginx</div>리버스 프록시</div>
+            <span class="arrow-row" style="opacity:.4">⇢</span>
+            <div class="box dim" style="min-width:0;opacity:.6;padding:6px 14px"><div class="label">③ 대기 후 삭제</div>기존 컨테이너 (v1) <code>:3000</code></div>
+            <span class="arrow-row"><span class="conn-label">② 전환 :3000 → :3001</span>→</span>
+            <div class="box accent" style="min-width:0;padding:6px 14px"><div class="label">① 기동 · 헬스체크</div>새 컨테이너 (v2) <code>:3001</code></div>
           </div>
+        </div>
         <div class="text-dim">블루-그린</div>
         <p class="text-dim" style="margin:0">L4는 그대로 두고 서버 안에서 전환합니다. 처리 용량을 유지하고, 기존 컨테이너가 남아 있는 동안은 라우팅만 되돌려 바로 롤백합니다.</p>
       </div>
     </div>
-    <div style="margin-top:var(--sp-5)">
-      <h4>다운타임이 없는 이유</h4>
+    <div class="notes">
+      <p class="note">* 리버스 프록시 — 사용자 요청을 먼저 받아 뒤쪽 컨테이너로 전달하는 중계 서버입니다. 어느 컨테이너로 보낼지 설정만 바꾸면 전환됩니다.</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 5-5. 다운타임이 없는 이유 -->
+  <section class="slide">
+    <div class="kicker">아키텍처 현대화</div>
+    <h2>다운타임이 없는 이유</h2>
+    <div class="sub">
+      <h4>Nginx reload 과정</h4>
+      <div class="diagram-row" style="align-items:stretch">
+          <div class="zone" style="min-width:0;padding:10px">
+          <div class="zone-title" style="margin-bottom:6px;text-transform:none">① reload 전</div>
+          <div style="display:grid;grid-template-columns:auto auto 1fr;gap:6px 8px;align-items:center">
+              <div class="box dim" style="min-width:0;padding:4px 10px">기존 워커</div>
+                <span class="arrow-row">→</span>
+              <div class="box accent" style="min-width:0;padding:4px 10px">기존 컨테이너 v1 <code>:3000</code></div>
+          </div>
+        </div>
+          <span class="arrow-row">→</span>
+          <div class="zone" style="min-width:0;padding:10px">
+          <div class="zone-title" style="margin-bottom:6px;text-transform:none">② reload 중</div>
+          <div style="display:grid;grid-template-columns:auto auto 1fr;gap:6px 8px;align-items:center">
+              <div class="box accent" style="min-width:0;padding:4px 10px">새 워커</div>
+              <span class="arrow-row"><span class="conn-label">새 요청</span>→</span>
+              <div class="box accent" style="min-width:0;padding:4px 10px">새 컨테이너 v2 <code>:3001</code></div>
+              <div class="box dim" style="min-width:0;padding:4px 10px;opacity:.6">기존 워커</div>
+              <span class="arrow-row" style="opacity:.5"><span class="conn-label">처리 중 요청만</span>⇢</span>
+              <div class="box dim" style="min-width:0;padding:4px 10px;opacity:.6">기존 컨테이너 v1 <code>:3000</code></div>
+          </div>
+        </div>
+          <span class="arrow-row">→</span>
+          <div class="zone" style="min-width:0;padding:10px">
+          <div class="zone-title" style="margin-bottom:6px;text-transform:none">③ reload 후</div>
+          <div style="display:grid;grid-template-columns:auto auto 1fr;gap:6px 8px;align-items:center">
+              <div class="box accent" style="min-width:0;padding:4px 10px">새 워커</div>
+                <span class="arrow-row">→</span>
+              <div class="box accent" style="min-width:0;padding:4px 10px">새 컨테이너 v2 <code>:3001</code></div>
+              <div class="box dim" style="min-width:0;padding:4px 10px;opacity:.6">기존 워커 종료</div>
+              <span></span>
+              <span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sub">
       <ul class="bullets text-dim">
         <li>reload는 처리 중인 요청을 끊지 않고, 새 요청만 새 컨테이너로 보냅니다.</li>
         <li>헬스체크를 통과한 뒤에만 전환하고, 설정 오류가 있으면 기존 설정이 유지됩니다.</li>
         <li>기존 컨테이너는 처리 중인 요청이 끝난 뒤 삭제합니다.</li>
       </ul>
     </div>
-    <p class="note"><b>주의</b> — 헬스체크 전에 전환하거나, 기존 컨테이너를 너무 빨리 지우거나, 앱이 처리 중인 요청을 마치지 않고 바로 꺼지면 요청이 실패할 수 있습니다.</p>
-    <p class="note">지금은 Docker + Nginx로 시작합니다. 클라우드(AWS)로 전환하게 되면 오케스트레이션으로 ECS(Fargate)를 우선 검토하고, 서비스가 크게 늘어나면 Kubernetes도 검토합니다.</p>
-    <p class="note">* 리버스 프록시 — 사용자 요청을 먼저 받아 뒤쪽 컨테이너로 전달하는 중계 서버입니다. 어느 컨테이너로 보낼지 설정만 바꾸면 전환됩니다.</p>
+    <div class="notes">
+      <p class="note"><b>주의</b> — 헬스체크 전에 전환하거나, 기존 컨테이너를 너무 빨리 지우거나, 앱이 처리 중인 요청을 마치지 않고 바로 꺼지면 요청이 실패할 수 있습니다.</p>
+      <p class="note">지금은 Docker + Nginx로 시작합니다. 클라우드(AWS)로 전환하게 되면 오케스트레이션으로 ECS(Fargate)를 우선 검토하고, 서비스가 크게 늘어나면 Kubernetes도 검토합니다.</p>
+    </div>
     <div class="slide-num"></div>
   </section>
 
